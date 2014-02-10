@@ -4,7 +4,7 @@
   <title><![CDATA[末日前几天]]></title>
   <link href="http://leolovenet.github.io/atom.xml" rel="self"/>
   <link href="http://leolovenet.github.io/"/>
-  <updated>2014-02-10T14:26:59+08:00</updated>
+  <updated>2014-02-10T23:10:41+08:00</updated>
   <id>http://leolovenet.github.io/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -12,5 +12,99 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[用Ruby增强ping命令]]></title>
+    <link href="http://leolovenet.github.io/blog/2013/10/11/enhanced-ping-command-function-with-ruby/"/>
+    <updated>2013-10-11T00:00:00+08:00</updated>
+    <id>http://leolovenet.github.io/blog/2013/10/11/enhanced-ping-command-function-with-ruby</id>
+    <content type="html"><![CDATA[<p>故事的起因是,我在mac下一直用chrome,但是chrome有一个很不爽的地方,是在地址栏copy的域名,每次都自动的加上<code>http://</code>的字符串, 这样就没有办法直接粘贴到 Terminal, 用ping命令查看ping值. 这个事情真的弄的我很头疼.</p>
+
+<p>所以就想办法关掉这个chrome的特性,google了半天也也没有找到,就放弃了.如果有人知道告诉我,十分感谢 :)
+转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名.</p>
+
+<p>正好,最近再看ruby的一些东西,感觉蛮方便的.</p>
+
+<p>就写了一个ruby脚本,可以自动的去掉http之类的协议头,然后传给ping命令执行.不就ok了嘛.</p>
+
+<p>写出来之后,又不爽不能及时的知道ip的地理位置,所以呢,就又增加了调用纯真的ip数据库,顺便把ip的地理位置信息现实出来.</p>
+
+<p>第一步,安装所需要的依赖库,qqwry.dat自己下载,然后改脚本里的路径信息.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem install escape qqwry</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面的代码我是另存为一个叫p的文件,放到了 <code>$home/bin/</code> 下面.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'><span class="c1"># encoding : utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;escape&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;uri&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;qqwry&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;resolv&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">unless</span> <span class="no">ARGV</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;Usage: p &lt;domain&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="nb">exit</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">domain</span><span class="o">=</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="n">dup</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">domain</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">3</span><span class="o">]</span> <span class="o">!=</span> <span class="s2">&quot;http&quot;</span>
+</span><span class='line'>   <span class="n">domain</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;http://&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">host</span><span class="o">=</span><span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">domain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">host</span>
+</span><span class='line'><span class="n">ip</span><span class="o">=</span><span class="no">Resolv</span><span class="o">.</span><span class="n">getaddress</span> <span class="n">host</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">db</span> <span class="o">=</span> <span class="ss">QQWry</span><span class="p">:</span><span class="ss">:Database</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;/Users/stoneyliu/Documents/vbox/ip/qqwry.dat&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">r</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">host</span><span class="si">}</span><span class="se">\t</span><span class="s2">===&gt;</span><span class="se">\t</span><span class="si">#{</span><span class="n">ip</span><span class="si">}</span><span class="se">\t</span><span class="s2">===&gt;</span><span class="se">\t</span><span class="si">#{</span><span class="n">r</span><span class="o">.</span><span class="n">country</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">r</span><span class="o">.</span><span class="n">area</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nb">exec</span> <span class="s2">&quot;ping </span><span class="si">#{</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">p</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>脚本虽然很简单,但是用起来感觉很好.</p>
+]]></content>
+  </entry>
   
 </feed>
