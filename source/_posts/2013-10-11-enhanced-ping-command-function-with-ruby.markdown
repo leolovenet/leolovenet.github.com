@@ -9,7 +9,7 @@ categories:
 - Mac
 - Ruby
 - Shell
-keywords: "Bash, Linux, Mac, Ruby,escape, Shell,"
+keywords: "Bash, Linux, Mac, Ruby,escape, Shell"
 description: "a Ruby script enhanced ping command function."
 ---
 
