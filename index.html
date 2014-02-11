@@ -231,17 +231,17 @@
 
 <p>没有什么主要的技术文章,就发一些自己平时积累的Evernote的笔记.</p>
 
-<p>1.★★★★ <a href="https://www.evernote.com/shard/s170/sh/901e7847-78f3-4560-ae64-72825f8f5c45/b43546d281d47bbbdc745184e83f1fad">一些常用的linux的命令</a></p>
+<blockquote><p>★★★★ <a href="https://www.evernote.com/shard/s170/sh/901e7847-78f3-4560-ae64-72825f8f5c45/b43546d281d47bbbdc745184e83f1fad">一些常用的linux的命令</a></p>
 
-<p>2.★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
+<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
 vagrant是一个创建和分发虚拟化开发环境的工具，使用ruby编写，基于Oracle的VirtualBox，它提供了一个可配置的、轻量级的、可重用的、便携的虚拟化开发环境.</p>
 
-<p>3.★★ <a href="https://www.evernote.com/shard/s170/sh/5ee87faa-0c73-46a6-9cd1-7117ee8971ea/4bbf353bae719e4ef65e2b57530732a1">Git的学习笔记</a></p>
+<p>★★ <a href="https://www.evernote.com/shard/s170/sh/5ee87faa-0c73-46a6-9cd1-7117ee8971ea/4bbf353bae719e4ef65e2b57530732a1">Git的学习笔记</a></p>
 
-<p>4.★★ <a href="https://www.evernote.com/shard/s170/sh/c6fa9447-727c-474a-b75d-4492b5764f08/cd5ee8ca706b35bbc969e5205964bbd3">Pow 相关笔记</a>
+<p>★★ <a href="https://www.evernote.com/shard/s170/sh/c6fa9447-727c-474a-b75d-4492b5764f08/cd5ee8ca706b35bbc969e5205964bbd3">Pow 相关笔记</a>
 Pow是一个Rack Server for Mac OS X.</p>
 
-<p>5.★★★ <a href="https://www.evernote.com/shard/s170/sh/d408e6c7-c997-4fc1-b4ae-97f20445e491/424b9f322830d7debaeb976ed870ff7d">读Postfix权威指南笔记</a></p>
+<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d408e6c7-c997-4fc1-b4ae-97f20445e491/424b9f322830d7debaeb976ed870ff7d">读Postfix权威指南笔记</a></p></blockquote>
 </div>
   
   
@@ -292,6 +292,141 @@ Pow是一个Rack Server for Mac OS X.</p>
 
     </article>
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/06/24/made-a-TED-video-subtitle/">翻译了TED的一个四轴飞行器字幕</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-24T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="http://v.youku.com/v_show/id_XNTc0MTk0MzI4.html">YouKu 视频</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/">关于开发Squid的ecap动态库插件的指导</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-10T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>&ldquo;Squid cache&#8221;（简称为Squid）是一个流行的自由软件（GNU通用公共许可证）的代理服务器和Web缓存服务器. Squid 有广泛的用途,从作为网页服务器的前置cache服务器缓存相关请求来提高Web服务器的速度,到为一组人共享网络资源而缓存万维网,域名系统和其他网络搜索,到通过过滤流量帮助网络安全,到局域网通过代理上网. Squid主要设计用于在Unix一类系统运行.</p></blockquote>
+
+<p>上面是摘自开源中国(oscine.net)对squid的中文介绍. squid的功能的确很强大,甚至有些需要深入挖掘一下,今天这篇文章主要讲述一下这几天研究成果. squid做透明代理或者网关的情况下,过滤用户请求内容,或者过滤用户请求的回应内容的技术.可以把 squid 当做一个理论上的“防火墙”来使用,避免用户浏览非法网站或下载带有病毒的文件(结合开源杀毒软件功能),甚至替换掉那些烦人的广告.当然,它还可以在服务器的返回结果中植入自己的广告代码,或者统计代码.最灵活的是可以控制操作用户请求的HTTP头内容,过滤不必要的HTTP头信息,或者添加自定义HTTP头信息.</p>
+
+<p>总之,<strong>我们可以利用squid分析,捕捉,拦截,替换,或者修改请求回应信息.</strong></p>
+
+<p>Squid拥有强大的<a target="_blank" href="http://www.squid-cache.org/Doc/config/acl/">ACL(访问控制)</a>配置指令,可以实现一些通用的访问控制,但是如果想要更加灵活的控制,应该怎么办? 在官网wiki中(<a target="_blank" href="http://wiki.squid-cache.org/SquidFaq/ContentAdaptation">Content Adaptation</a>)给出了答案.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/hello-world/">Hello World</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-18T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>终于在传说中的“世界末日(2012.12.20)”之前搭建起来这个blog了</p>
+
+<p>作为惯例，我要大喊一声</p>
+
+<blockquote><h2>Hello world!</h2></blockquote>
+
+<p>但是现在如果喊出</p>
+
+<blockquote><h2>Hello the end of the world!</h2></blockquote>
+
+<p>更加的贴切.</p>
+
+<p>其实我是不相信末日论的,最起码末日不会发生在一天之内.</p>
+
+<p>但要给blog起一个名字,就想到这个了, “末日前几天”,挺贴切,让人感觉要抓紧时间珍惜现在.</p>
+
+<p>拥有的只剩回忆,盼望的还有未来,愿我们珍惜现在.</p>
+</div>
+  
+  
+
+
+    </article>
+  
   <div class="pagination">
     
     <a href="/blog/archives">Blog Archives</a>
@@ -314,6 +449,14 @@ Pow是一个Rack Server for Mac OS X.</p>
     
       <li class="post">
         <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">翻译了TED的一个四轴飞行器字幕</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/">关于开发Squid的ecap动态库插件的指导</a>
       </li>
     
   </ul>
