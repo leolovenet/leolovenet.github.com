@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Shell | 末日前几天]]></title>
+  <link href="http://leolovenet.com/blog/categories/shell/atom.xml" rel="self"/>
+  <link href="http://leolovenet.com/"/>
+  <updated>2014-02-11T11:43:05+08:00</updated>
+  <id>http://leolovenet.com/</id>
+  <author>
+    <name><![CDATA[leolovenet]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[用Ruby增强ping命令]]></title>
+    <link href="http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby/"/>
+    <updated>2013-10-11T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby</id>
+    <content type="html"><![CDATA[<p>故事的起因是,我在mac下一直用chrome,但是chrome有一个很不爽的地方,是在地址栏copy的域名,每次都自动的加上<code>http://</code>的字符串, 这样就没有办法直接粘贴到 Terminal, 用ping命令查看ping值. 这个事情真的弄的我很头疼.</p>
+
+<p>所以就想办法关掉这个chrome的特性,google了半天也也没有找到,就放弃了.如果有人知道告诉我,十分感谢 :)</p>
+
+<p>转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名.</p>
+
+<p>正好,最近再看ruby的一些东西,感觉蛮方便的.就写了一个ruby脚本,可以自动的去掉http之类的协议头,然后传给ping命令执行.不就ok了嘛.</p>
+
+<p>写出来之后,又不爽不能及时的知道ip的地理位置,所以呢,就又增加了调用纯真的ip数据库,顺便把ip的地理位置信息现实出来.</p>
+
+<p>第一步,安装所需要的依赖库,qqwry.dat自己下载,然后改脚本里的路径信息.</p>
+
+<p><code>
+gem install escape qqwry
+</code>
+下面的代码我是另存为一个叫p的文件,放到了 <code>$home/bin/</code> 下面.
+``` ruby</p>
+
+<h1>!/usr/bin/env ruby</h1>
+
+<h1>encoding : utf-8</h1>
+
+<p>require &ldquo;escape&rdquo;
+require &ldquo;uri&rdquo;
+require &lsquo;qqwry&rsquo;
+require &lsquo;resolv&rsquo;</p>
+
+<p>unless ARGV.length == 1
+  puts &ldquo;Usage: p <domain>\n&rdquo;
+  exit
+end</p>
+
+<p>domain=ARGV[0].dup</p>
+
+<p>if domain[0..3] != &ldquo;http&rdquo;
+   domain.insert(0,&lsquo;<a href="http://">http://</a>&rsquo;)
+end
+host=URI.parse(&ldquo;#{domain}&rdquo;).host
+ip=Resolv.getaddress host</p>
+
+<p>db = QQWry::Database.new(&lsquo;/Users/yourname/Documents/vbox/ip/qqwry.dat&rsquo;)
+r = db.query(ip)</p>
+
+<p>puts &ldquo;&rdquo;
+puts &ldquo;#{host}\t===>\t#{ip}\t===>\t#{r.country} #{r.area}&rdquo;
+puts &ldquo;&rdquo;
+exec &ldquo;ping #{host}&rdquo;
+```</p>
+
+<p>使用方法:
+<code>
+p http://www.google.com
+</code>
+脚本虽然很简单,但是用起来感觉很好.</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[末日前几天]]></title>
-  <link href="http://leolovenet.github.io/atom.xml" rel="self"/>
-  <link href="http://leolovenet.github.io/"/>
-  <updated>2014-02-10T23:10:41+08:00</updated>
-  <id>http://leolovenet.github.io/</id>
+  <link href="http://leolovenet.com/atom.xml" rel="self"/>
+  <link href="http://leolovenet.com/"/>
+  <updated>2014-02-11T11:43:05+08:00</updated>
+  <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
     
@@ -15,17 +15,16 @@
   
   <entry>
     <title type="html"><![CDATA[用Ruby增强ping命令]]></title>
-    <link href="http://leolovenet.github.io/blog/2013/10/11/enhanced-ping-command-function-with-ruby/"/>
+    <link href="http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby/"/>
     <updated>2013-10-11T00:00:00+08:00</updated>
-    <id>http://leolovenet.github.io/blog/2013/10/11/enhanced-ping-command-function-with-ruby</id>
+    <id>http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby</id>
     <content type="html"><![CDATA[<p>故事的起因是,我在mac下一直用chrome,但是chrome有一个很不爽的地方,是在地址栏copy的域名,每次都自动的加上<code>http://</code>的字符串, 这样就没有办法直接粘贴到 Terminal, 用ping命令查看ping值. 这个事情真的弄的我很头疼.</p>
 
-<p>所以就想办法关掉这个chrome的特性,google了半天也也没有找到,就放弃了.如果有人知道告诉我,十分感谢 :)
-转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名.</p>
+<p>所以就想办法关掉这个chrome的特性,google了半天也也没有找到,就放弃了.如果有人知道告诉我,十分感谢 :)</p>
 
-<p>正好,最近再看ruby的一些东西,感觉蛮方便的.</p>
+<p>转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名.</p>
 
-<p>就写了一个ruby脚本,可以自动的去掉http之类的协议头,然后传给ping命令执行.不就ok了嘛.</p>
+<p>正好,最近再看ruby的一些东西,感觉蛮方便的.就写了一个ruby脚本,可以自动的去掉http之类的协议头,然后传给ping命令执行.不就ok了嘛.</p>
 
 <p>写出来之后,又不爽不能及时的知道ip的地理位置,所以呢,就又增加了调用纯真的ip数据库,顺便把ip的地理位置信息现实出来.</p>
 
@@ -86,7 +85,7 @@
 </span><span class='line'><span class="n">host</span><span class="o">=</span><span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">domain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">host</span>
 </span><span class='line'><span class="n">ip</span><span class="o">=</span><span class="no">Resolv</span><span class="o">.</span><span class="n">getaddress</span> <span class="n">host</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">db</span> <span class="o">=</span> <span class="ss">QQWry</span><span class="p">:</span><span class="ss">:Database</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;/Users/stoneyliu/Documents/vbox/ip/qqwry.dat&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">db</span> <span class="o">=</span> <span class="ss">QQWry</span><span class="p">:</span><span class="ss">:Database</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;/Users/yourname/Documents/vbox/ip/qqwry.dat&#39;</span><span class="p">)</span>
 </span><span class='line'><span class="n">r</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
 </span><span class='line'>
 </span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;&quot;</span>
@@ -104,6 +103,43 @@
 
 
 <p>脚本虽然很简单,但是用起来感觉很好.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[我的Evernote笔记]]></title>
+    <link href="http://leolovenet.com/blog/2013/10/07/my-sharing-notes/"/>
+    <updated>2013-10-07T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/10/07/my-sharing-notes</id>
+    <content type="html"><![CDATA[<p>最近发生了很多事情,刚刚从未来的丈母娘那里回来.</p>
+
+<p>没有什么主要的技术文章,就发一些自己平时积累的Evernote的笔记.</p>
+
+<p>1.★★★★ <a href="https://www.evernote.com/shard/s170/sh/901e7847-78f3-4560-ae64-72825f8f5c45/b43546d281d47bbbdc745184e83f1fad">一些常用的linux的命令</a></p>
+
+<p>2.★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
+vagrant是一个创建和分发虚拟化开发环境的工具，使用ruby编写，基于Oracle的VirtualBox，它提供了一个可配置的、轻量级的、可重用的、便携的虚拟化开发环境。</p>
+
+<p>3.★★ <a href="https://www.evernote.com/shard/s170/sh/5ee87faa-0c73-46a6-9cd1-7117ee8971ea/4bbf353bae719e4ef65e2b57530732a1">Git的学习笔记</a></p>
+
+<p>4.★★ <a href="https://www.evernote.com/shard/s170/sh/c6fa9447-727c-474a-b75d-4492b5764f08/cd5ee8ca706b35bbc969e5205964bbd3">Pow 相关笔记</a> .
+Pow是一个Rack Server for Mac OS X.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[简单的机器资产管理,machineBill]]></title>
+    <link href="http://leolovenet.com/blog/2013/07/11/machinebill/"/>
+    <updated>2013-07-11T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/07/11/machinebill</id>
+    <content type="html"><![CDATA[<p>原来的公司因为有多台机器资产管理的需求,特意写了一个台账系统,用的是jQuery EasyUI + PHP + Mysql ,制作的极其简单,主要是用jQuery EasyUI的练手之作.</p>
+
+<p>现在看来是没有用了.公布出来方便以后自己用的着的时候查询.</p>
+
+<p>已经发到了<a href="https://github.com/leolovenet/machineBill">github</a>上.</p>
+
+<p>并安装到了BBKanba上了一个Demo.<br/>
+<a href="http://bill.bbkanba.com" target="_blank"><a href="http://bill.bbkanba.com">http://bill.bbkanba.com</a></a>.</p>
 ]]></content>
   </entry>
   

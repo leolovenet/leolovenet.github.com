@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Article | 末日前几天]]></title>
-  <link href="http://leolovenet.github.io/blog/categories/article/atom.xml" rel="self"/>
-  <link href="http://leolovenet.github.io/"/>
-  <updated>2014-02-10T23:10:41+08:00</updated>
-  <id>http://leolovenet.github.io/</id>
+  <title><![CDATA[Category: Bash | 末日前几天]]></title>
+  <link href="http://leolovenet.com/blog/categories/bash/atom.xml" rel="self"/>
+  <link href="http://leolovenet.com/"/>
+  <updated>2014-02-11T11:43:05+08:00</updated>
+  <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
     
@@ -15,17 +15,16 @@
   
   <entry>
     <title type="html"><![CDATA[用Ruby增强ping命令]]></title>
-    <link href="http://leolovenet.github.io/blog/2013/10/11/enhanced-ping-command-function-with-ruby/"/>
+    <link href="http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby/"/>
     <updated>2013-10-11T00:00:00+08:00</updated>
-    <id>http://leolovenet.github.io/blog/2013/10/11/enhanced-ping-command-function-with-ruby</id>
+    <id>http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby</id>
     <content type="html"><![CDATA[<p>故事的起因是,我在mac下一直用chrome,但是chrome有一个很不爽的地方,是在地址栏copy的域名,每次都自动的加上<code>http://</code>的字符串, 这样就没有办法直接粘贴到 Terminal, 用ping命令查看ping值. 这个事情真的弄的我很头疼.</p>
 
-<p>所以就想办法关掉这个chrome的特性,google了半天也也没有找到,就放弃了.如果有人知道告诉我,十分感谢 :)
-转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名.</p>
+<p>所以就想办法关掉这个chrome的特性,google了半天也也没有找到,就放弃了.如果有人知道告诉我,十分感谢 :)</p>
 
-<p>正好,最近再看ruby的一些东西,感觉蛮方便的.</p>
+<p>转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名.</p>
 
-<p>就写了一个ruby脚本,可以自动的去掉http之类的协议头,然后传给ping命令执行.不就ok了嘛.</p>
+<p>正好,最近再看ruby的一些东西,感觉蛮方便的.就写了一个ruby脚本,可以自动的去掉http之类的协议头,然后传给ping命令执行.不就ok了嘛.</p>
 
 <p>写出来之后,又不爽不能及时的知道ip的地理位置,所以呢,就又增加了调用纯真的ip数据库,顺便把ip的地理位置信息现实出来.</p>
 
@@ -59,7 +58,7 @@ end
 host=URI.parse(&ldquo;#{domain}&rdquo;).host
 ip=Resolv.getaddress host</p>
 
-<p>db = QQWry::Database.new(&lsquo;/Users/stoneyliu/Documents/vbox/ip/qqwry.dat&rsquo;)
+<p>db = QQWry::Database.new(&lsquo;/Users/yourname/Documents/vbox/ip/qqwry.dat&rsquo;)
 r = db.query(ip)</p>
 
 <p>puts &ldquo;&rdquo;

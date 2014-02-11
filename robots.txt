@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://leolovenet.github.io/sitemap.xml 
+Sitemap: http://leolovenet.com/sitemap.xml 
