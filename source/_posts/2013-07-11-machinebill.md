@@ -7,6 +7,10 @@ categories:
   - Mysql
   - PHP
   - jQuery
+tags:
+  - Mysql
+  - PHP
+  - jQuery
 keywords: "机器资产管理系统, machineBill, jQuery EasyUI, PHP, Mysql"
 description: "一个简单的机器资产管理系统"
 ---

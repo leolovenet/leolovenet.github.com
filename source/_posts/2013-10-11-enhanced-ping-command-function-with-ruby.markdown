@@ -9,8 +9,15 @@ categories:
 - Mac
 - Ruby
 - Shell
+tags:
+- Bash
+- Linux
+- Mac
+- Ruby
+- Shell
 keywords: "Bash, Linux, Mac, Ruby,escape, Shell"
 description: "a Ruby script enhanced ping command function."
+sidebar: collapse
 ---
 
 故事的起因是,我在mac下一直用chrome,但是chrome有一个很不爽的地方,是在地址栏copy的域名,每次都自动的加上`http://`的字符串, 这样就没有办法直接粘贴到 Terminal, 用ping命令查看ping值. 这个事情真的弄的我很头疼.
