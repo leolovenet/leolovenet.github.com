@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Article | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/article/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-02-11T22:42:47+08:00</updated>
+  <updated>2014-02-11T23:20:46+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Hello World]]></title>
-    <link href="http://leolovenet.com/hello-world/"/>
+    <link href="http://leolovenet.com/blog/2012/12/18/hello-world/"/>
     <updated>2012-12-18T00:00:00+08:00</updated>
-    <id>http://leolovenet.com/hello-world</id>
+    <id>http://leolovenet.com/blog/2012/12/18/hello-world</id>
     <content type="html"><![CDATA[<p>终于在传说中的“世界末日(2012.12.20)”之前搭建起来这个blog了</p>
 
 <p>作为惯例，我要大喊一声</p>
