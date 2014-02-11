@@ -2,12 +2,13 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://leolovenet.github.io
+url: http://leolovenet.com
 title: 末日前几天
 subtitle: the days before the doomsday
 author: leolovenet
 simple_search: http://google.com/search
-description: 这里是leolovenet的记忆自留地,有关leolovenet的信息.
+description: "这里是leolovenet的记忆自留地,有关leolovenet的信息."
+keywords: "leolovenet,末日前几天,the days before the doomsday"
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
@@ -90,11 +91,11 @@ delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name:
+disqus_short_name: leolovenet
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-37154253-2
 
 # Facebook Like
 facebook_like: false
