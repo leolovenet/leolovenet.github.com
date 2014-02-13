@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Xcode | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/xcode/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-02-11T23:20:46+08:00</updated>
+  <updated>2014-02-13T12:28:37+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[将xcode编译的app程序打包为ipa文件]]></title>
-    <link href="http://leolovenet.com/blog/2013/02/22/xcode-packageapplication/"/>
+    <title type="html"><![CDATA[Xcode编译的app程序打包为ipa文件]]></title>
+    <link href="http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/"/>
     <updated>2013-02-22T00:00:00+08:00</updated>
-    <id>http://leolovenet.com/blog/2013/02/22/xcode-packageapplication</id>
+    <id>http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa</id>
     <content type="html"><![CDATA[<p>正确的方法是利用Xcode,The right way is –>”Xcode menu” –> Project –> Archive –> “Xcode menu Window” –> “Organizer” –> ” Organizer – Archives” –> Distribute –>”Save for Enterpirs of Ad-Hoc Deployment” –> next –> ***.ipa –> done.</p>
 
 <!-- more -->
@@ -84,6 +84,75 @@ Ctrl+⌘+Up/Down  在.h与.m文件之间切换
 ⌘+R 编译运行
 </pre>
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode打包app命令-PackageApplication]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/10/xcode-packageapplication-command/"/>
+    <updated>2013-01-10T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/10/xcode-packageapplication-command</id>
+    <content type="html"><![CDATA[<p>xcode提供有这样一个perl脚本工具,可以打包一个app为ipa文件，为上传app store做准备. 路径是</p>
+
+<pre>
+`xcode-select -print-path`/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication
+</pre>
+
+
+<p>添加<code>-help</code>参数查看<strong>PackageApplication</strong>用法帮助，或者添加<code>-man</code>参数查看完整的帮助信息。</p>
+
+<pre>
+`xcode-select -print-path`/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication -help
+Usage:
+    PackageApplication [-s signature] application [-o output_directory]
+    [-verbose] [-plugin plugin] || -man || -help
+
+    Options:
+
+        -s   certificate name to resign application before packaging
+        -o              specify output filename
+        -plugin         specify an optional plugin
+        -help           brief help message
+        -man            full documentation
+        -v[erbose]      provide details during operation
+</pre>
+
+
+<p><a href="http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/">More Useful</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[查看app里被Xcode优化了的png图片]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/10/Viewing-iOS-Optimized-PNGs/"/>
+    <updated>2013-01-10T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/10/Viewing-iOS-Optimized-PNGs</id>
+    <content type="html"><![CDATA[<p>问题:当我们构建自己的ios app时，Xcode会优化压缩我们的程序里的png图片，如果想再次查看正常图片的话，需要反压缩，怎么做呢？<br/>
+答案：用Xcode自带的工具。</p>
+
+<p><strong>Q: When I build my iOS application, Xcode optimizes the PNG files within my application’s bundle, meaning that Preview can’t display them. How can I view these optimized files?</strong></p>
+
+<p>A: This optimization is done by the <strong>pngcrush</strong> tool, which you can find inside Xcode. The <strong>pngcrush</strong> tool supports a command line option, <code>-revert-iphone-optimizations</code>, that undoes the optimizations done during the Xcode build process. So, to view an optimized PNG file, you should first undo the optimization and then open it with Preview.</p>
+
+<p>Listing 1 shows how you can use the <strong>pngcrush</strong> tool to convert an iOS-optimized PNG file (<code>Local.png</code>) to a standard PNG file (<code>Local-standard.png</code>).</p>
+
+<p><strong>Listing 1:</strong> Undoing iOS PNG optimization</p>
+
+<p><code>bash
+$ /Applications/Xcode.app/Contents/Developer\
+/Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush \
+-revert-iphone-optimizations -q Local.png Local-standard.png
+</code></p>
+
+<p>If you have Xcode installed in a non-standard place, you can locate the tool using <strong>xcode-select</strong>, as shown in Listing 2.</p>
+
+<p><strong>Listing 2:</strong> Using <strong>xcode-select</strong> to locate pngcrush</p>
+
+<p><code>bash
+$ "`xcode-select -print-path`"\
+/Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush \
+-revert-iphone-optimizations -q Local.png Local-standard.png
+</code></p>
 ]]></content>
   </entry>
   

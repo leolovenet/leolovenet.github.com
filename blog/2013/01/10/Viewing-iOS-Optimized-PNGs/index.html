@@ -5,12 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>将xcode编译的app程序打包为ipa文件 - 末日前几天</title>
+  <title>查看app里被Xcode优化了的png图片 - 末日前几天</title>
   <meta name="author" content="leolovenet">
 
   
-  <meta name="description" content="将xcode编译的app程序打包ipa文件">
+  <meta name="description" content="这里是leolovenet的记忆自留地,有关leolovenet的信息." />
   
+  <meta name="keywords" content="leolovenet,末日前几天,the days before the doomsday" />
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://leolovenet.com/blog/2013/02/22/xcode-packageapplication">
+  <link rel="canonical" href="http://leolovenet.com/blog/2013/01/10/Viewing-iOS-Optimized-PNGs">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="末日前几天" type="application/atom+xml">
@@ -80,7 +81,7 @@
   
   <header>
     
-      <h1 class="entry-title">将xcode编译的app程序打包为ipa文件</h1>
+      <h1 class="entry-title">查看app里被Xcode优化了的png图片</h1>
     
     
       <p class="meta">
@@ -96,39 +97,45 @@
   
 
 
-<time datetime="2013-02-22T00:00:00+08:00" pubdate data-updated="true"></time>
+<time datetime="2013-01-10T00:00:00+08:00" pubdate data-updated="true"></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>正确的方法是利用Xcode,The right way is –>”Xcode menu” –> Project –> Archive –> “Xcode menu Window” –> “Organizer” –> ” Organizer – Archives” –> Distribute –>”Save for Enterpirs of Ad-Hoc Deployment” –> next –> ***.ipa –> done.</p>
+<div class="entry-content"><p>问题:当我们构建自己的ios app时，Xcode会优化压缩我们的程序里的png图片，如果想再次查看正常图片的话，需要反压缩，怎么做呢？<br/>
+答案：用Xcode自带的工具。</p>
 
-<!-- more -->
+<p><strong>Q: When I build my iOS application, Xcode optimizes the PNG files within my application’s bundle, meaning that Preview can’t display them. How can I view these optimized files?</strong></p>
+
+<p>A: This optimization is done by the <strong>pngcrush</strong> tool, which you can find inside Xcode. The <strong>pngcrush</strong> tool supports a command line option, <code>-revert-iphone-optimizations</code>, that undoes the optimizations done during the Xcode build process. So, to view an optimized PNG file, you should first undo the optimization and then open it with Preview.</p>
+
+<p>Listing 1 shows how you can use the <strong>pngcrush</strong> tool to convert an iOS-optimized PNG file (<code>Local.png</code>) to a standard PNG file (<code>Local-standard.png</code>).</p>
+
+<p><strong>Listing 1:</strong> Undoing iOS PNG optimization</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>/Applications/Xcode.app/Contents/Developer<span class="se">\</span>
+</span><span class='line'>/Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush <span class="se">\</span>
+</span><span class='line'>-revert-iphone-optimizations -q Local.png Local-standard.png
+</span></code></pre></td></tr></table></div></figure>
 
 
-<p><del datetime="2013-03-09T14:05:58+00:00">新年回来以后的第一篇文章。</del></p>
+<p>If you have Xcode installed in a non-standard place, you can locate the tool using <strong>xcode-select</strong>, as shown in Listing 2.</p>
 
-<p><del datetime="2013-03-09T14:14:19+00:00">项目需要将测试版本的app发到外地客户的iphone上测试效果,这时就需要客户手机的UDID，将他的手机UDID添加到开发团队里，创建新的签名，使用新的签名编译程序导出ipa文件，将ipa文件传输给远在外地的客户,让客户通过itunes安装上。</del></p>
+<p><strong>Listing 2:</strong> Using <strong>xcode-select</strong> to locate pngcrush</p>
 
-<p><del datetime="2013-03-09T14:14:19+00:00">这样相比开发,测试,上传到app store里,等待apple审核通过,客户在安装测试,要省不知多少时间（当然客户的手机如果越狱了那就没有必要这么麻烦了）. 下面我就具体说一下上面的操作过程,主要是将xcode编译的app变为ipa文件的过程.</del></p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="s2">&quot;`xcode-select -print-path`&quot;</span><span class="se">\</span>
+</span><span class='line'>/Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush <span class="se">\</span>
+</span><span class='line'>-revert-iphone-optimizations -q Local.png Local-standard.png
+</span></code></pre></td></tr></table></div></figure>
 
-<p><del datetime="2013-03-09T14:14:19+00:00">1、登陆<a href="https://developer.apple.com/ios/manage/overview/index.action" target="_blank">iOS Provisioning Portal</a>，登入新的手机UDID,创建新的签名文件.</del></p>
-
-<p><del datetime="2013-03-09T14:14:19+00:00">2、xcode打开Organizer(⌘+shift+2), Devices标签下,左边Provisioning Profiles标签下，点击下面的Refresh,将新创建的签名下载下来。</del></p>
-
-<p><del datetime="2013-03-09T14:14:19+00:00">3、在项目的targets下指定用新的签名.</del></p>
-
-<p><del datetime="2013-03-09T14:14:19+00:00">4、编译好的app，右击在Finder下显示.(如果显示不了,打开Finder,⌘+shift+G,输入~/Library/Developer/Xcode/DerivedData,找到XXX-<strong><em>**/Build/Products/</em></strong>/XXX.app).</del></p>
-
-<p><del datetime="2013-03-09T14:14:19+00:00">5、打开iTunes,切换置App标签，将XXX.app鼠标拖放置iTunes的App标签内.</del></p>
-
-<p><del datetime="2013-03-09T14:14:19+00:00">6、在iTunes的XXX.app上,右击,选择&#8221;Show in finder&#8221;。现在你就有了你的ipa文件了。</del></p>
-
-<p><del datetime="2013-03-09T14:14:19+00:00">因为这个ipa已经是用最新的签名编译好了的，所以，它可以直接在客户的机器上安装。</del></p>
-
-<p><del datetime="2013-03-09T14:14:19+00:00">传输给客户后，让客户双击ipa文件，默认自动导入到客户的iTunes的app标签下，让客户使用数据线链接自己的iphone，然后在itunes里选中iphone，切换到iphone的app标签下，找到XXX,此时在右边会有一个安装的按钮，点击，然后点击下面的应用，之后点击同步就可以了。</del></p>
 </div>
 
 
@@ -151,12 +158,12 @@
   
 
 
-<time datetime="2013-02-22T00:00:00+08:00" pubdate data-updated="true"></time>
+<time datetime="2013-01-10T00:00:00+08:00" pubdate data-updated="true"></time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/app/'>APP</a>, <a class='category' href='/blog/categories/ios/'>IOS</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>
+    <a class='category' href='/blog/categories/ios/'>IOS</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>
   
 </span>
 
@@ -172,10 +179,10 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/01/28/xcode-keyboard-shortcuts/" title="Previous Post: Xcode 快捷键收集整理">&laquo; Xcode 快捷键收集整理</a>
+        <a class="basic-alignment left" href="/blog/2012/12/22/ShowYourIP/" title="Previous Post: 利用php+Bootstrap+QQwrt.dat展示你的IP和位置信息">&laquo; 利用php+Bootstrap+QQwrt.dat展示你的IP和位置信息</a>
       
       
-        <a class="basic-alignment right" href="/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/" title="Next Post: 关于开发Squid的ecap动态库插件的指导">关于开发Squid的ecap动态库插件的指导 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2013/01/10/write-objective-c-code-blocks/" title="Next Post: [翻译]WRITE OBJECTIVE-C CODE — BLOCKS">[翻译]WRITE OBJECTIVE-C CODE — BLOCKS &raquo;</a>
       
     </p>
   </footer>
@@ -208,7 +215,7 @@
       </li>
     
       <li class="post">
-        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">翻译了TED的一个四轴飞行器字幕</a>
+        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">[翻译]TED的一个四轴飞行器字幕</a>
       </li>
     
       <li class="post">
@@ -270,8 +277,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://leolovenet.com/blog/2013/02/22/xcode-packageapplication/';
-        var disqus_url = 'http://leolovenet.com/blog/2013/02/22/xcode-packageapplication/';
+        var disqus_identifier = 'http://leolovenet.com/blog/2013/01/10/Viewing-iOS-Optimized-PNGs/';
+        var disqus_url = 'http://leolovenet.com/blog/2013/01/10/Viewing-iOS-Optimized-PNGs/';
         var disqus_script = 'embed.js';
       
     (function () {

@@ -4,7 +4,7 @@
   <title><![CDATA[末日前几天]]></title>
   <link href="http://leolovenet.com/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-02-11T23:20:46+08:00</updated>
+  <updated>2014-02-13T12:28:37+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -146,7 +146,7 @@ Pow是一个Rack Server for Mac OS X.</p>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[翻译了TED的一个四轴飞行器字幕]]></title>
+    <title type="html"><![CDATA[[翻译]TED的一个四轴飞行器字幕]]></title>
     <link href="http://leolovenet.com/blog/2013/06/24/made-a-TED-video-subtitle/"/>
     <updated>2013-06-24T00:00:00+08:00</updated>
     <id>http://leolovenet.com/blog/2013/06/24/made-a-TED-video-subtitle</id>
@@ -170,7 +170,94 @@ Pow是一个Rack Server for Mac OS X.</p>
 <!--more-->
 
 
-<p>wiki给出了5种技术方案:</p>
+<p>wiki给出了<a href="http://wiki.squid-cache.org/SquidFaq/ContentAdaptation#Summary">5种技术方案</a></p>
+
+<div class="squid">
+<style>
+.squid table
+{
+    margin: 0.5em 0;
+    border-collapse: collapse;
+}
+
+.squid table td
+{
+    padding: 0.25em;
+    border: 1px solid #ADB9CC;
+}
+
+.squid td p {
+    margin: 0;
+    padding: 0;
+}
+</style>
+<table><tbody><tr>  <td colspan="1" rowspan="2" style="text-align: center"><p class="line862"> <strong>Mechanism</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Request</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Response</strong> </p></td>
+</tr>
+<tr>  <td style="text-align: center"><span class="anchor" id="line-101"></span><p class="line891"><strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-102"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-103"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> </p></td>
+  <td><p class="line862">  </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-104"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-105"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">del </p></td>
+  <td><p class="line862">  </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-106"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>而这几种方案又各有优缺点,最好的排序方式是:</p>
+
+<div class="squid"><table><tbody><tr>  <td><p class="line862"> <strong>Evaluation Criteria</strong> </p></td>
+  <td><p class="line862"> <strong>Mechanisms in rough order from &#8220;best&#8221; to &#8220;worst&#8221;</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-111"></span><p class="line862"> Squid independence </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-112"></span><p class="line862"> Processing speed </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> or <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> or <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a> or <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-113"></span><p class="line862"> Development effort (header adaptation)</p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-114"></span><p class="line862"> Development effort (content adaptation)</p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-115"></span><p class="line862"> Versatility </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-116"></span><p class="line862"> Maintenance overheads </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+</tbody></table></div>
+
 
 <p>我先简单介绍一下ICAP(<a href="http://tools.ietf.org/html/rfc3507">Internet Content Adaptation Protocol</a>)协议, ICAP是工作在web缓存代理服务器和真正的服务器之间的一个服务,通常来讲用户的HTTP请求送到代理缓存服务器之后,由代理缓存服务器判断是否可以命中缓存,或者把用户的请求转向真正的web服务,代理用户请求,并响应用户,记录缓存,待用户下次请求时,直接响应用户请求,省去向真正服务器的请求过程,加快响应速度,节约带宽成本.<br/>
 而加入了ICAP的代理缓存服务器的工作逻辑是:</p>
@@ -293,7 +380,7 @@ bitz-server(<a target="_blank" href="https://github.com/uditha-atukorala/bitz-se
 </pre>
 
 
-<p>如果你之前没有使用autotool工具的经验,这里有<a href="http://leolovenet.com/downloads/code/autotools.pdf">一篇短文介绍</a>,很快速的了解一下autotool工具. (autotool通常来说是autoconf, automake, autolib, 但是还有很多辅助的工具,包括 autoheader, aclocal, autoscan,运行这些命令之后,你就可以 <code>./configure &amp;&amp; make &amp;&amp; make install</code> ).<br/>
+<p>如果你之前没有使用autotool工具的经验,这里有<a href="http://leolovenet.com/downloads/files/autotools.pdf">一篇短文介绍</a>,很快速的了解一下autotool工具. (autotool通常来说是autoconf, automake, autolib, 但是还有很多辅助的工具,包括 autoheader, aclocal, autoscan,运行这些命令之后,你就可以 <code>./configure &amp;&amp; make &amp;&amp; make install</code> ).<br/>
 写ecap插件很简单,例子包给出了3个例子插件.基本上一个插件只有一个源文件就可以搞定.所以写和部署起来还是蛮方便的.<br/>
 这里我们在原有的例子程序框架下修改一下. 然后写出我们自己的插件来.</p>
 
@@ -1361,15 +1448,15 @@ ok,主要用到的就这么多.要到达我们上面列出的案例要求,其实
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>可以下载我写的上面的例子文件<a href="http://leolovenet.com/downloads/code/eCAP_bbkanba_Adapter-0.0.1.tar.gz">eCAP_bbkanba_Adapter-0.0.1.tar.gz</a></p>
+<p>可以下载我写的上面的例子文件<a href="http://leolovenet.com/downloads/files/eCAP_bbkanba_Adapter-0.0.1.tar.gz">eCAP_bbkanba_Adapter-0.0.1.tar.gz</a></p>
 ]]></content>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[将xcode编译的app程序打包为ipa文件]]></title>
-    <link href="http://leolovenet.com/blog/2013/02/22/xcode-packageapplication/"/>
+    <title type="html"><![CDATA[Xcode编译的app程序打包为ipa文件]]></title>
+    <link href="http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/"/>
     <updated>2013-02-22T00:00:00+08:00</updated>
-    <id>http://leolovenet.com/blog/2013/02/22/xcode-packageapplication</id>
+    <id>http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa</id>
     <content type="html"><![CDATA[<p>正确的方法是利用Xcode,The right way is –>”Xcode menu” –> Project –> Archive –> “Xcode menu Window” –> “Organizer” –> ” Organizer – Archives” –> Distribute –>”Save for Enterpirs of Ad-Hoc Deployment” –> next –> ***.ipa –> done.</p>
 
 <!-- more -->
@@ -1436,6 +1523,2563 @@ Ctrl+⌘+Up/Down  在.h与.m文件之间切换
 ⌘+R 编译运行
 </pre>
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[squid-3.2.5 CentOS X86_64 Configure: Error: C Compiler Cannot Create Executables]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/28/squid-3-2-5-centos-x86_64-configure-error-c-compiler-cannot-create-executables/"/>
+    <updated>2013-01-28T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/28/squid-3-2-5-centos-x86_64-configure-error-c-compiler-cannot-create-executables</id>
+    <content type="html"><![CDATA[<p>squid-3.2.5 在CentOS X86_64位的环境下默认配置编译会遇到错误，如下:</p>
+
+<pre>
+checking whether the C compiler works... no
+configure: error: in `/opt/packages/goodlePackages/squid/squid_src/squid-3.2.5':
+configure: error: C compiler cannot create executables
+</pre>
+
+
+<p>x86_64解决办法如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>./configure <span class="nv">CXXFLAGS</span><span class="o">=</span><span class="s2">&quot;-g -O2&quot;</span>  <span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O2 -march=x86-64&quot;</span> --prefix<span class="o">=</span>/usr/local/squid
+</span><span class='line'>make
+</span><span class='line'>make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>i686</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>./configure -disable-64bit <span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O3 -march=i686&quot;</span> --prefix<span class="o">=</span>/usr/local/squid
+</span><span class='line'>make
+</span><span class='line'>make install
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Mac 下的 Open命令]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/25/the-open-command/"/>
+    <updated>2013-01-25T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/25/the-open-command</id>
+    <content type="html"><![CDATA[<p>mac下的应用程序是一个有结构的目录(想在Finder下查看程序目录内容,可以在程序目录上右击选择 &ldquo;Show Package Contents&rdquo; 像下图一样).</p>
+
+<p><img src="http://leolovenet.com/downloads/images/open-command.png" title="open command example" alt="open-command.png" /></p>
+
+<p>安装程序也是简单的把这个目录copy到你想要的地方就可以，大部分是 ~/Application 或者 /Application 下.</p>
+
+<p>但想要在命令行下运行程序怎么办？你总不能在命令行下运行一个目录吧！</p>
+
+<p>这个时候发现了<code>/usr/bin/open</code>命令,就是干这个的.</p>
+
+<p>比如,我想在命令行下运行Firefox,运行下面的命令即可</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>open -a /Applications/Firefox.app
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>想在命令行下,用 Finder 打开此时的路径的话,运行下面的命令</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>open ./
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>想要用系统默认程序打开响应的文件,运行下面的命令</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>open Readme.md
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>open命令的其他参数:</p>
+
+<pre>
+/usr/bin/open --help
+open: unrecognized option `--help'
+Usage: open [-e] [-t] [-f] [-W] [-R] [-n] [-g] [-h] [-b &lt;bundle identifier>] [-a &lt;application>] [filenames] [--args arguments]
+Help: Open opens files from a shell.
+      By default, opens each file using the default application for that file.  
+      If the file is in the form of a URL, the file will be opened as a URL.
+Options: 
+      -a                Opens with the specified application.
+      -b                Opens with the specified application bundle identifier.
+      -e                Opens with TextEdit.
+      -t                Opens with default text editor.
+      -f                Reads input from standard input and opens with TextEdit.
+      -F  --fresh       Launches the app fresh, that is, without restoring windows. Saved persistent state is lost, excluding Untitled documents.
+      -R, --reveal      Selects in the Finder instead of opening.
+      -W, --wait-apps   Blocks until the used applications are closed (even if they were already running).
+          --args        All remaining arguments are passed in argv to the application's main() function instead of opened.
+      -n, --new         Open a new instance of the application even if one is already running.
+      -j, --hide        Launches the app hidden.
+      -g, --background  Does not bring the application to the foreground.
+      -h, --header      Searches header file locations for headers matching the given filenames, and opens them.
+</pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Windows Office Excel Vba Script 一例]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/21/my-windows-office-excel-vba-script/"/>
+    <updated>2013-01-21T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/21/my-windows-office-excel-vba-script</id>
+    <content type="html"><![CDATA[<p>上周学习vba的总结.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+</pre></td><td class='code'><pre><code class='vbnet'><span class='line'><span class="k">Sub</span> <span class="nf">getData</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;单引号开始的是注视行</span>
+</span><span class='line'>    <span class="c">&#39;声明变量</span>
+</span><span class='line'>    <span class="k">Dim</span> <span class="n">RowNumMax</span> <span class="ow">As</span> <span class="kt">Integer</span><span class="p">,</span> <span class="n">RowNumMax2</span> <span class="ow">As</span> <span class="kt">Integer</span>
+</span><span class='line'>    <span class="k">Dim</span> <span class="n">ASht</span> <span class="ow">As</span> <span class="n">Worksheet</span><span class="p">,</span> <span class="n">BSht</span> <span class="ow">As</span> <span class="n">Worksheet</span>
+</span><span class='line'>    <span class="k">Dim</span> <span class="n">Site</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;根据表格名字获得表格,并赋值个变量</span>
+</span><span class='line'>    <span class="k">Set</span> <span class="n">ASht</span> <span class="o">=</span> <span class="n">Sheets</span><span class="p">(</span><span class="s">&quot;Sheet1&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">Set</span> <span class="n">BSht</span> <span class="o">=</span> <span class="n">Sheets</span><span class="p">(</span><span class="s">&quot;Sheet2&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="c">&#39;锁定屏幕更新</span>
+</span><span class='line'>    <span class="n">Application</span><span class="p">.</span><span class="n">ScreenUpdating</span> <span class="o">=</span> <span class="k">False</span>
+</span><span class='line'>    <span class="k">On</span> <span class="k">Error</span> <span class="k">Resume</span> <span class="k">Next</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;检查表格数据</span>
+</span><span class='line'>    <span class="c">&#39;定位数据的函数有两个Range 或者 Cells</span>
+</span><span class='line'>    <span class="c">&#39;Range是表示法是Range(&quot;E2&quot;)</span>
+</span><span class='line'>    <span class="c">&#39;Cells的表示法是坐标类似Cells(1,1)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">If</span> <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;E2&quot;</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="k">Then</span>
+</span><span class='line'>    <span class="n">MsgBox</span> <span class="s">&quot;E2列中没有网站数据&quot;</span>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Activate</span>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Cells</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="k">End</span>
+</span><span class='line'>    <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="n">RowNumMax</span> <span class="o">=</span> <span class="n">ASht</span><span class="p">.</span><span class="err">[</span><span class="n">E65536</span><span class="err">]</span><span class="p">.</span><span class="n">End</span><span class="p">(</span><span class="n">xlUp</span><span class="p">).</span><span class="n">Row</span>   <span class="c">&#39;E列最下面一行的行数，中间有空格也行</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">BSht</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="n">RowNumMax2</span> <span class="o">=</span> <span class="n">BSht</span><span class="p">.</span><span class="err">[</span><span class="n">A65536</span><span class="err">]</span><span class="p">.</span><span class="n">End</span><span class="p">(</span><span class="n">xlUp</span><span class="p">).</span><span class="n">Row</span>
+</span><span class='line'>    <span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;A2:A&quot;</span> <span class="o">&amp;</span> <span class="n">RowNumMax2</span><span class="p">).</span><span class="n">ClearFormats</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;清除格式</span>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Cells</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="n">Selection</span><span class="p">.</span><span class="n">ClearFormats</span>
+</span><span class='line'>    <span class="c">&#39;快捷设置选中单元格de属性</span>
+</span><span class='line'>    <span class="k">With</span> <span class="n">Selection</span><span class="p">.</span><span class="n">Interior</span>
+</span><span class='line'>        <span class="p">.</span><span class="n">Pattern</span> <span class="o">=</span> <span class="n">xlNone</span>
+</span><span class='line'>        <span class="p">.</span><span class="n">TintAndShade</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="p">.</span><span class="n">PatternTintAndShade</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">End</span> <span class="k">With</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;for循环</span>
+</span><span class='line'>    <span class="k">For</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">To</span> <span class="n">RowNumMax</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">Site</span> <span class="o">=</span> <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;E&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span>
+</span><span class='line'>        <span class="c">&#39;不等于操作符 &amp;lt;&amp;gt;</span>
+</span><span class='line'>        <span class="k">If</span> <span class="n">Site</span> <span class="o">&amp;</span><span class="n">lt</span><span class="err">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="err">;</span> <span class="s">&quot;&quot;</span> <span class="k">Then</span>
+</span><span class='line'>         <span class="c">&#39;MsgBox Site</span>
+</span><span class='line'>          <span class="c">&#39;Unique</span>
+</span><span class='line'>           <span class="k">For</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">To</span> <span class="n">RowNumMax</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>               <span class="k">If</span> <span class="n">a</span> <span class="o">&amp;</span><span class="n">lt</span><span class="err">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="err">;</span> <span class="n">x</span> <span class="k">Then</span>
+</span><span class='line'>                    <span class="k">If</span> <span class="n">Site</span> <span class="o">=</span> <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;E&quot;</span> <span class="o">&amp;</span> <span class="n">a</span><span class="p">)</span> <span class="k">Then</span>
+</span><span class='line'>                        <span class="n">MsgBox</span> <span class="s">&quot;E&quot;</span> <span class="o">&amp;</span> <span class="n">a</span> <span class="o">&amp;</span> <span class="s">&quot;跟E&quot;</span> <span class="o">&amp;</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="s">&quot;重复，整理被迫中断&quot;</span>
+</span><span class='line'>                    <span class="k">End</span>
+</span><span class='line'>                <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>               <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>           <span class="k">Next</span> <span class="n">a</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="k">For</span> <span class="n">xx</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">To</span> <span class="n">RowNumMax2</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>             <span class="c">&#39;MsgBox BSht.Range(&quot;A&quot; &amp; xx)</span>
+</span><span class='line'>             <span class="c">&#39;If xx &amp;gt; 3 Then</span>
+</span><span class='line'>             <span class="c">&#39;Exit For</span>
+</span><span class='line'>             <span class="c">&#39;End If</span>
+</span><span class='line'>             <span class="k">If</span> <span class="n">Trim</span><span class="p">(</span><span class="n">Site</span><span class="p">)</span> <span class="o">=</span> <span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;A&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">))</span> <span class="k">Then</span>
+</span><span class='line'>               <span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;A&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">).</span><span class="n">Interior</span><span class="p">.</span><span class="n">ColorIndex</span> <span class="o">=</span> <span class="mi">15</span>
+</span><span class='line'>              <span class="c">&#39;MsgBox &quot;A&quot; &amp; xx</span>
+</span><span class='line'>              <span class="c">&#39;字符串处理函数Trim去除字符串开头结尾的空格符号,跟php的一样</span>
+</span><span class='line'>              <span class="c">&#39;换行符常量,vbLf</span>
+</span><span class='line'>              <span class="c">&#39;利用Replace函数删除换行符              </span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;F&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;H&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>               <span class="c">&#39;ASht.Range(&quot;G&quot; &amp; x) = Trim(BSht.Range(&quot;K&quot; &amp; xx))</span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;H&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;C&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;J&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;B&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;K&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;F&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>               <span class="c">&#39;MsgBox BSht.Range(&quot;F&quot; &amp; xx).Formula =</span>
+</span><span class='line'>               <span class="c">&#39;BSht.Range(&quot;D&quot; &amp; xx).MergeArea.Cells(1, 1) 读取合并单元格的值</span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;L&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;D&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">).</span><span class="n">MergeArea</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>             <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="k">Next</span> <span class="n">xx</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">Else</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;F&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;H&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;J&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;K&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;L&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>        <span class="c">&#39;If x &amp;gt; 3 Then</span>
+</span><span class='line'>        <span class="c">&#39;Exit For</span>
+</span><span class='line'>        <span class="c">&#39;End If</span>
+</span><span class='line'>    <span class="k">Next</span> <span class="n">x</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;F2:G53&quot;</span><span class="p">).</span><span class="n">ClearContents</span>
+</span><span class='line'>    <span class="c">&#39;ASht.Range(&quot;G2:G5555&quot;).ClearContents</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Application</span><span class="p">.</span><span class="n">ScreenUpdating</span> <span class="o">=</span> <span class="k">True</span>
+</span><span class='line'><span class="k">End</span> <span class="k">Sub</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Config Awstats on Window2003 or Linux With GeoIP/QQWry]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry/"/>
+    <updated>2013-01-19T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry</id>
+    <content type="html"><![CDATA[<p><img src="http://leolovenet.com/downloads/images/awstats.png" title="awstats example" alt="awstats.png" /></p>
+
+<p>Awstats是一个日志分析工具(web log分析为强),很好很强大,不多解释,感兴趣的wiki一下。这是一个安装教程文章.</p>
+
+<p>首先是awstas在windows 2003下与iis6的配置过程,然后是在Linux下和Nginx一起的配置，紧跟着Linux下与Lighttpd一起配置的过程,总之,这个可能是目前市面上最仔细全面安装awstas的教程了.</p>
+
+<!--more-->
+
+
+<p>Awstas官方网站de下载地址<a href="http://awstats.sourceforge.net/#DOWNLOAD">点击这里</a>.<br/>
+目前为止最新版本是7.1 释放时间是 <strong>2012-12-20 18:32</strong></p>
+
+<p>本文将会安装awstas的插件与启用的功能如下列表:</p>
+
+<pre>
+GeoIP       显示IP属于那个国家
+GeoLiteCity 显示IP属于那个城市
+hostinfo    可以查询IP的Whois信息
+qqhostinfo  显示IP纯真版数据库de信息
+decodeutfkeys   解决"用以搜索的关键词"乱码
+timezone    解决windows平台下的日志时间差8小时问题
+day-by-day  可以根据日期(以天为单位)查看日志的js
+tooltips    显示一些详细的提示信息
+AllowToUpdateStatsFromBrowser 允许通过浏览器执行更新,显示最新的日志分析结果
+</pre>
+
+
+<h2>1. Install Awstats with IIS6 under windowns 2003</h2>
+
+<p>用Windows做服务器真心难用,所以安装配置起来最麻烦.<br/>
+在windows平台下载Zip版本的<a href="http://prdownloads.sourceforge.net/awstats/awstats-7.1.zip">7.1稳定发行包</a></p>
+
+<p>Awstas是用perl（一个夸平台脚本语言）写成的, 所以要在windows平台下工作的话,必须先安装搭建Perl语言环境. 在windows平台下, 我们需要安装ActivePerl的免费版本.<br/>
+ActivePerl官方网站de下载地址<a href="http://www.activestate.com/activeperl">点击这里</a>,截止今天,最新版本是 <strong>5.16.2.1602</strong> ,在官方下载页面根据自己的操作系统选择下载64位还是32位的安装包.</p>
+
+<p>安装过程直接点击下一步下一步就可以了.没有什么要特别要特别注意的,只是在选择安装路径的时候,如果不能默认的<code>c:\Perl</code>的话,就放到其他盘符里吧,类似<code>D:\Perl</code>,不要安装在乱七八糟的路径下,避免不必要的错误.验证安装是否完成的的办法,我认为最好的是注销一下当前用户,再登陆进来,然后点击<code>开始 &gt;&gt; 运行 &gt;&gt; cmd</code>,然后输入命令<code>perl -v</code>,看看反应,如果能正常打印perl的版本号的话,就说明安装的没有问题,反之,就不用再往下看了,因为必须解决这个问题才可以往下进行.</p>
+
+<p>一般安装包会自动整合Perl的功能到IIS6中去,但如果你发现它没有做到的话,也不用着急,手动添加一下就好了,很容易,检查方法,打开 <code>"Internet 信息服务(IIS)管理器" – "Web服务扩展" – 查看右面"web 服务器扩展"</code> 列表里有没有Perl的字样.如果没有的话,就点击<code>添加一个新的web服务扩展</code>,如图1-1,填写扩展名(当然你也可以自己随便定义扩展名,只要你喜欢),然后点击添加按钮,然后根据你的Perl安装路径填写,比如,<code>c:\Perl\bin\perl.exe "%s" %s</code>,这里我的Perl安装路径是默认的<code>c:\Perl</code>, 如果你的不同,请做相应修改,点击确定完成. 这样你就可以通过浏览器查看perl在iis上的执行结果了,这是进行下面步骤的基础.</p>
+
+<p>图1-1
+<img src="http://leolovenet.com/downloads/images/awstats.1-1.png" alt="awstats.1-1.png" /></p>
+
+<p>因为IIS6的默认日志格式很奇特,所以想要用awstas分析的话,需要修改一下默认的日志的格式.具体步骤,打开 &ldquo;Internet 信息服务(IIS)管理器&rdquo; ,在网站列表中找到你想要分析日志的网站,右击选择属性,在网站标签下,确保 &ldquo;启用日志记录&rdquo; 被勾选着,然后点击右边的属性按钮,确保日志计划是 &ldquo;每天&rdquo;, 勾选 &ldquo;文件命名和创建使用当地时间&rdquo;, 并记住 &ldquo;日志文件路径&rdquo; 待会我们会进到这个目录里(如图1-2).</p>
+
+<p>图1-2<br/>
+<img src="http://leolovenet.com/downloads/images/awstats.1-2.png" alt="awstats.1-2.png" /></p>
+
+<p>然后点击高级标签(如图1-3).关键时刻来临了,兴奋起来吧!这里你真的不能出错,一定要再三检查你勾选的选项,不然很容易出错,还不容易发现.</p>
+
+<p>图1-3
+<img src="http://leolovenet.com/downloads/images/awstats.1-3.png" alt="awstats.1-3.png" /></p>
+
+<p>请确保有且仅有以下几项是选中状态,不能多也不能少.</p>
+
+<pre>
+date
+time
+c-ip
+cs-username
+cs-method
+cs-uri-stem
+sc-status
+sc-bytes
+cs-version
+cs(User-Agent)
+cs(Referer)
+</pre>
+
+
+<p>然后点击确定,保存配置,再然后关掉网站,打开我的电脑,进入到上面说的 &ldquo;日志文件路径&rdquo; 中去,删除所有现有的日志,重新开始网站.</p>
+
+<p>下面建立两个目录(当然你也可以建立在其他盘符,不过要记得修改以下所有步骤的路径):</p>
+
+<pre>
+#用于存放awstats的程序文件
+C:\LogAnalyse\awstats
+#用于存放awstats程序分析log之后的结果数据文件
+C:\LogAnalyse\awstats_data_dir
+</pre>
+
+
+<p><span style="color: #d14;">右击awstats_data_dir目录选择属性,安全,添加Everyone的完全控制权限,不然无法从浏览器端更新.</span></p>
+
+<p>将下载下来的zip包解压,并把<code>wwwroot</code>目录下的所有内容放到<code>C:\LogAnalyse\awstats</code>下.<br/>
+进入到<code>C:\LogAnalyse\awstats\cgi-bin</code>目录下,新建一个叫<code>awstats.logWin.conf</code>的文件(必须叫这个名字,没得商量,待会要用的),然后输入下面的内容,注意修改<code>SiteDomain&lt;code&gt;与</code>LogFile</code>选项值.<br/>
+如果你想知道具体每个选项的意思<a href="http://awstats.sourceforge.net/docs/awstats_config.html">点击这里查看官网说明</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># AWSTATS CONFIGURE FILE</span>
+</span><span class='line'><span class="c">#需要分析的日志路径,注意替成 C:/WINDOWS/system32/LogFiles/W3SVC952692957  为图1-2中你的网站日志路径</span>
+</span><span class='line'><span class="nv">LogFile</span><span class="o">=</span><span class="s2">&quot;C:/WINDOWS/system32/LogFiles/W3SVC952692957/ex%YY-0%MM-0%DD-0.log&quot;</span>
+</span><span class='line'><span class="nv">LogType</span><span class="o">=</span>W
+</span><span class='line'><span class="c">#这个很重要,因为IIS6的日志不标准,木有办法啦</span>
+</span><span class='line'><span class="nv">LogFormat</span><span class="o">=</span><span class="s2">&quot;date time cs-method cs-uri-stem cs-username c-ip cs-version cs(User-Agent) cs(Referer) sc-status sc-bytes&quot;</span>
+</span><span class='line'><span class="nv">LogSeparator</span><span class="o">=</span><span class="s2">&quot; &quot;</span>
+</span><span class='line'><span class="c">#就是说明一下你给那个站点做的分析,分析结果页面左上角显示</span>
+</span><span class='line'><span class="nv">SiteDomain</span><span class="o">=</span><span class="s2">&quot;blog.bbkanba.com&quot;</span>
+</span><span class='line'><span class="nv">HostAliases</span><span class="o">=</span><span class="s2">&quot;localhost 127.0.0.1&quot;</span>
+</span><span class='line'><span class="nv">DNSLookup</span><span class="o">=</span>0
+</span><span class='line'><span class="c">#看上面,不解释</span>
+</span><span class='line'><span class="nv">DirData</span><span class="o">=</span><span class="s2">&quot;C:/LogAnalyse/awstats_data_dir/&quot;</span>
+</span><span class='line'><span class="nv">DirCgi</span><span class="o">=</span><span class="s2">&quot;/cgi-bin&quot;</span>
+</span><span class='line'><span class="nv">DirIcons</span><span class="o">=</span><span class="s2">&quot;/icon&quot;</span>
+</span><span class='line'><span class="nv">AllowToUpdateStatsFromBrowser</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">AllowFullYearView</span><span class="o">=</span>2
+</span><span class='line'><span class="c">#同一时间只能有一个update运行</span>
+</span><span class='line'><span class="nv">EnableLockForUpdate</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">DNSStaticCacheFile</span><span class="o">=</span><span class="s2">&quot;dnscache.txt&quot;</span>
+</span><span class='line'><span class="nv">DNSLastUpdateCacheFile</span><span class="o">=</span><span class="s2">&quot;dnscachelastupdate.txt&quot;</span>
+</span><span class='line'><span class="nv">SkipDNSLookupFor</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">AllowAccessFromWebToAuthenticatedUsersOnly</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">AllowAccessFromWebToFollowingAuthenticatedUsers</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">AllowAccessFromWebToFollowingIPAddresses</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">CreateDirDataIfNotExists</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">BuildHistoryFormat</span><span class="o">=</span>text
+</span><span class='line'><span class="nv">BuildReportFormat</span><span class="o">=</span>html
+</span><span class='line'><span class="nv">SaveDatabaseFilesWithPermissionsForEveryone</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">PurgeLogFile</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ArchiveLogRecords</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">KeepBackupOfHistoricFiles</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">DefaultFile</span><span class="o">=</span><span class="s2">&quot;index.php index.html&quot;</span>
+</span><span class='line'><span class="c">#这里可以指定那些地址不纳入分析结果,比如私网地址的访客</span>
+</span><span class='line'><span class="nv">SkipHosts</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">SkipUserAgents</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">SkipFiles</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">SkipReferrersBlackList</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">OnlyHosts</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">OnlyUserAgents</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">OnlyUsers</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">OnlyFiles</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">NotPageList</span><span class="o">=</span><span class="s2">&quot;css js class gif jpg jpeg png bmp ico rss xml swf&quot;</span>
+</span><span class='line'><span class="nv">ValidHTTPCodes</span><span class="o">=</span><span class="s2">&quot;200 304&quot;</span>
+</span><span class='line'><span class="nv">ValidSMTPCodes</span><span class="o">=</span><span class="s2">&quot;1 250&quot;</span>
+</span><span class='line'><span class="nv">AuthenticatedUsersNotCaseSensitive</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">URLNotCaseSensitive</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">URLWithAnchor</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">URLQuerySeparators</span><span class="o">=</span><span class="s2">&quot;?;&quot;</span>
+</span><span class='line'><span class="nv">URLWithQuery</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">URLWithQueryWithOnlyFollowingParameters</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">URLWithQueryWithoutFollowingParameters</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">URLReferrerWithQuery</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">WarningMessages</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ErrorMessages</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">DebugMessages</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">NbOfLinesForCorruptedLog</span><span class="o">=</span>50
+</span><span class='line'><span class="nv">WrapperScript</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">DecodeUA</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">MiscTrackerUrl</span><span class="o">=</span><span class="s2">&quot;/js/awstats_misc_tracker.js&quot;</span>
+</span><span class='line'><span class="nv">LevelForBrowsersDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForOSDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForRefererAnalyze</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForRobotsDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForSearchEnginesDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForKeywordsDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForFileTypesDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForWormsDetection</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">UseFramesWhenCGI</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">DetailedReportsOnNewWindows</span><span class="o">=</span>1
+</span><span class='line'><span class="c">#分析结果页面的缓存时间,默认不缓存,这样你就可以手工通过浏览器更新,时时查看最新数据了</span>
+</span><span class='line'><span class="nv">Expires</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">MaxRowsInHTMLOutput</span><span class="o">=</span>1000
+</span><span class='line'><span class="c">#Lang默认是auto,根据浏览器设置现实页面语言,这里强制为汉语了</span>
+</span><span class='line'><span class="nv">Lang</span><span class="o">=</span><span class="s2">&quot;cn&quot;</span>
+</span><span class='line'><span class="nv">DirLang</span><span class="o">=</span><span class="s2">&quot;./lang&quot;</span>
+</span><span class='line'><span class="nv">ShowMenu</span><span class="o">=</span>1                 
+</span><span class='line'><span class="nv">ShowSummary</span><span class="o">=</span>UVPHB
+</span><span class='line'><span class="nv">ShowMonthStats</span><span class="o">=</span>UVPHB
+</span><span class='line'><span class="nv">ShowDaysOfMonthStats</span><span class="o">=</span>VPHB
+</span><span class='line'><span class="nv">ShowDaysOfWeekStats</span><span class="o">=</span>PHB
+</span><span class='line'><span class="nv">ShowHoursStats</span><span class="o">=</span>PHB
+</span><span class='line'><span class="nv">ShowDomainsStats</span><span class="o">=</span>PHB
+</span><span class='line'><span class="nv">ShowHostsStats</span><span class="o">=</span>PHBL
+</span><span class='line'><span class="nv">ShowAuthenticatedUsers</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowRobotsStats</span><span class="o">=</span>HBL
+</span><span class='line'><span class="nv">ShowWormsStats</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowEMailSenders</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowEMailReceivers</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowSessionsStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowPagesStats</span><span class="o">=</span>PBEX
+</span><span class='line'><span class="nv">ShowFileTypesStats</span><span class="o">=</span>HB
+</span><span class='line'><span class="nv">ShowFileSizesStats</span><span class="o">=</span>0   
+</span><span class='line'><span class="nv">ShowDownloadsStats</span><span class="o">=</span>HB  
+</span><span class='line'><span class="nv">ShowOSStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowBrowsersStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowScreenSizeStats</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowOriginStats</span><span class="o">=</span>PH
+</span><span class='line'><span class="nv">ShowKeyphrasesStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowKeywordsStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowMiscStats</span><span class="o">=</span>a
+</span><span class='line'><span class="nv">ShowHTTPErrorsStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowSMTPErrorsStats</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowClusterStats</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">AddDataArrayMonthStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">AddDataArrayShowDaysOfMonthStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">AddDataArrayShowDaysOfWeekStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">AddDataArrayShowHoursStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">IncludeInternalLinksInOriginSection</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">MaxNbOfDomain</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitDomain</span>  <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfHostsShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitHost</span>    <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfLoginShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitLogin</span>   <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfRobotShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitRobot</span>   <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfDownloadsShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitDownloads</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfPageShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitFile</span>    <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfOsShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitOs</span>      <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfBrowsersShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitBrowser</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfScreenSizesShown</span> <span class="o">=</span> 5
+</span><span class='line'><span class="nv">MinHitScreenSize</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfWindowSizesShown</span> <span class="o">=</span> 5
+</span><span class='line'><span class="nv">MinHitWindowSize</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfRefererShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitRefer</span>   <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfKeyphrasesShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitKeyphrase</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfKeywordsShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitKeyword</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfEMailsShown</span> <span class="o">=</span> 20
+</span><span class='line'><span class="nv">MinHitEMail</span>   <span class="o">=</span> 1
+</span><span class='line'><span class="nv">FirstDayOfWeek</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowFlagLinks</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">ShowLinksOnUrl</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">UseHTTPSLinkForUrl</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">MaxLengthOfShownURL</span><span class="o">=</span>64
+</span><span class='line'><span class="nv">HTMLHeadSection</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">HTMLEndSection</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">MetaRobot</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">Logo</span><span class="o">=</span><span class="s2">&quot;awstats_logo6.png&quot;</span>
+</span><span class='line'><span class="nv">LogoLink</span><span class="o">=</span><span class="s2">&quot;http://www.awstats.org&quot;</span>
+</span><span class='line'><span class="nv">BarWidth</span>   <span class="o">=</span> 260
+</span><span class='line'><span class="nv">BarHeight</span>  <span class="o">=</span> 90
+</span><span class='line'><span class="nv">StyleSheet</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">color_Background</span><span class="o">=</span><span class="s2">&quot;FFFFFF&quot;</span>    
+</span><span class='line'><span class="nv">color_TableBGTitle</span><span class="o">=</span><span class="s2">&quot;CCCCDD&quot;</span>  
+</span><span class='line'><span class="nv">color_TableTitle</span><span class="o">=</span><span class="s2">&quot;000000&quot;</span>    
+</span><span class='line'><span class="nv">color_TableBG</span><span class="o">=</span><span class="s2">&quot;CCCCDD&quot;</span>       
+</span><span class='line'><span class="nv">color_TableRowTitle</span><span class="o">=</span><span class="s2">&quot;FFFFFF&quot;</span> 
+</span><span class='line'><span class="nv">color_TableBGRowTitle</span><span class="o">=</span><span class="s2">&quot;ECECEC&quot;</span>   
+</span><span class='line'><span class="nv">color_TableBorder</span><span class="o">=</span><span class="s2">&quot;ECECEC&quot;</span>   
+</span><span class='line'><span class="nv">color_text</span><span class="o">=</span><span class="s2">&quot;000000&quot;</span>      
+</span><span class='line'><span class="nv">color_textpercent</span><span class="o">=</span><span class="s2">&quot;606060&quot;</span>   
+</span><span class='line'><span class="nv">color_titletext</span><span class="o">=</span><span class="s2">&quot;000000&quot;</span>
+</span><span class='line'><span class="nv">color_weekend</span><span class="o">=</span><span class="s2">&quot;EAEAEA&quot;</span>
+</span><span class='line'><span class="nv">color_link</span><span class="o">=</span><span class="s2">&quot;0011BB&quot;</span>
+</span><span class='line'><span class="nv">color_hover</span><span class="o">=</span><span class="s2">&quot;605040&quot;</span>
+</span><span class='line'><span class="nv">color_u</span><span class="o">=</span><span class="s2">&quot;FFAA66&quot;</span>
+</span><span class='line'><span class="nv">color_v</span><span class="o">=</span><span class="s2">&quot;F4F090&quot;</span>
+</span><span class='line'><span class="nv">color_p</span><span class="o">=</span><span class="s2">&quot;4477DD&quot;</span>
+</span><span class='line'><span class="nv">color_h</span><span class="o">=</span><span class="s2">&quot;66DDEE&quot;</span>
+</span><span class='line'><span class="nv">color_k</span><span class="o">=</span><span class="s2">&quot;2EA495&quot;</span>
+</span><span class='line'><span class="nv">color_s</span><span class="o">=</span><span class="s2">&quot;8888DD&quot;</span>
+</span><span class='line'><span class="nv">color_e</span><span class="o">=</span><span class="s2">&quot;CEC2E8&quot;</span>
+</span><span class='line'><span class="nv">color_x</span><span class="o">=</span><span class="s2">&quot;C1B2E2&quot;</span>
+</span><span class='line'><span class="nv">ExtraTrackedRowsLimit</span><span class="o">=</span>500
+</span><span class='line'>
+</span><span class='line'><span class="c">#以下是启用的插件们</span>
+</span><span class='line'><span class="nv">HTMLHeadSection</span><span class="o">=</span><span class="s2">&quot;&amp;lt;script language=javascript src=&#39;/js/day-by-day-head.js&#39;&amp;gt;&amp;lt;/script&amp;gt;&quot;</span>
+</span><span class='line'><span class="nv">HTMLEndSection</span><span class="o">=</span><span class="s2">&quot;&amp;lt;script language=javascript src=&#39;/js/day-by-day-end.js&#39;&amp;gt;&amp;lt;/script&amp;gt;&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;geoip GEOIP_STANDARD C:/LogAnalyse/awstats/cgi-bin/plugins/GeoIP.dat&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;geoip_city_maxmind GEOIP_STANDARD C:/LogAnalyse/awstats/cgi-bin/plugins/GeoLiteCity.dat&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;hostinfo&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;qqhostinfo&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;decodeutfkeys&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;timezone +8&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;tooltips&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>点击开始-运行-cmd,输入以下命令,安装所需要的软件包.</p>
+
+<pre>
+ ppm install Geo::IP::PurePerl
+ ppm install Geography::Countries
+ ppm install IP::Country 
+ ppm install Geo-IPfree 
+ ppm install Net-Xwhois
+</pre>
+
+
+<p>下载<a href="http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP.dat</a>和<a href="http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz">GeoLiteCity.dat</a>,解压缩以后,放入<code>C:\LogAnalyse\awstats\cgi-bin\plugins</code>目录.
+下载<a href="http://leolovenet.com/downloads/code/qqhostinfo.pm">qqhostinfo.pm</a>和<a href="http://leolovenet.com/downloads/code/qqwry.pl">qqwry.pl</a>和<a href="http://www.cz88.net/">QQWry.Dat</a>到<code>C:\LogAnalyse\awstats\cgi-bin\plugins</code>目录下.</p>
+
+<p><span style="color: #d14;">然后选中这5个文件,右击选择属性,安全,添加Everyone的读取权限(如图1-4)</span></p>
+
+<p>图1-4</p>
+
+<p><img src="http://leolovenet.com/downloads/images/awstats.1-4.png" alt="awstats.1-4.png" /></p>
+
+<p>下载<a href="http://leolovenet.com/downloads/code/day-by-day-head.js">day-by-day-head.js</a>和<a href="http://leolovenet.com/downloads/code/day-by-day-end.js">day-by-day-end.js</a>到<code>C:\LogAnalyse\awstats\js</code>目录下.</p>
+
+<p>在C:\LogAnalyse\awstats_data_dir目录下新建一个<code>crontab.bat</code>文件.输入下面的内容</p>
+
+<pre>
+perl %cd%/../awstats/cgi-bin/awstats.pl -update -config=logWin  -lang=cn  -databasebreak=day
+</pre>
+
+
+<p>解释一下,这个bat文件是要设立计划任务时用的,比如每隔30分钟自动更新下分析数据.</p>
+
+<ul>
+<li>%cd%/../awstats/cgi-bin/awstats.pl文件是awstats执行分析的主程序perl脚本(%cd%当前目录)</li>
+<li>-update 表示更新</li>
+<li>-config=logWin 知道为什么上面的文件为什么必须叫awstats.logWin.conf了吧, awstats.pl会掐头去尾留中间的找配置文件,如果你上面的文件不叫awstats.logWin.conf,而是awstats.bbkanba.conf的话,这里也需要改成-config=bbkanba</li>
+<li>-lang=cn 告诉awstats.pl生成中文页面,你喜欢其他语言可以去C:/LogAnalyse/awstats/cgi-bin/lang目录下瞅瞅,看看这个参数的值可以是什么.</li>
+<li>-databasebreak=day 这个重要哦, awstas默认是以月为单位分析展示数据的,而这里的我们安装了day-by-day插件, 就要求它以天为单位展示.</li>
+</ul>
+
+
+<p>保存好以后,点击开始-运行-cmd,直接用鼠标将<code>crontab.bat</code>文件拖放到黑窗口里,然后回车,你会看到类似图1-5的效果,说明成功配置好了,反之,根据错误提示自己排查吧.原因无非权限呀,路径呀,依赖的perl库啊之类的.</p>
+
+<p>图1-5</p>
+
+<p><img src="http://leolovenet.com/downloads/images/awstats.1-5.png" alt="awstats.1-5.png" /></p>
+
+<p>然后在控制面板,计划任务,添加计划任务,达到如图1-6的样子就可以了,不然就是你配错了.</p>
+
+<p>图1-6<br/>
+<img src="http://leolovenet.com/downloads/images/awstats.1-6.png" alt="awstats.1-6.png" /></p>
+
+<p>到此,我们已经配置好了awstas的工作环境,下面新建立一个网站来展示数据吧.</p>
+
+<p>打开 &ldquo;Internet 信息服务(IIS)管理器&rdquo; –> &ldquo;网站&rdquo; 右击 –> &ldquo;新建网站&rdquo; –> 新建网站向导,下一步 –> 描述 &ldquo;log.bbkanba.com&rdquo;,下一步 –> 全部未分配,80,主机头:log.bbkanba.com –> 主目录路径C:\LogAnalyse\awstats –> 最后一定要勾上 &ldquo;执行(如ISAPI 应用程序或 CGI)&rdquo; –> 下一步完成.</p>
+
+<p>还需要一个perl脚本重定向,创建到C:\LogAnalyse\awstats\index.pl下面,这样每次打开<code>http://log.bbkanba.com</code>就可以看到最新的统计数据了(还的改一下网站的设置，添加index.pl到默认内容文档里,网站属性-文档-默认内容文档).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='perl'><span class='line'><span class="c1">#!/usr/bin/perl</span>
+</span><span class='line'><span class="k">use</span> <span class="n">POSIX</span> <span class="sx">qw(strftime)</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="n">strftime</span> <span class="s">&quot;Location: http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n&quot;</span> <span class="p">,</span><span class="nb">localtime</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>congratulation you are finished! celebrate吧.
+windows的到这里打完,收工,我去煮个泡面,待会继续Linux下的.</p>
+
+<h2>2. Install Awstats with Lighttpd under Linux(CentOS)</h2>
+
+<p>到了，我最爱的Linux服务器环境安装就变的容易多了.<br/>
+首先通过yum安装perl的依赖包,然后下载安装awstats的rpm安装包,然后安装所需要的插件,创建配置文件,创建计划任务,就ok了.全部命令如下.<br/>
+配置文件同上面window2003下的基本一样，只是变更了一下路径.这里我们分析<code>/var/log/lighttpd/access.log</code>这个日志文件.配置文件的意思看上面.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#需要从http://packages.sw.be/rpmforge-release/ 选择自己平台的rpm包安装,这里我的系统是CentOS6 x86_64,你要根据自己的平台选择,下面是wiki地址</span>
+</span><span class='line'><span class="c">##http://wiki.centos.org/AdditionalResources/Repositories/RPMForge</span>
+</span><span class='line'>
+</span><span class='line'>wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm
+</span><span class='line'>rpm -Uvh rpmforge-release*rpm
+</span><span class='line'>
+</span><span class='line'>yum -y install perl  perl-CPAN perl-Compress-Raw-Zlib  perl-Compress-Zlib  perl-GSSAPI  perl-HTML-Parser  perl-HTML-Tagset  perl-IO-Compress-Base perl-IO-Compress-Zlib  perl-URI  perl-libwww-perl gzip perl-Geo-IP perl-Net-XWhois perl-FCGI perl-FCGI-ProcManager
+</span><span class='line'>
+</span><span class='line'>wget http://prdownloads.sourceforge.net/awstats/awstats-7.1-1.noarch.rpm
+</span><span class='line'>rpm -ivh awstats-7.1-1.noarch.rpm
+</span><span class='line'>rm -rf awstats-7.1-1.noarch.rpm
+</span><span class='line'>
+</span><span class='line'><span class="nb">cd</span>  /usr/local/awstats/wwwroot/cgi-bin/plugins/
+</span><span class='line'>wget http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
+</span><span class='line'>wget http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+</span><span class='line'>gunzip GeoIP.dat.gz GeoLiteCity.dat.gz
+</span><span class='line'>
+</span><span class='line'>wget http://leolovenet.com/downloads/code/qqhostinfo.pm
+</span><span class='line'>wget http://leolovenet.com/downloads/code/qqwry.pl
+</span><span class='line'>wget http://leolovenet.com/downloads/code/QQWry.Dat
+</span><span class='line'><span class="nb">cd</span> /usr/local/awstats/wwwroot/js/
+</span><span class='line'>wget http://leolovenet.com/downloads/code/day-by-day-head.js
+</span><span class='line'>wget http://leolovenet.com/downloads/code/day-by-day-end.js
+</span><span class='line'>mkdir -p /usr/local/awstats/awstats_data_dir
+</span><span class='line'>chmod -R 777 /usr/local/awstats/awstats_data_dir
+</span><span class='line'>
+</span><span class='line'>cat &gt; /etc/awstats/awstats.log.conf <span class="s">&lt;&lt;ALLENDEND</span>
+</span><span class='line'><span class="s"># AWSTATS CONFIGURE FILE</span>
+</span><span class='line'><span class="s">LogFile=&quot;/var/log/lighttpd/access.log&quot;</span>
+</span><span class='line'><span class="s">LogType=W</span>
+</span><span class='line'><span class="s">LogFormat=1</span>
+</span><span class='line'><span class="s">LogSeparator=&quot; &quot;</span>
+</span><span class='line'><span class="s">SiteDomain=&quot;blog.bbkanba.com&quot;</span>
+</span><span class='line'><span class="s">HostAliases=&quot;localhost 127.0.0.1&quot;</span>
+</span><span class='line'><span class="s">DNSLookup=0</span>
+</span><span class='line'><span class="s">DirData=&quot;/usr/local/awstats/awstats_data_dir&quot;</span>
+</span><span class='line'><span class="s">DirCgi=&quot;/cgi-bin&quot;</span>
+</span><span class='line'><span class="s">DirIcons=&quot;/icon&quot;</span>
+</span><span class='line'><span class="s">AllowToUpdateStatsFromBrowser=1</span>
+</span><span class='line'><span class="s">AllowFullYearView=2</span>
+</span><span class='line'><span class="s">EnableLockForUpdate=1</span>
+</span><span class='line'><span class="s">DNSStaticCacheFile=&quot;dnscache.txt&quot;</span>
+</span><span class='line'><span class="s">DNSLastUpdateCacheFile=&quot;dnscachelastupdate.txt&quot;</span>
+</span><span class='line'><span class="s">SkipDNSLookupFor=&quot;&quot;</span>
+</span><span class='line'><span class="s">AllowAccessFromWebToAuthenticatedUsersOnly=0</span>
+</span><span class='line'><span class="s">AllowAccessFromWebToFollowingAuthenticatedUsers=&quot;&quot;</span>
+</span><span class='line'><span class="s">AllowAccessFromWebToFollowingIPAddresses=&quot;&quot;</span>
+</span><span class='line'><span class="s">CreateDirDataIfNotExists=0</span>
+</span><span class='line'><span class="s">BuildHistoryFormat=text</span>
+</span><span class='line'><span class="s">BuildReportFormat=html</span>
+</span><span class='line'><span class="s">SaveDatabaseFilesWithPermissionsForEveryone=0</span>
+</span><span class='line'><span class="s">PurgeLogFile=0</span>
+</span><span class='line'><span class="s">ArchiveLogRecords=0</span>
+</span><span class='line'><span class="s">KeepBackupOfHistoricFiles=0</span>
+</span><span class='line'><span class="s">DefaultFile=&quot;index.php index.html&quot;</span>
+</span><span class='line'><span class="s">SkipHosts=&quot;&quot;</span>
+</span><span class='line'><span class="s">SkipUserAgents=&quot;&quot;</span>
+</span><span class='line'><span class="s">SkipFiles=&quot;&quot;</span>
+</span><span class='line'><span class="s">SkipReferrersBlackList=&quot;&quot;</span>
+</span><span class='line'><span class="s">OnlyHosts=&quot;&quot;</span>
+</span><span class='line'><span class="s">OnlyUserAgents=&quot;&quot;</span>
+</span><span class='line'><span class="s">OnlyUsers=&quot;&quot;</span>
+</span><span class='line'><span class="s">OnlyFiles=&quot;&quot;</span>
+</span><span class='line'><span class="s">NotPageList=&quot;css js class gif jpg jpeg png bmp ico rss xml swf&quot;</span>
+</span><span class='line'><span class="s">ValidHTTPCodes=&quot;200 304&quot;</span>
+</span><span class='line'><span class="s">ValidSMTPCodes=&quot;1 250&quot;</span>
+</span><span class='line'><span class="s">AuthenticatedUsersNotCaseSensitive=0</span>
+</span><span class='line'><span class="s">URLNotCaseSensitive=0</span>
+</span><span class='line'><span class="s">URLWithAnchor=0</span>
+</span><span class='line'><span class="s">URLQuerySeparators=&quot;?;&quot;</span>
+</span><span class='line'><span class="s">URLWithQuery=0</span>
+</span><span class='line'><span class="s">URLWithQueryWithOnlyFollowingParameters=&quot;&quot;</span>
+</span><span class='line'><span class="s">URLWithQueryWithoutFollowingParameters=&quot;&quot;</span>
+</span><span class='line'><span class="s">URLReferrerWithQuery=0</span>
+</span><span class='line'><span class="s">WarningMessages=1</span>
+</span><span class='line'><span class="s">ErrorMessages=&quot;&quot;</span>
+</span><span class='line'><span class="s">DebugMessages=0</span>
+</span><span class='line'><span class="s">NbOfLinesForCorruptedLog=50</span>
+</span><span class='line'><span class="s">WrapperScript=&quot;&quot;</span>
+</span><span class='line'><span class="s">DecodeUA=0</span>
+</span><span class='line'><span class="s">MiscTrackerUrl=&quot;/js/awstats_misc_tracker.js&quot;</span>
+</span><span class='line'><span class="s">LevelForBrowsersDetection=2</span>
+</span><span class='line'><span class="s">LevelForOSDetection=2</span>
+</span><span class='line'><span class="s">LevelForRefererAnalyze=2</span>
+</span><span class='line'><span class="s">LevelForRobotsDetection=2</span>
+</span><span class='line'><span class="s">LevelForSearchEnginesDetection=2</span>
+</span><span class='line'><span class="s">LevelForKeywordsDetection=2</span>
+</span><span class='line'><span class="s">LevelForFileTypesDetection=2</span>
+</span><span class='line'><span class="s">LevelForWormsDetection=0</span>
+</span><span class='line'><span class="s">UseFramesWhenCGI=1</span>
+</span><span class='line'><span class="s">DetailedReportsOnNewWindows=1</span>
+</span><span class='line'><span class="s">Expires=0</span>
+</span><span class='line'><span class="s">MaxRowsInHTMLOutput=1000</span>
+</span><span class='line'><span class="s">Lang=&quot;cn&quot;</span>
+</span><span class='line'><span class="s">DirLang=&quot;./lang&quot;</span>
+</span><span class='line'><span class="s">ShowMenu=1                  </span>
+</span><span class='line'><span class="s">ShowSummary=UVPHB</span>
+</span><span class='line'><span class="s">ShowMonthStats=UVPHB</span>
+</span><span class='line'><span class="s">ShowDaysOfMonthStats=VPHB</span>
+</span><span class='line'><span class="s">ShowDaysOfWeekStats=PHB</span>
+</span><span class='line'><span class="s">ShowHoursStats=PHB</span>
+</span><span class='line'><span class="s">ShowDomainsStats=PHB</span>
+</span><span class='line'><span class="s">ShowHostsStats=PHBL</span>
+</span><span class='line'><span class="s">ShowAuthenticatedUsers=0</span>
+</span><span class='line'><span class="s">ShowRobotsStats=HBL</span>
+</span><span class='line'><span class="s">ShowWormsStats=0</span>
+</span><span class='line'><span class="s">ShowEMailSenders=0</span>
+</span><span class='line'><span class="s">ShowEMailReceivers=0</span>
+</span><span class='line'><span class="s">ShowSessionsStats=1</span>
+</span><span class='line'><span class="s">ShowPagesStats=PBEX</span>
+</span><span class='line'><span class="s">ShowFileTypesStats=HB</span>
+</span><span class='line'><span class="s">ShowFileSizesStats=0    </span>
+</span><span class='line'><span class="s">ShowDownloadsStats=HB   </span>
+</span><span class='line'><span class="s">ShowOSStats=1</span>
+</span><span class='line'><span class="s">ShowBrowsersStats=1</span>
+</span><span class='line'><span class="s">ShowScreenSizeStats=0</span>
+</span><span class='line'><span class="s">ShowOriginStats=PH</span>
+</span><span class='line'><span class="s">ShowKeyphrasesStats=1</span>
+</span><span class='line'><span class="s">ShowKeywordsStats=1</span>
+</span><span class='line'><span class="s">ShowMiscStats=a</span>
+</span><span class='line'><span class="s">ShowHTTPErrorsStats=1</span>
+</span><span class='line'><span class="s">ShowSMTPErrorsStats=0</span>
+</span><span class='line'><span class="s">ShowClusterStats=0</span>
+</span><span class='line'><span class="s">AddDataArrayMonthStats=1</span>
+</span><span class='line'><span class="s">AddDataArrayShowDaysOfMonthStats=1</span>
+</span><span class='line'><span class="s">AddDataArrayShowDaysOfWeekStats=1</span>
+</span><span class='line'><span class="s">AddDataArrayShowHoursStats=1</span>
+</span><span class='line'><span class="s">IncludeInternalLinksInOriginSection=0</span>
+</span><span class='line'><span class="s">MaxNbOfDomain = 10</span>
+</span><span class='line'><span class="s">MinHitDomain  = 1</span>
+</span><span class='line'><span class="s">MaxNbOfHostsShown = 10</span>
+</span><span class='line'><span class="s">MinHitHost    = 1</span>
+</span><span class='line'><span class="s">MaxNbOfLoginShown = 10</span>
+</span><span class='line'><span class="s">MinHitLogin   = 1</span>
+</span><span class='line'><span class="s">MaxNbOfRobotShown = 10</span>
+</span><span class='line'><span class="s">MinHitRobot   = 1</span>
+</span><span class='line'><span class="s">MaxNbOfDownloadsShown = 10</span>
+</span><span class='line'><span class="s">MinHitDownloads = 1</span>
+</span><span class='line'><span class="s">MaxNbOfPageShown = 10</span>
+</span><span class='line'><span class="s">MinHitFile    = 1</span>
+</span><span class='line'><span class="s">MaxNbOfOsShown = 10</span>
+</span><span class='line'><span class="s">MinHitOs      = 1</span>
+</span><span class='line'><span class="s">MaxNbOfBrowsersShown = 10</span>
+</span><span class='line'><span class="s">MinHitBrowser = 1</span>
+</span><span class='line'><span class="s">MaxNbOfScreenSizesShown = 5</span>
+</span><span class='line'><span class="s">MinHitScreenSize = 1</span>
+</span><span class='line'><span class="s">MaxNbOfWindowSizesShown = 5</span>
+</span><span class='line'><span class="s">MinHitWindowSize = 1</span>
+</span><span class='line'><span class="s">MaxNbOfRefererShown = 10</span>
+</span><span class='line'><span class="s">MinHitRefer   = 1</span>
+</span><span class='line'><span class="s">MaxNbOfKeyphrasesShown = 10</span>
+</span><span class='line'><span class="s">MinHitKeyphrase = 1</span>
+</span><span class='line'><span class="s">MaxNbOfKeywordsShown = 10</span>
+</span><span class='line'><span class="s">MinHitKeyword = 1</span>
+</span><span class='line'><span class="s">MaxNbOfEMailsShown = 20</span>
+</span><span class='line'><span class="s">MinHitEMail   = 1</span>
+</span><span class='line'><span class="s">FirstDayOfWeek=1</span>
+</span><span class='line'><span class="s">ShowFlagLinks=&quot;&quot;</span>
+</span><span class='line'><span class="s">ShowLinksOnUrl=1</span>
+</span><span class='line'><span class="s">UseHTTPSLinkForUrl=&quot;&quot;</span>
+</span><span class='line'><span class="s">MaxLengthOfShownURL=64</span>
+</span><span class='line'><span class="s">HTMLHeadSection=&quot;&quot;</span>
+</span><span class='line'><span class="s">HTMLEndSection=&quot;&quot;</span>
+</span><span class='line'><span class="s">MetaRobot=0</span>
+</span><span class='line'><span class="s">Logo=&quot;awstats_logo6.png&quot;</span>
+</span><span class='line'><span class="s">LogoLink=&quot;http://www.awstats.org&quot;</span>
+</span><span class='line'><span class="s">BarWidth   = 260</span>
+</span><span class='line'><span class="s">BarHeight  = 90</span>
+</span><span class='line'><span class="s">StyleSheet=&quot;&quot;</span>
+</span><span class='line'><span class="s">color_Background=&quot;FFFFFF&quot;</span>
+</span><span class='line'><span class="s">color_TableBGTitle=&quot;CCCCDD&quot;</span>
+</span><span class='line'><span class="s">color_TableTitle=&quot;000000&quot;</span>
+</span><span class='line'><span class="s">color_TableBG=&quot;CCCCDD&quot;</span>
+</span><span class='line'><span class="s">color_TableRowTitle=&quot;FFFFFF&quot;</span>
+</span><span class='line'><span class="s">color_TableBGRowTitle=&quot;ECECEC&quot;</span>
+</span><span class='line'><span class="s">color_TableBorder=&quot;ECECEC&quot;</span>
+</span><span class='line'><span class="s">color_text=&quot;000000&quot;</span>
+</span><span class='line'><span class="s">color_textpercent=&quot;606060&quot;</span>
+</span><span class='line'><span class="s">color_titletext=&quot;000000&quot;</span>
+</span><span class='line'><span class="s">color_weekend=&quot;EAEAEA&quot;</span>
+</span><span class='line'><span class="s">color_link=&quot;0011BB&quot;</span>
+</span><span class='line'><span class="s">color_hover=&quot;605040&quot;</span>
+</span><span class='line'><span class="s">color_u=&quot;FFAA66&quot;</span>
+</span><span class='line'><span class="s">color_v=&quot;F4F090&quot;</span>
+</span><span class='line'><span class="s">color_p=&quot;4477DD&quot;</span>
+</span><span class='line'><span class="s">color_h=&quot;66DDEE&quot;</span>
+</span><span class='line'><span class="s">color_k=&quot;2EA495&quot;</span>
+</span><span class='line'><span class="s">color_s=&quot;8888DD&quot;</span>
+</span><span class='line'><span class="s">color_e=&quot;CEC2E8&quot;</span>
+</span><span class='line'><span class="s">color_x=&quot;C1B2E2&quot;</span>
+</span><span class='line'><span class="s">ExtraTrackedRowsLimit=500</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">HTMLHeadSection=&quot;&lt;script language=javascript src=&#39;/js/day-by-day-head.js&#39;&gt;&lt;/script&gt;&quot;</span>
+</span><span class='line'><span class="s">HTMLEndSection=&quot;&lt;script language=javascript src=&#39;/js/day-by-day-end.js&#39;&gt;&lt;/script&gt;&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;geoip GEOIP_STANDARD /usr/local/awstats/wwwroot/cgi-bin/plugins/GeoIP.dat&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;geoip_city_maxmind GEOIP_STANDARD /usr/local/awstats/wwwroot/cgi-bin/plugins/GeoLiteCity.dat&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;hostinfo&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;qqhostinfo&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;decodeutfkeys&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;tooltips&quot;</span>
+</span><span class='line'><span class="s">ALLENDEND</span>
+</span><span class='line'>
+</span><span class='line'>cat &gt; /usr/local/awstats/wwwroot/index.pl  <span class="s">&lt;&lt;ALLENDEND</span>
+</span><span class='line'><span class="s">#!/usr/bin/perl</span>
+</span><span class='line'><span class="s">use POSIX qw(strftime);</span>
+</span><span class='line'><span class="s">print strftime &quot;Location: http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n&quot; ,localtime;</span>
+</span><span class='line'><span class="s">ALLENDEND</span>
+</span><span class='line'>
+</span><span class='line'>cat &gt; /etc/cron.hourly/00awstats <span class="s">&lt;&lt;ALLENDEND</span>
+</span><span class='line'><span class="s">#!/bin/bash</span>
+</span><span class='line'><span class="s"># path to cgi-bin</span>
+</span><span class='line'><span class="s">AWS=/usr/local/awstats/wwwroot/cgi-bin/awstats.pl</span>
+</span><span class='line'><span class="s"># append your domain</span>
+</span><span class='line'><span class="s">DOMAINS=&quot;log&quot;</span>
+</span><span class='line'><span class="s"># loop through all domains</span>
+</span><span class='line'><span class="s">for d in \${DOMAINS}</span>
+</span><span class='line'><span class="s">do</span>
+</span><span class='line'><span class="s">   \${AWS} -update -config=\${d}  -lang=cn  -databasebreak=day</span>
+</span><span class='line'><span class="s">done</span>
+</span><span class='line'><span class="s">ALLENDEND</span>
+</span><span class='line'>chmod +x /etc/cron.hourly/00awstats
+</span><span class='line'>/etc/cron.hourly/00awstats
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>linux平台下的web日志时间一般没有问题，所以没有添加<code>LoadPlugin="timezone +8"</code></p>
+
+<p>执行完上面的内容你应该可以看到与 图1-5 类似的结果,就说明安装awstats成功了。<br/>
+下面添加一个虚拟站点给lighttpd,好让我们可以通过浏览器查看统计结果,全部命令如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sed -e <span class="s1">&#39;s/.*mod_ssi.*/&quot;mod_ssi&quot;,/&#39;</span> /etc/lighttpd/lighttpd.conf &gt; /tmp/lighttpd.conf
+</span><span class='line'>mv /tmp/lighttpd.conf /etc/lighttpd/lighttpd.conf
+</span><span class='line'>cat &gt;&gt; /etc/lighttpd/lighttpd.conf <span class="s">&lt;&lt;ALLALLEND</span>
+</span><span class='line'><span class="s">\$HTTP[&quot;host&quot;] =~ &quot;log.bbkanba.com&quot; {</span>
+</span><span class='line'><span class="s">index-file.names   = ( &quot;index.pl&quot;,&quot;index.php&quot;, &quot;index.html&quot;,&quot;index.htm&quot; )</span>
+</span><span class='line'><span class="s">server.port = 80</span>
+</span><span class='line'><span class="s">cgi.assign = (</span>
+</span><span class='line'><span class="s">&quot;.pl&quot; =&gt; &quot;/usr/bin/perl&quot;,</span>
+</span><span class='line'><span class="s">&quot;.cgi&quot; =&gt; &quot;/usr/bin/perl&quot;</span>
+</span><span class='line'><span class="s">)</span>
+</span><span class='line'><span class="s">server.document-root = &quot;/usr/local/awstats/wwwroot/&quot;</span>
+</span><span class='line'><span class="s">accesslog.filename = &quot;/var/log/lighttpd/log.access.log&quot;</span>
+</span><span class='line'><span class="s">}</span>
+</span><span class='line'><span class="s">ALLALLEND</span>
+</span><span class='line'>
+</span><span class='line'>/etc/init.d/lighttpd restart
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ok,到此结束.</p>
+
+<h2>3. Install Awstats with Nginx under Linux(CentOS)</h2>
+
+<p>awstats与Nginx合作还是有点复杂的,不像Lighttpd支持perl扩展那么容易,这里我们要让nginx支持perl扩展是通过一个perl脚本实现的。</p>
+
+<p>不过,<strong>7.1</strong>版本的awstats的<a href="http://awstats.sourceforge.net/docs/awstats_changelog.txt">ChangLog</a>里说明了Add example of nginx setup.<br/>
+我还没有试过官方的办法,好像是通过一个php的脚本,可以在最新发行版本包里的tools/nginx目录看看.</p>
+
+<p>下面我讲的是通过 <a href="http://leolovenet.com/downloads/code/fastcgi-wrapper.pl">fastcgi-wrapper.pl</a> 实现的.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://leolovenet.com/downloads/code/fastcgi-wrapper.pl
+</span><span class='line'>mv  fastcgi-wrapper.pl /usr/local/bin/
+</span><span class='line'>chmod +x fastcgi-wrapper.pl
+</span><span class='line'>mkdir -p /var/run/nginx/
+</span><span class='line'>/usr/local/bin/fastcgi-wrapper.pl &amp;
+</span><span class='line'>ps aux|grep  fcgi-wrapper.pl
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>awstats的安装与上面Lighttpd篇里的一样,添加一个虚拟站点给nginx,好让我们可以通过浏览器查看统计结果的命令如下,这里假设nginx安装在了<code>/usr/local/nginx</code>目录下,并且虚拟站点的配置文件在<code>/usr/local/nginx/conf/vhost</code>下.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p /var/run/nginx/
+</span><span class='line'>mkdir -p /usr/local/nginx/conf/vhost
+</span><span class='line'>
+</span><span class='line'>cat &gt;  /usr/local/nginx/conf/vhost/awstats.conf<span class="s">&lt;&lt;ALLALLEND</span>
+</span><span class='line'><span class="s">log_format  awstat  &#39;\$remote_addr - \$remote_user [\$time_local] \$request &#39;</span>
+</span><span class='line'><span class="s">             &#39;\$status \$body_bytes_sent \$http_referer &#39;</span>
+</span><span class='line'><span class="s">             &#39;\$http_user_agent \$http_x_forwarded_for&#39;;</span>
+</span><span class='line'><span class="s">server</span>
+</span><span class='line'><span class="s">     {</span>
+</span><span class='line'><span class="s">          listen       80;</span>
+</span><span class='line'><span class="s">          server_name log.bbkanba.com;</span>
+</span><span class='line'><span class="s">          index index.pl index.html index.htm index.php default.html default.htm default.php;</span>
+</span><span class='line'><span class="s">          root  /usr/local/awstats/wwwroot/;</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">      location ~ .*\.(pl|cgi)?\$</span>
+</span><span class='line'><span class="s">         {</span>
+</span><span class='line'><span class="s">                gzip off;</span>
+</span><span class='line'><span class="s">                fastcgi_pass   unix:/var/run/nginx/perl_cgi-dispatch.sock;</span>
+</span><span class='line'><span class="s">                root /usr/local/awstats/wwwroot;</span>
+</span><span class='line'><span class="s">                fastcgi_index  index.cgi;</span>
+</span><span class='line'><span class="s">                fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_SOFTWARE    nginx;</span>
+</span><span class='line'><span class="s">                fastcgi_param  QUERY_STRING       \$query_string;</span>
+</span><span class='line'><span class="s">                fastcgi_param  REQUEST_METHOD     \$request_method;</span>
+</span><span class='line'><span class="s">                fastcgi_param  CONTENT_TYPE       \$content_type;</span>
+</span><span class='line'><span class="s">                fastcgi_param  CONTENT_LENGTH     \$content_length;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SCRIPT_FILENAME    \$document_root\$fastcgi_script_name;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SCRIPT_NAME        \$fastcgi_script_name;</span>
+</span><span class='line'><span class="s">                fastcgi_param  REQUEST_URI        \$request_uri;</span>
+</span><span class='line'><span class="s">                fastcgi_param  DOCUMENT_URI       \$document_uri;</span>
+</span><span class='line'><span class="s">                fastcgi_param  DOCUMENT_ROOT      \$document_root;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_PROTOCOL    \$server_protocol;</span>
+</span><span class='line'><span class="s">                fastcgi_param  REMOTE_ADDR        \$remote_addr;</span>
+</span><span class='line'><span class="s">                fastcgi_param  REMOTE_PORT        \$remote_port;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_ADDR        \$server_addr;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_PORT        \$server_port;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_NAME        \$server_name;</span>
+</span><span class='line'><span class="s">                fastcgi_read_timeout   60;</span>
+</span><span class='line'><span class="s">          }</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">          location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)\$</span>
+</span><span class='line'><span class="s">               {</span>
+</span><span class='line'><span class="s">                    expires      30d;</span>
+</span><span class='line'><span class="s">               }</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">          location ~ .*\.(js|css)?\$</span>
+</span><span class='line'><span class="s">               {</span>
+</span><span class='line'><span class="s">                    expires      12h;</span>
+</span><span class='line'><span class="s">               }</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">          access_log  /var/log/awstat.log  awstat;</span>
+</span><span class='line'><span class="s">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">ALLALLEND</span>
+</span><span class='line'>
+</span><span class='line'>chmod +x /etc/cron.hourly/00awstats
+</span><span class='line'>/etc/init.d/nginx reload
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ok,到此结束.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[使终端(iTerm2/Terminal)色彩缤纷]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/12/colorful-the-Terminal/"/>
+    <updated>2013-01-12T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/12/colorful-the-Terminal</id>
+    <content type="html"><![CDATA[<p>因为经常使用终端 (iTerm|Terminal) ssh到服务器上去,所以整日盯着黑乎乎的屏幕很头痛,还不利于眼睛,所谓“工欲善其事,必先利其器”,所以今天就想让终端也色彩缤纷起来,让我们锻炼眼睛识别颜色的能力吧.</p>
+
+<p><img src="http://leolovenet.com/downloads/images/terminal-colorful.png" title="terminal colorful example" alt="terminal-colorful.png" /></p>
+
+<!--more-->
+
+
+<p>在git上找到了<a href="http://ethanschoonover.com/solarized" target="_blank">SOLARIZED</a>这个项目,可以配置很多很多程序的颜色主体哦,哈哈,很是激动,下面具体讲讲配置过程.</p>
+
+<p>我的机器主要用到iTerm2,而服务器因为是CentOS,那就要用到<a href="https://github.com/seebi/dircolors-solarized" target="_blank">dircolors-solarized</a>子项目.</p>
+
+<p>首先讲一下, CentOS 下的ls配置  Solarized Color Theme for GNU ls (as setup by GNU dircolors).</p>
+
+<p>Linux下的 <code>ls --color=auto</code> 命令,其实是根据两个文件来显示颜色的, <code>/etc/DIR_COLORS</code> 或者 <code>~/.dir_colors</code>, 一个是系统级别的配置文件,一个用户级别的配置文件.</p>
+
+<p>Solarized Color Theme for GNU ls项目提供了配置好了的颜色配置文件,并且可以根据文件类型来展示不同的颜色,可以看看我上面的实例图片,色彩缤纷吧.</p>
+
+<p>我就不讲Terminal的 16-色 和 256-色 的差别了,因为我也一知半解.不过这个项目的<a href="https://github.com/seebi/dircolors-solarized/raw/master/dircolors.ansi-universal" target="_blank">dircolors.ansi-universal</a>配置文件可以工作在两种形式的终端下,而<a href="https://github.com/seebi/dircolors-solarized/raw/master/dircolors.256dark" target="_blank">dircolors.256dark</a>只能工作在265色的终端下,所以除非你知道自己的终端是支持265色的,不然还是下载<a href="https://github.com/seebi/dircolors-solarized/raw/master/dircolors.ansi-universal" target="_blank">dircolors.ansi-universal</a>.</p>
+
+<p>下面是具体命令</p>
+
+<figure class='code'><figcaption><span>[execute below script in terminal]  (terminal_colorful.sh)</span> <a href='http://leolovenet.com/downloads/code/terminal_colorful.sh'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">cd</span> ~
+</span><span class='line'><span class="nv">WGET_CMD</span><span class="o">=</span><span class="k">$(</span><span class="nb">type</span> -P wget<span class="k">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$WGET_CMD</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span>;<span class="k">then</span>
+</span><span class='line'><span class="k">     </span>yum -y install wget
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'>wget http://leolovenet.com/downloads/code/dircolors
+</span><span class='line'><span class="c">#or</span>
+</span><span class='line'><span class="c">#wget --no-check-certificate https://github.com/seebi/dircolors-solarized/raw/master/dircolors.ansi-universal</span>
+</span><span class='line'>
+</span><span class='line'>mv dircolors  ~/.dir_colors
+</span><span class='line'><span class="nb">eval</span> <span class="sb">`</span>dircolors ~/.dir_colors<span class="sb">`</span>
+</span><span class='line'>cat &gt;&gt;  ~/.bashrc <span class="s">&lt;&lt;END</span>
+</span><span class='line'><span class="s">########bash color######################</span>
+</span><span class='line'><span class="s">if [ -x /usr/bin/dircolors ]; then</span>
+</span><span class='line'><span class="s">    alias ls=&#39;ls --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias dir=&#39;dir --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias vdir=&#39;vdir --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias grep=&#39;grep --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias fgrep=&#39;fgrep --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias egrep=&#39;egrep --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias tree=&#39;tree -C&#39;</span>
+</span><span class='line'><span class="s">fi</span>
+</span><span class='line'><span class="s">alias ..=&quot;cd ..&quot;</span>
+</span><span class='line'><span class="s">alias ..2=&quot;cd ../..&quot;</span>
+</span><span class='line'><span class="s">alias ..3=&quot;cd ../../..&quot;</span>
+</span><span class='line'><span class="s">alias ..4=&quot;cd ../../../..&quot;</span>
+</span><span class='line'><span class="s">alias ..5=&quot;cd ../../../../..&quot;</span>
+</span><span class='line'><span class="s">alias  &quot;l&quot;=&quot;ls -ahl --full-time&quot;</span>
+</span><span class='line'><span class="s">########################################</span>
+</span><span class='line'><span class="s">END</span>
+</span><span class='line'><span class="nb">source</span> ~/.bashrc
+</span><span class='line'>ls /
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>该项目的<a href="https://github.com/seebi/dircolors-solarized/blob/master/README.md">ReadMe</a>文件还有很多信息,比如怎样配置265色的终端,感兴趣的可以仔细看看.</p>
+
+<p><strong>iTerm2的配置</strong></p>
+
+<p>iTerm2的配置配置更简单一点,进入到<a href="https://github.com/altercation/solarized/tree/master/iterm2-colors-solarized" target="_blank">iTerm2</a>的配置子项目下,下载配置文件<a href="https://github.com/altercation/solarized/raw/master/iterm2-colors-solarized/Solarized%20Dark.itermcolors" target="_blank">Solarized Dark.itermcolors</a>或者<a href="https://github.com/altercation/solarized/raw/master/iterm2-colors-solarized/Solarized%20Light.itermcolors" target="_blank">Solarized Light.itermcolors</a>,双击导入,然后更改首选项选择主题就可以.<br/>
+具体可以查看<a href="https://github.com/altercation/solarized/blob/master/iterm2-colors-solarized/README.md" target="_blank">ReadMe</a>文件.</p>
+
+<p>这里需要补充一点的是,mac 下的ls命令不是gun ls,所以即使iterm2安装了颜色主题,敲入ls命令以后,显示的文件颜色还是有问题的,这里有一个补救办法,运行下面这行,之后再看ls命令的颜色是不是变了</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">LSCOLORS</span><span class="o">=</span>gxfxbEaEBxxEhEhBaDaCaD
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是,这种补救办法也不完美,比如不能根据文件类型来显示颜色.</p>
+
+<p>如果你想追求完美的话,还有另外一种办法,就是用 <code>brew install coreutils</code>, 安装 gun ls 命令到 mac 下,到时你还需要跟上面在linux下操作的一样,下载配置文件,放入到 ~/.dir_colors</p>
+
+<p>具体就不说了,累了,睡觉了.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode打包app命令-PackageApplication]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/10/xcode-packageapplication-command/"/>
+    <updated>2013-01-10T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/10/xcode-packageapplication-command</id>
+    <content type="html"><![CDATA[<p>xcode提供有这样一个perl脚本工具,可以打包一个app为ipa文件，为上传app store做准备. 路径是</p>
+
+<pre>
+`xcode-select -print-path`/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication
+</pre>
+
+
+<p>添加<code>-help</code>参数查看<strong>PackageApplication</strong>用法帮助，或者添加<code>-man</code>参数查看完整的帮助信息。</p>
+
+<pre>
+`xcode-select -print-path`/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication -help
+Usage:
+    PackageApplication [-s signature] application [-o output_directory]
+    [-verbose] [-plugin plugin] || -man || -help
+
+    Options:
+
+        -s   certificate name to resign application before packaging
+        -o              specify output filename
+        -plugin         specify an optional plugin
+        -help           brief help message
+        -man            full documentation
+        -v[erbose]      provide details during operation
+</pre>
+
+
+<p><a href="http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/">More Useful</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[翻译]WRITE OBJECTIVE-C CODE — BLOCKS]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/10/write-objective-c-code-blocks/"/>
+    <updated>2013-01-10T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/10/write-objective-c-code-blocks</id>
+    <content type="html"><![CDATA[<p>一直对<strong>Blocks</strong>理解不是很深.特用白话翻译一小篇文章, 可能会使自己记得更清楚.</p>
+
+<p>下文翻译自Apple Document <a href="https://developer.apple.com/library/mac/#referencelibrary/GettingStarted/RoadMapOSX/">Start Developing iOS Apps Today</a>中<a href="https://developer.apple.com/library/mac/#referencelibrary/GettingStarted/RoadMapOSX/books/WriteObjective-CCode/WriteObjective-CCode/WriteObjective-CCode.html" target="_blank">Write Objective-C Code</a>那篇<strong>Blocks</strong>.</p>
+
+<!--more-->
+
+
+<p><strong>Blocks</strong>,说白了就是可以在任何时候被多次执行封装好了的一段代码功能. 本质上是方便的匿名函数, 可以作为参数传递给一个方法或函数, 或者作为结果返回. <strong>Blocks</strong> 自己也可以有参数列表的定义和一个可以被检查出来的或者明确的返回类型声明.</p>
+
+<p>我们能用Blocks干什么呢？ 它可以指派到一个变量上, 或者说把一个Blocks赋值给一个变量, 这样就可以把这个变量当成函数一样来用了.</p>
+
+<blockquote><p>Blocks are objects that encapsulate a unit of work—that is, a segment of code—that can be executed at any time. They are essentially portable and anonymous functions that one can pass in as parameters of methods and functions or that can be returned from methods and functions. Blocks themselves have a typed parameter list and may have an inferred or a declared return type. You can also assign a block to a variable and then call it just as you would a function.</p></blockquote>
+
+<p>那么Blocks怎么书写呢? <strong>Blocks</strong> 的语法标示符是（<strong>^</strong>）打头,下图具体格式展示了把一个 block 赋值个一个变量.</p>
+
+<blockquote><p>A caret (^) is used as a syntactic marker for blocks. There are other, familiar syntactic conventions for parameters, return values, and body of the block (that is, the executed code). The following figure explicates the syntax, specifically when assigning a block to a variable.</p></blockquote>
+
+<p><img src="http://leolovenet.com/downloads/images/blocks_2x-1024x377.png" title="object-c block syntax" alt="blocks_2x-1024x377.png" /></p>
+
+<p>上面首先声明了一个变量<code>multiplier</code>,然后又实现了一个有一个<code>int</code>型参数和返回值是<code>int</code>型的 <strong>Block</strong>, 并把它赋值给了<code>myBlock</code>.<br/>
+现在就可以把<code>myBlock</code>当做一个函数来调用了, 例如这样：</p>
+
+<blockquote><p>You can then call the block variable as if it were a function:</p></blockquote>
+
+<pre>
+int result = myBlock(4); // 返回结果是 28
+</pre>
+
+
+<p>说完了格式, 该说作用域了. block跟调用它的主体共享作用域的. 也就是说, 如果你实现了一个方法, 并且在该方法里定义了一个 <strong>block</strong>, 那么在这个 <strong>block</strong> 内部就可以直接访问这个方法的局域变量和参数, 就像该函数访问全局变量一样. 但是, 这种访问的变量是只读的. 什么？我要在block里修改这个变量怎么办？那就需要这个变量在声明的时候以 <code>__block</code> 修饰符(<strong>双下划线</strong>)开头,这样这个变量就可以在block里被修改了. 还值得一说的是, 即使一个方法或者函数内的block被当做返回值返回, 然后此方法或者函数内的局部作用域被销毁, 此方法或者函数内部被block引用的本地变量仍然被当做block对象的一部分被保留, 直到block不再引用它们.</p>
+
+<blockquote><p>A block shares data in the local lexical scope. This characteristic of blocks is useful because if you implement a method and that method defines a block, the block has access to the local variables and parameters of the method (including stack variables) as well as to functions and global variables, including instance variables. This access is read-only, but if a variable is declared with the __block modifier, its value can be changed within the block. Even after the method or function enclosing a block has returned and its local scope has been destroyed, the local variables persist as part of the block object as long as there is a reference to the block.</p></blockquote>
+
+<p>跟<strong>blocks</strong>被作为一个方法或函数的参数使用一样, blocks也可以作为这个方法或函数的 &ldquo;回调函数&rdquo;, 当我们在调用这个方法或函数的时候, 它们执行自己的代码, 而为了请求额外的信息或为了特殊的目的, 在合适的时间调用 <strong>blocks</strong>, 从而实现 &ldquo;回调函数&rdquo; 的功能. 相对于其他函数调用规则,block和调用主体共享作用域.</p>
+
+<blockquote><p>As method or function parameters, blocks can serve as a callback. When invoked, the method or function performs some work and, at the appropriate moments, calls back to the invoking code—via the block—to request additional information or to obtain program-specific behavior from it. Blocks enable the caller to provide the callback code at the point of invocation. Instead of packaging the required data in a “context” structure, blocks capture data from the same lexical scope as the host method or function. Because the block code does not have to be implemented in a separate method or function, your implementation code can be simpler and easier to understand.</p></blockquote>
+
+<p>Objective-C 框架里有很多带 block 参数的方法.比如, Foundation框架里的<code>NSNotificationCenter</code>类就声明了下面的这样的一个带 block 参数的方法:</p>
+
+<blockquote><p>Objective-C frameworks have many methods with block parameters. For example, the NSNotificationCenter class of the Foundation framework declares the following method, which has a block parameter:</p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='obj-c'><span class='line'><span class="k">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nf">addObserverForName:</span><span class="p">(</span><span class="n">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">name</span> <span class="nf">object:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">obj</span> <span class="nf">queue:</span><span class="p">(</span><span class="n">NSOperationQueue</span> <span class="o">*</span><span class="p">)</span><span class="nv">queue</span> <span class="nf">usingBlock:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="n">note</span><span class="p">))</span><span class="nv">block</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法添加了一个监控器到通知中心.当一个符合指定名字的通知到达时, block 就负责处理. 像下面的代码一样:</p>
+
+<blockquote><p>This method adds an observer to the notification center (notifications are discussed in Streamline Your App with Design Patterns). When a notification of the specified name is posted, the block is invoked to handle the notification.</p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='obj-c'><span class='line'><span class="n">opQ</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSOperationQueue</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>    <span class="p">[[</span><span class="n">NSNotificationCenter</span> <span class="n">defaultCenter</span><span class="p">]</span> <span class="nl">addObserverForName:</span><span class="s">@&quot;CustomOperationCompleted&quot;</span>
+</span><span class='line'>             <span class="nl">object:</span><span class="nb">nil</span> <span class="nl">queue:</span><span class="n">opQ</span>
+</span><span class='line'>        <span class="nl">usingBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">NSNotification</span> <span class="o">*</span><span class="n">notif</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// 处理通知消息的代码放到这里</span>
+</span><span class='line'>    <span class="p">}];</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[查看app里被Xcode优化了的png图片]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/10/Viewing-iOS-Optimized-PNGs/"/>
+    <updated>2013-01-10T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/10/Viewing-iOS-Optimized-PNGs</id>
+    <content type="html"><![CDATA[<p>问题:当我们构建自己的ios app时，Xcode会优化压缩我们的程序里的png图片，如果想再次查看正常图片的话，需要反压缩，怎么做呢？<br/>
+答案：用Xcode自带的工具。</p>
+
+<p><strong>Q: When I build my iOS application, Xcode optimizes the PNG files within my application’s bundle, meaning that Preview can’t display them. How can I view these optimized files?</strong></p>
+
+<p>A: This optimization is done by the <strong>pngcrush</strong> tool, which you can find inside Xcode. The <strong>pngcrush</strong> tool supports a command line option, <code>-revert-iphone-optimizations</code>, that undoes the optimizations done during the Xcode build process. So, to view an optimized PNG file, you should first undo the optimization and then open it with Preview.</p>
+
+<p>Listing 1 shows how you can use the <strong>pngcrush</strong> tool to convert an iOS-optimized PNG file (<code>Local.png</code>) to a standard PNG file (<code>Local-standard.png</code>).</p>
+
+<p><strong>Listing 1:</strong> Undoing iOS PNG optimization</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>/Applications/Xcode.app/Contents/Developer<span class="se">\</span>
+</span><span class='line'>/Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush <span class="se">\</span>
+</span><span class='line'>-revert-iphone-optimizations -q Local.png Local-standard.png
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you have Xcode installed in a non-standard place, you can locate the tool using <strong>xcode-select</strong>, as shown in Listing 2.</p>
+
+<p><strong>Listing 2:</strong> Using <strong>xcode-select</strong> to locate pngcrush</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="s2">&quot;`xcode-select -print-path`&quot;</span><span class="se">\</span>
+</span><span class='line'>/Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush <span class="se">\</span>
+</span><span class='line'>-revert-iphone-optimizations -q Local.png Local-standard.png
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[利用php+Bootstrap+QQwrt.dat展示你的IP和位置信息]]></title>
+    <link href="http://leolovenet.com/blog/2012/12/22/ShowYourIP/"/>
+    <updated>2012-12-22T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2012/12/22/ShowYourIP</id>
+    <content type="html"><![CDATA[<p>ShowYourIP利用php+Bootstrap+QQwrt.dat展示用户IP和位置信息，并可以利用ajax查询任意ip地址的物理位置。 <a href="https://github.com/leolovenet/ShowYourIP">GitHub</a>.</p>
+
+<p><img src="https://raw.github.com/leolovenet/ShowYourIP/master/showYourIP.png" title="showYourIP" alt="showYourIP.png" /></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[手工编译安装Mysql+Nginx+PHP+CentOS+wordpress]]></title>
+    <link href="http://leolovenet.com/blog/2012/12/19/mysql-nginx-php-linux-wordpress/"/>
+    <updated>2012-12-19T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2012/12/19/mysql-nginx-php-linux-wordpress</id>
+    <content type="html"><![CDATA[<p>首先,关于这个组合非常的出名,(早先是apache用做web服务,后被nginx篡位), 他们的好处就不细讲了,具体的可以看一下<a href="http://blog.s135.com/nginx_php_v6/" title="张宴" target="_blank">张宴同学的Nginx 0.8.x + PHP 5.2.13（FastCGI）搭建胜过Apache十倍的Web服务器（第6版）[原创]</a>,那篇文章写的很详细,不过有段时间没有更新了,有些软件有些老,而且我的搭建环境是在CentOS(x86_64)位下,有一些不同的地方.<br/>
+OK, Next.
+安装步骤为先安装Mysql, 然后PHP, 然后Nginx, 最后讲一下nginx下配置worldpress时怎样修改配置文件.<br/>
+顺便说一下,本文中提到的所有开源软件截止到<span style="color:red;">2012年12月21日</span>,全部为最新<strong>稳定版</strong>.</p>
+
+<p>本文提及的所有的软件全部下载到了<code>/data/packages/</code>目录下.
+本文提及的所有的软件全部安装到了<code>/data/webservers/</code>目录下.
+(如果你的安装环境跟本文有出处的话,只需要在下面的初始环境命令中更换变量<code>{TEMP_DIR_PACKAGES|TEMP_DIR_WEBSERVERS}</code>即可)
+本文所有安装的新服务都会利用<code>chkconfig</code>添加到系统启动服务里,确保机器重启后服务能够自动启动.<br/>
+本文所有安装好的新服务都可以利用标准的命令格式<code>/etc/init.d/XXX {start|stop|restart|reload}</code>进行手工的<code>{start|stop|restart|reload}</code><br/>
+Ready Go.<br/>
+初步准备,利用CentOS系统自带的yum命令安装、升级所需的程序库,建立基本目录,构建初始环境.</p>
+
+<!--more-->
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p /data/packages
+</span><span class='line'>mkdir -p /data/webservers
+</span><span class='line'><span class="nb">export </span><span class="nv">TEMP_DIR_PACKAGES</span><span class="o">=</span>/data/packages
+</span><span class='line'><span class="nb">export </span><span class="nv">TEMP_DIR_WEBSERVERS</span><span class="o">=</span>/data/webservers
+</span><span class='line'>yum -y install gcc gcc-c++ autoconf libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel libidn libidn-devel openssl openssl-devel openldap openldap-devel openldap-clients openldap-servers cmake
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>敲入回车之后,让yum飞一会&hellip; &hellip;</p>
+
+<h2>Mysql</h2>
+
+<p>我们第一个要安装mysql,全部安装命令如下,注意我把下载的压缩包的详细版本换成了<code>*</code>,这样有助与解决小版本的不同,可能你下载的mysql会升级小版本号:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_PACKAGES</span>
+</span><span class='line'>wget http://dev.mysql.com/downloads/mirror.php?id<span class="o">=</span>411115
+</span><span class='line'>tar -zxf mysql-5.5.*.tar.gz
+</span><span class='line'><span class="nb">cd </span>mysql-5.5.*
+</span><span class='line'>groupadd mysql
+</span><span class='line'>useradd -r -g mysql mysql
+</span><span class='line'>cmake -D  CMAKE_INSTALL_PREFIX:PATH<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/  -D MYSQL_DATADIR:PATH<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/data/ .
+</span><span class='line'>make
+</span><span class='line'>make install
+</span><span class='line'>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;$TEMP_DIR_WEBSERVERS/mysql/lib/&quot;</span> &gt;&gt; /etc/ld.so.conf.d/webservers.conf
+</span><span class='line'>/sbin/ldconfig
+</span><span class='line'>
+</span><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/
+</span><span class='line'>chown -R mysql .
+</span><span class='line'>chgrp -R mysql .
+</span><span class='line'>scripts/mysql_install_db --user<span class="o">=</span>mysql
+</span><span class='line'>chown -R root .
+</span><span class='line'>chown -R mysql data
+</span><span class='line'>cp support-files/my-medium.cnf /etc/my.cnf
+</span><span class='line'>cp support-files/mysql.server /etc/init.d/mysql.server
+</span><span class='line'>chkconfig --add mysql.server
+</span><span class='line'>chkconfig --list mysql.server
+</span><span class='line'>/etc/init.d/mysql.server start
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>上面最后一行命令就是用我说的标准启动服务格式,开启mysql服务.当然你也可以用<code>service xxx start</code>这种格式.<br/>
+下面的的命令是可选的,你也可以不这样做,但是还是建议看一下,毕竟没有坏处只有好处.<br/>
+<strong>Next command is optional</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#运行脚本,给mysql的root用户设置密码,删除测试的用户和测试数据库</span>
+</span><span class='line'><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/bin/mysql_secure_installation
+</span><span class='line'><span class="c">#修改mysql配置文件,让它避免中文乱码问题</span>
+</span><span class='line'>vim /etc/my.cnf
+</span><span class='line'><span class="c">#在[client]后面添加</span>
+</span><span class='line'>default-character-set <span class="o">=</span> utf8
+</span><span class='line'><span class="c">#在[mysqld]后面添加</span>
+</span><span class='line'>character-set-server <span class="o">=</span> utf8
+</span><span class='line'><span class="c">#用你刚刚设置的root密码登陆mysql,为mysql创建一个新的用户</span>
+</span><span class='line'><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/bin/mysql -uroot -p
+</span><span class='line'>GRANT ALL PRIVILEGES ON *.* TO <span class="s1">&#39;leolovenet&#39;</span>@<span class="s1">&#39;%&#39;</span> IDENTIFIED BY <span class="s1">&#39;123&#39;</span>;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>安装php的依赖软件</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_PACKAGES</span>
+</span><span class='line'>
+</span><span class='line'>wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
+</span><span class='line'>tar zxf libiconv-1.14.tar.gz
+</span><span class='line'><span class="nb">cd </span>libiconv-1.14/
+</span><span class='line'>./configure
+</span><span class='line'>make
+</span><span class='line'>make install
+</span><span class='line'><span class="nb">cd</span> ../
+</span><span class='line'>
+</span><span class='line'>wget http://sourceforge.net/projects/mcrypt/files/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz/download
+</span><span class='line'>tar zxf libmcrypt-2.5.8.tar.gz
+</span><span class='line'><span class="nb">cd </span>libmcrypt-2.5.8/
+</span><span class='line'>./configure
+</span><span class='line'>make
+</span><span class='line'>make install
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;/usr/local/lib/&quot;</span> &gt;&gt; /etc/ld.so.conf.d/webservers.conf
+</span><span class='line'>/sbin/ldconfig
+</span><span class='line'><span class="nb">cd </span>libltdl/
+</span><span class='line'>./configure --enable-ltdl-install
+</span><span class='line'>make
+</span><span class='line'>make install
+</span><span class='line'><span class="nb">cd</span> ../../
+</span><span class='line'>
+</span><span class='line'>wget http://sourceforge.net/projects/mhash/files/latest/download
+</span><span class='line'>tar zxvf mhash-*.tar.gz
+</span><span class='line'><span class="nb">cd </span>mhash-*/
+</span><span class='line'>./configure
+</span><span class='line'>make
+</span><span class='line'>make install
+</span><span class='line'><span class="nb">cd</span> ../
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>wget http://sourceforge.net/projects/mcrypt/files/latest/download
+</span><span class='line'>tar zxvf mcrypt-*.tar.gz
+</span><span class='line'><span class="nb">cd </span>mcrypt-*/
+</span><span class='line'>/sbin/ldconfig
+</span><span class='line'>./configure
+</span><span class='line'>make
+</span><span class='line'>make install
+</span><span class='line'><span class="nb">cd</span> ../
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>安装php</h2>
+
+<p>因为我的机器是x86_64位环境,所以在配置php的时候加入了<code>--with-libdir=lib64</code>选项.<br/>
+此时,php会检查mysql的<code>$TEMP_DIR_WEBSERVERS/mysql/lib64</code>目录,而不是<code>$TEMP_DIR_WEBSERVERS/mysql/lib</code>目录,所以我们加入了一个软链接</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ln -s <span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/lib <span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/lib64
+</span><span class='line'>
+</span><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_PACKAGES</span>
+</span><span class='line'>wget http://cn2.php.net/get/php-5.3.20.tar.gz/from/this/mirror
+</span><span class='line'>tar zxf php-5.3.20.tar.gz
+</span><span class='line'><span class="nb">cd </span>php-5.3.20
+</span><span class='line'>./configure --prefix<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/php --with-config-file-path<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/php/etc --with-mysql<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql --with-mysqli<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/bin/mysql_config --with-iconv-dir<span class="o">=</span>/usr/local --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-libxml-dir<span class="o">=</span>/usr --enable-xml --disable-rpath  --enable-safe-mode --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --with-curl --with-curlwrappers --enable-mbregex  --enable-fpm  --enable-mbstring --with-mcrypt --with-gd --enable-gd-native-ttf --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-ldap --with-ldap-sasl --with-xmlrpc --enable-zip --enable-soap --enable-sqlite-utf8 --with-libdir<span class="o">=</span>lib64
+</span><span class='line'>make <span class="nv">ZEND_EXTRA_LIBS</span><span class="o">=</span><span class="s1">&#39;-liconv&#39;</span>
+</span><span class='line'>make install
+</span><span class='line'>cp <span class="nv">$TEMP_DIR_PACKAGES</span>/php-5.3.20/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+</span><span class='line'>chmod 755 /etc/init.d/php-fpm
+</span><span class='line'>chkconfig --add php-fpm
+</span><span class='line'>cp <span class="nv">$TEMP_DIR_PACKAGES</span>/php-5.3.20/php.ini-production <span class="nv">$TEMP_DIR_WEBSERVERS</span>/php/etc/php.ini
+</span><span class='line'>cp <span class="nv">$TEMP_DIR_WEBSERVERS</span>/php/etc/php-fpm.conf.default <span class="nv">$TEMP_DIR_WEBSERVERS</span>/php/etc/php-fpm.conf
+</span><span class='line'>
+</span><span class='line'><span class="c">#手工修改php.ini文件,vim $TEMP_DIR_WEBSERVERS/php/etc/php.ini</span>
+</span><span class='line'><span class="c">#修改cgi.fix_pathinfo=0,防止Nginx文件类型错误解析漏洞.</span>
+</span><span class='line'><span class="c">#手工修改vim $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.ini文件,根据自己机器的内存大小,修改php-fpm开启的运行进程数</span>
+</span><span class='line'><span class="c">#pm.max_spare_servers = 5</span>
+</span><span class='line'>
+</span><span class='line'>/etc/init.d/php-fpm start
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Nginx</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://sourceforge.net/projects/pcre/files/latest/download
+</span><span class='line'>tar zxf pcre-*
+</span><span class='line'><span class="nb">cd </span>pcre-*/
+</span><span class='line'>./configure
+</span><span class='line'>make <span class="o">&amp;&amp;</span> make install
+</span><span class='line'><span class="nb">cd</span> ../
+</span><span class='line'>
+</span><span class='line'>wget http://nginx.org/download/nginx-1.2.6.tar.gz
+</span><span class='line'>./configure --user<span class="o">=</span>www --group<span class="o">=</span>www --prefix<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/nginx --with-http_stub_status_module --with-http_ssl_module
+</span><span class='line'>make <span class="o">&amp;&amp;</span> make install
+</span><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_WEBSERVERS</span>/nginx/conf
+</span><span class='line'>mkdir global
+</span><span class='line'>mkdir vhost
+</span><span class='line'>mkdir -p <span class="nv">$TEMP_DIR_WEBSERVERS</span>/www/other/
+</span><span class='line'>mv nginx.conf nginx.conf.org
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>手工编辑 <code>vim $TEMP_DIR_WEBSERVERS/nginx/conf/nginx.conf</code>,输入下面的内容.<br/>
+注意下面内容的路径<code>/data/webservers</code>,如果你的环境不同,请手工更换.</p>
+
+<pre>
+user  www www;
+#ususally equal to number of CPU's you have. run command "grep processor /proc/cpuinfo | wc -l" to find it
+worker_processes  1;
+error_log  /data/webservers/nginx/logs/nginx_error.log  crit;
+pid        /data/webservers/nginx/nginx.pid;
+
+#Specifies the value for maximum file descriptors that can be opened by this process. 
+#worker_rlimit_nofile 65535;
+
+events {
+    #use epoll;
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+      
+    #rewrite_log on;
+    sendfile on;
+    #tcp_nopush     on;
+    keepalive_timeout 3;
+    #tcp_nodelay on;
+    
+    fastcgi_connect_timeout 300;
+    fastcgi_send_timeout 300;
+    fastcgi_read_timeout 300;
+    fastcgi_buffer_size 64k;
+    fastcgi_buffers 4 64k;
+    fastcgi_busy_buffers_size 128k;
+    fastcgi_temp_file_write_size 128k;
+  
+    gzip on;
+    gzip_min_length  1k;
+    gzip_buffers     4 16k;
+    gzip_http_version 1.0;
+    gzip_comp_level 2;
+    gzip_types       text/plain application/x-javascript text/css application/xml;
+    gzip_vary on;
+
+    #php max upload limit cannot be larger than this       
+    client_max_body_size 13m;
+    server_names_hash_bucket_size 128;
+    client_header_buffer_size 32k;
+    large_client_header_buffers 4 32k;
+      
+    index  index.php index.html index.htm;
+  # Upstream to abstract backend connection(s) for PHP.
+    upstream php {
+                #this should match value of "listen" directive in php-fpm pool
+                #server unix:/tmp/php-fpm.sock;
+                server 127.0.0.1:9000;
+      }
+
+    log_format  access  '$remote_addr - $remote_user [$time_local] "$request" '
+              '$status $body_bytes_sent "$http_referer" '
+              '"$http_user_agent" $http_x_forwarded_for';
+
+    server  {
+        listen       80;
+        server_name  bbkanba.com  www.bbkanba.com;
+        charset utf-8;
+      root      /data/webservers/www/other/;
+      access_log  /data/webservers/nginx/logs/access.log  access;
+    
+    include   global/restrictions.conf;
+    include   global/php.conf;
+    } 
+  include vhost/*.conf;
+}
+</pre>
+
+
+<p>进入到<code>cd $TEMP_DIR_WEBSERVERS/nginx/conf/global/</code>,创建php.conf,输入下面的内容:</p>
+
+<pre>
+# Pass all .php files onto a php-fpm/php-fcgi server.
+location ~ \.php$ {
+    # Zero-day exploit defense.
+    # http://forum.nginx.org/read.php?2,88845,page=3
+    # Won't work properly (404 error) if the file is not stored on this server, which is entirely possible with php-fpm/php-fcgi.
+    # Comment the 'try_files' line out if you set up php-fpm/php-fcgi on another machine.  And then cross your fingers that you won't get hacked.
+    try_files $uri =404;
+
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+
+    include fastcgi_params;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    #fastcgi_intercept_errors on;
+    fastcgi_pass php;
+}
+</pre>
+
+
+<p>继续创建restrictions.conf,输入下面的内容:</p>
+
+<pre>
+# Global restrictions configuration file.
+# Designed to be included in any server {} block.
+
+location = /favicon.ico {
+  log_not_found off;
+  access_log off;
+}
+
+location = /robots.txt {
+  allow all;
+  log_not_found off;
+  access_log off;
+}
+
+# Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
+# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+location ~ /\. {
+  deny all;
+}
+
+# Deny access to any files with a .php extension in the uploads directory
+# Works in sub-directory installs and also in multisite network
+# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+location ~* /(?:uploads|files)/.*\.php$ {
+  deny all;
+}
+</pre>
+
+
+<p>配置文件创建完毕,为了遵循我们之前说的,可以用<code>/etc/init.d/XXX {start|stop|restart|reload}</code>这种格式进行服务的控制,需要手工创建脚本,<br/>
+<code>vim /etc/init.d/nginx</code>,输入下面内容:<br/>
+注意下面内容的路径<code>/data/webservers</code>,如果你的环境不同,请手工更换.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'><span class="c"># nginx - this script starts and stops the nginx daemon</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># chkconfig:   - 85 15</span>
+</span><span class='line'><span class="c"># Required-Start:    $remote_fs $network</span>
+</span><span class='line'><span class="c"># Required-Stop:     $remote_fs $network</span>
+</span><span class='line'><span class="c"># Default-Start:     2 3 4 5</span>
+</span><span class='line'><span class="c"># Default-Stop:      0 1 6</span>
+</span><span class='line'><span class="c"># description:  Nginx is an HTTP(S) server, HTTP(S) reverse \</span>
+</span><span class='line'><span class="c">#               proxy and IMAP/POP3 proxy server</span>
+</span><span class='line'><span class="c"># processname: nginx</span>
+</span><span class='line'><span class="c"># config:      /data/webservers/nginx/conf/nginx.conf</span>
+</span><span class='line'><span class="c"># pidfile:     /data/webservers/nginx/nginx.pid</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Source function library.</span>
+</span><span class='line'>. /etc/rc.d/init.d/functions
+</span><span class='line'>
+</span><span class='line'><span class="c"># Source networking configuration.</span>
+</span><span class='line'>. /etc/sysconfig/network
+</span><span class='line'>
+</span><span class='line'><span class="c"># Check that networking is up.</span>
+</span><span class='line'><span class="o">[</span> <span class="s2">&quot;$NETWORKING&quot;</span> <span class="o">=</span> <span class="s2">&quot;no&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>0
+</span><span class='line'>
+</span><span class='line'><span class="nv">nginx</span><span class="o">=</span><span class="s2">&quot;/data/webservers/nginx/sbin/nginx&quot;</span>
+</span><span class='line'><span class="nv">prog</span><span class="o">=</span><span class="k">$(</span>basename <span class="nv">$nginx</span><span class="k">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">NGINX_CONF_FILE</span><span class="o">=</span><span class="s2">&quot;/data/webservers/nginx/conf/nginx.conf&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">[</span> -f /etc/sysconfig/nginx <span class="o">]</span> <span class="o">&amp;&amp;</span> . /etc/sysconfig/nginx
+</span><span class='line'>
+</span><span class='line'><span class="nv">lockfile</span><span class="o">=</span>/var/lock/subsys/nginx
+</span><span class='line'>
+</span><span class='line'>make_dirs<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>   <span class="c"># make required directories</span>
+</span><span class='line'>   <span class="nv">user</span><span class="o">=</span><span class="sb">`</span><span class="nv">$nginx</span> -V 2&gt;&amp;1 | grep <span class="s2">&quot;configure arguments:&quot;</span> | sed <span class="s1">&#39;s/[^*]*--user=\([^ ]*\).*/\1/g&#39;</span> -<span class="sb">`</span>
+</span><span class='line'>   <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;`grep $user /etc/passwd`&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">       </span>useradd -M -s /bin/nologin <span class="nv">$user</span>
+</span><span class='line'>   <span class="k">fi</span>
+</span><span class='line'><span class="k">   </span><span class="nv">options</span><span class="o">=</span><span class="sb">`</span><span class="nv">$nginx</span> -V 2&gt;&amp;1 | grep <span class="s1">&#39;configure arguments:&#39;</span><span class="sb">`</span>
+</span><span class='line'>   <span class="k">for </span>opt in <span class="nv">$options</span>; <span class="k">do</span>
+</span><span class='line'><span class="k">       if</span> <span class="o">[</span> <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$opt</span> | grep <span class="s1">&#39;.*-temp-path&#39;</span><span class="sb">`</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">           </span><span class="nv">value</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$opt</span> | cut -d <span class="s2">&quot;=&quot;</span> -f 2<span class="sb">`</span>
+</span><span class='line'>           <span class="k">if</span> <span class="o">[</span> ! -d <span class="s2">&quot;$value&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'>               <span class="c"># echo &quot;creating&quot; $value</span>
+</span><span class='line'>               mkdir -p <span class="nv">$value</span> <span class="o">&amp;&amp;</span> chown -R <span class="nv">$user</span> <span class="nv">$value</span>
+</span><span class='line'>           <span class="k">fi</span>
+</span><span class='line'><span class="k">       fi</span>
+</span><span class='line'><span class="k">   done</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>start<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="o">[</span> -x <span class="nv">$nginx</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">exit </span>5
+</span><span class='line'>    <span class="o">[</span> -f <span class="nv">$NGINX_CONF_FILE</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">exit </span>6
+</span><span class='line'>    make_dirs
+</span><span class='line'>    <span class="nb">echo</span> -n <span class="s2">$&quot;Starting $prog: &quot;</span>
+</span><span class='line'>    daemon <span class="nv">$nginx</span> -c <span class="nv">$NGINX_CONF_FILE</span>
+</span><span class='line'>    <span class="nv">retval</span><span class="o">=</span><span class="nv">$?</span>
+</span><span class='line'>    <span class="nb">echo</span>
+</span><span class='line'>    <span class="o">[</span> <span class="nv">$retval</span> -eq 0 <span class="o">]</span> <span class="o">&amp;&amp;</span> touch <span class="nv">$lockfile</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nv">$retval</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>stop<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nb">echo</span> -n <span class="s2">$&quot;Stopping $prog: &quot;</span>
+</span><span class='line'>    killproc <span class="nv">$prog</span> -QUIT
+</span><span class='line'>    <span class="nv">retval</span><span class="o">=</span><span class="nv">$?</span>
+</span><span class='line'>    <span class="nb">echo</span>
+</span><span class='line'>    <span class="o">[</span> <span class="nv">$retval</span> -eq 0 <span class="o">]</span> <span class="o">&amp;&amp;</span> rm -f <span class="nv">$lockfile</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nv">$retval</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>restart<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    configtest <span class="o">||</span> <span class="k">return</span> <span class="nv">$?</span>
+</span><span class='line'>    stop
+</span><span class='line'>    sleep 1
+</span><span class='line'>    start
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>reload<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    configtest <span class="o">||</span> <span class="k">return</span> <span class="nv">$?</span>
+</span><span class='line'>    <span class="nb">echo</span> -n <span class="s2">$&quot;Reloading $prog: &quot;</span>
+</span><span class='line'>    killproc <span class="nv">$nginx</span> -HUP
+</span><span class='line'>    <span class="nv">RETVAL</span><span class="o">=</span><span class="nv">$?</span>
+</span><span class='line'>    <span class="nb">echo</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>force_reload<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    restart
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>configtest<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nv">$nginx</span> -t -c <span class="nv">$NGINX_CONF_FILE</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>rh_status<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    status <span class="nv">$prog</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>rh_status_q<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    rh_status &gt;/dev/null 2&gt;&amp;1
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">case</span> <span class="s2">&quot;$1&quot;</span> in
+</span><span class='line'>    start<span class="o">)</span>
+</span><span class='line'>        rh_status_q <span class="o">&amp;&amp;</span> <span class="nb">exit </span>0
+</span><span class='line'>        <span class="nv">$1</span>
+</span><span class='line'>        ;;
+</span><span class='line'>    stop<span class="o">)</span>
+</span><span class='line'>        rh_status_q <span class="o">||</span> <span class="nb">exit </span>0
+</span><span class='line'>        <span class="nv">$1</span>
+</span><span class='line'>        ;;
+</span><span class='line'>    restart|configtest<span class="o">)</span>
+</span><span class='line'>        <span class="nv">$1</span>
+</span><span class='line'>        ;;
+</span><span class='line'>    reload<span class="o">)</span>
+</span><span class='line'>        rh_status_q <span class="o">||</span> <span class="nb">exit </span>7
+</span><span class='line'>        <span class="nv">$1</span>
+</span><span class='line'>        ;;
+</span><span class='line'>    force-reload<span class="o">)</span>
+</span><span class='line'>        force_reload
+</span><span class='line'>        ;;
+</span><span class='line'>    status<span class="o">)</span>
+</span><span class='line'>        rh_status
+</span><span class='line'>        ;;
+</span><span class='line'>    condrestart|try-restart<span class="o">)</span>
+</span><span class='line'>        rh_status_q <span class="o">||</span> <span class="nb">exit </span>0
+</span><span class='line'>            ;;
+</span><span class='line'>    *<span class="o">)</span>
+</span><span class='line'>        <span class="nb">echo</span> <span class="s2">$&quot;Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}&quot;</span>
+</span><span class='line'>        <span class="nb">exit </span>2
+</span><span class='line'><span class="k">esac</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后,需要赋予脚本可执行权限:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>chmod 755 /etc/init.d/nginx
+</span><span class='line'>chkconfig --add nginx
+</span><span class='line'>/etc/init.d/nginx start
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>到此,nginx+php+mysql已经部署完毕.下面是配置wordpress了.</p>
+
+<h2>wordpress</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_PACKAGES</span>
+</span><span class='line'>wget http://wordpress.org/latest.zip
+</span><span class='line'>unzip latest.zip
+</span><span class='line'>mv wordpress <span class="nv">$TEMP_DIR_WEBSERVERS</span>/www/
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>剩下的是添加wordpress的nginx配置文件:<code>vim $TEMP_DIR_WEBSERVERS/www/nginx/conf/global/wordpress.conf</code></p>
+
+<pre>
+# WordPress single blog rules.
+# Designed to be included in any server {} block.
+
+# This order might seem weird - this is attempted to match last if rules below fail.
+# http://wiki.nginx.org/HttpCoreModule
+location / {
+  try_files $uri $uri/ /index.php?$args;
+}
+
+# Add trailing slash to */wp-admin requests.
+rewrite /wp-admin$ $scheme://$host$uri/ permanent;
+
+# Directives to send expires headers and turn off 404 error logging.
+location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+       access_log off; log_not_found off; expires max;
+}
+
+# Uncomment one of the lines below for the appropriate caching plugin (if used).
+#include global/wordpress-wp-super-cache.conf;
+#include global/wordpress-w3-total-cache.conf;
+</pre>
+
+
+<p>接着是另外一个配置文件:<code>vim $TEMP_DIR_WEBSERVERS/www/nginx/conf/vhost/wordpress.conf</code></p>
+
+<pre>
+server {
+    listen       80;
+    server_name  blog.bbkanba.com;
+    charset utf-8;
+    index index.html index.php;
+    root  /data/webservers/www/wordpress/;
+    access_log  /data/webservers/nginx/logs/wordpress.log  access;
+
+    include   global/restrictions.conf;
+    include   global/php.conf;  
+    include   global/wordpress.conf;
+}
+</pre>
+
+
+<p>接着重新加载一下nginx的配置文件</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>/etc/init.d/nginx reload
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>你就可以访问自己上面配置的blog地址, <code>http://blog.bbkanba.com</code>, 进行著名的5分钟安装了.<br/>
+如果你需要在nginx上使用更高级的cache规则,对wordpress进行优化的话,建议查看这里:</p>
+
+<p><a href="http://codex.wordpress.org/Nginx">http://codex.wordpress.org/Nginx</a></p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,1434 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Config Awstats on Window2003 or Linux With GeoIP/QQWry - 末日前几天</title>
+  <meta name="author" content="leolovenet">
+
+  
+  <meta name="description" content="这里是leolovenet的记忆自留地,有关leolovenet的信息." />
+  
+  <meta name="keywords" content="leolovenet,末日前几天,the days before the doomsday" />
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://leolovenet.com/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="末日前几天" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37154253-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">末日前几天</a></h1>
+  
+    <h2>the days before the doomsday</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:leolovenet.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Config Awstats on Window2003 or Linux With GeoIP/QQWry</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-19T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><img src="/downloads/images/awstats.png" title="awstats example" alt="awstats.png" /></p>
+
+<p>Awstats是一个日志分析工具(web log分析为强),很好很强大,不多解释,感兴趣的wiki一下。这是一个安装教程文章.</p>
+
+<p>首先是awstas在windows 2003下与iis6的配置过程,然后是在Linux下和Nginx一起的配置，紧跟着Linux下与Lighttpd一起配置的过程,总之,这个可能是目前市面上最仔细全面安装awstas的教程了.</p>
+
+<!--more-->
+
+
+<p>Awstas官方网站de下载地址<a href="http://awstats.sourceforge.net/#DOWNLOAD">点击这里</a>.<br/>
+目前为止最新版本是7.1 释放时间是 <strong>2012-12-20 18:32</strong></p>
+
+<p>本文将会安装awstas的插件与启用的功能如下列表:</p>
+
+<pre>
+GeoIP       显示IP属于那个国家
+GeoLiteCity 显示IP属于那个城市
+hostinfo    可以查询IP的Whois信息
+qqhostinfo  显示IP纯真版数据库de信息
+decodeutfkeys   解决"用以搜索的关键词"乱码
+timezone    解决windows平台下的日志时间差8小时问题
+day-by-day  可以根据日期(以天为单位)查看日志的js
+tooltips    显示一些详细的提示信息
+AllowToUpdateStatsFromBrowser 允许通过浏览器执行更新,显示最新的日志分析结果
+</pre>
+
+
+<h2>1. Install Awstats with IIS6 under windowns 2003</h2>
+
+<p>用Windows做服务器真心难用,所以安装配置起来最麻烦.<br/>
+在windows平台下载Zip版本的<a href="http://prdownloads.sourceforge.net/awstats/awstats-7.1.zip">7.1稳定发行包</a></p>
+
+<p>Awstas是用perl（一个夸平台脚本语言）写成的, 所以要在windows平台下工作的话,必须先安装搭建Perl语言环境. 在windows平台下, 我们需要安装ActivePerl的免费版本.<br/>
+ActivePerl官方网站de下载地址<a href="http://www.activestate.com/activeperl">点击这里</a>,截止今天,最新版本是 <strong>5.16.2.1602</strong> ,在官方下载页面根据自己的操作系统选择下载64位还是32位的安装包.</p>
+
+<p>安装过程直接点击下一步下一步就可以了.没有什么要特别要特别注意的,只是在选择安装路径的时候,如果不能默认的<code>c:\Perl</code>的话,就放到其他盘符里吧,类似<code>D:\Perl</code>,不要安装在乱七八糟的路径下,避免不必要的错误.验证安装是否完成的的办法,我认为最好的是注销一下当前用户,再登陆进来,然后点击<code>开始 &gt;&gt; 运行 &gt;&gt; cmd</code>,然后输入命令<code>perl -v</code>,看看反应,如果能正常打印perl的版本号的话,就说明安装的没有问题,反之,就不用再往下看了,因为必须解决这个问题才可以往下进行.</p>
+
+<p>一般安装包会自动整合Perl的功能到IIS6中去,但如果你发现它没有做到的话,也不用着急,手动添加一下就好了,很容易,检查方法,打开 <code>"Internet 信息服务(IIS)管理器" – "Web服务扩展" – 查看右面"web 服务器扩展"</code> 列表里有没有Perl的字样.如果没有的话,就点击<code>添加一个新的web服务扩展</code>,如图1-1,填写扩展名(当然你也可以自己随便定义扩展名,只要你喜欢),然后点击添加按钮,然后根据你的Perl安装路径填写,比如,<code>c:\Perl\bin\perl.exe "%s" %s</code>,这里我的Perl安装路径是默认的<code>c:\Perl</code>, 如果你的不同,请做相应修改,点击确定完成. 这样你就可以通过浏览器查看perl在iis上的执行结果了,这是进行下面步骤的基础.</p>
+
+<p>图1-1
+<img src="/downloads/images/awstats.1-1.png" alt="awstats.1-1.png" /></p>
+
+<p>因为IIS6的默认日志格式很奇特,所以想要用awstas分析的话,需要修改一下默认的日志的格式.具体步骤,打开 &ldquo;Internet 信息服务(IIS)管理器&rdquo; ,在网站列表中找到你想要分析日志的网站,右击选择属性,在网站标签下,确保 &ldquo;启用日志记录&rdquo; 被勾选着,然后点击右边的属性按钮,确保日志计划是 &ldquo;每天&rdquo;, 勾选 &ldquo;文件命名和创建使用当地时间&rdquo;, 并记住 &ldquo;日志文件路径&rdquo; 待会我们会进到这个目录里(如图1-2).</p>
+
+<p>图1-2<br/>
+<img src="/downloads/images/awstats.1-2.png" alt="awstats.1-2.png" /></p>
+
+<p>然后点击高级标签(如图1-3).关键时刻来临了,兴奋起来吧!这里你真的不能出错,一定要再三检查你勾选的选项,不然很容易出错,还不容易发现.</p>
+
+<p>图1-3
+<img src="/downloads/images/awstats.1-3.png" alt="awstats.1-3.png" /></p>
+
+<p>请确保有且仅有以下几项是选中状态,不能多也不能少.</p>
+
+<pre>
+date
+time
+c-ip
+cs-username
+cs-method
+cs-uri-stem
+sc-status
+sc-bytes
+cs-version
+cs(User-Agent)
+cs(Referer)
+</pre>
+
+
+<p>然后点击确定,保存配置,再然后关掉网站,打开我的电脑,进入到上面说的 &ldquo;日志文件路径&rdquo; 中去,删除所有现有的日志,重新开始网站.</p>
+
+<p>下面建立两个目录(当然你也可以建立在其他盘符,不过要记得修改以下所有步骤的路径):</p>
+
+<pre>
+#用于存放awstats的程序文件
+C:\LogAnalyse\awstats
+#用于存放awstats程序分析log之后的结果数据文件
+C:\LogAnalyse\awstats_data_dir
+</pre>
+
+
+<p><span style="color: #d14;">右击awstats_data_dir目录选择属性,安全,添加Everyone的完全控制权限,不然无法从浏览器端更新.</span></p>
+
+<p>将下载下来的zip包解压,并把<code>wwwroot</code>目录下的所有内容放到<code>C:\LogAnalyse\awstats</code>下.<br/>
+进入到<code>C:\LogAnalyse\awstats\cgi-bin</code>目录下,新建一个叫<code>awstats.logWin.conf</code>的文件(必须叫这个名字,没得商量,待会要用的),然后输入下面的内容,注意修改<code>SiteDomain&lt;code&gt;与</code>LogFile</code>选项值.<br/>
+如果你想知道具体每个选项的意思<a href="http://awstats.sourceforge.net/docs/awstats_config.html">点击这里查看官网说明</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># AWSTATS CONFIGURE FILE</span>
+</span><span class='line'><span class="c">#需要分析的日志路径,注意替成 C:/WINDOWS/system32/LogFiles/W3SVC952692957  为图1-2中你的网站日志路径</span>
+</span><span class='line'><span class="nv">LogFile</span><span class="o">=</span><span class="s2">&quot;C:/WINDOWS/system32/LogFiles/W3SVC952692957/ex%YY-0%MM-0%DD-0.log&quot;</span>
+</span><span class='line'><span class="nv">LogType</span><span class="o">=</span>W
+</span><span class='line'><span class="c">#这个很重要,因为IIS6的日志不标准,木有办法啦</span>
+</span><span class='line'><span class="nv">LogFormat</span><span class="o">=</span><span class="s2">&quot;date time cs-method cs-uri-stem cs-username c-ip cs-version cs(User-Agent) cs(Referer) sc-status sc-bytes&quot;</span>
+</span><span class='line'><span class="nv">LogSeparator</span><span class="o">=</span><span class="s2">&quot; &quot;</span>
+</span><span class='line'><span class="c">#就是说明一下你给那个站点做的分析,分析结果页面左上角显示</span>
+</span><span class='line'><span class="nv">SiteDomain</span><span class="o">=</span><span class="s2">&quot;blog.bbkanba.com&quot;</span>
+</span><span class='line'><span class="nv">HostAliases</span><span class="o">=</span><span class="s2">&quot;localhost 127.0.0.1&quot;</span>
+</span><span class='line'><span class="nv">DNSLookup</span><span class="o">=</span>0
+</span><span class='line'><span class="c">#看上面,不解释</span>
+</span><span class='line'><span class="nv">DirData</span><span class="o">=</span><span class="s2">&quot;C:/LogAnalyse/awstats_data_dir/&quot;</span>
+</span><span class='line'><span class="nv">DirCgi</span><span class="o">=</span><span class="s2">&quot;/cgi-bin&quot;</span>
+</span><span class='line'><span class="nv">DirIcons</span><span class="o">=</span><span class="s2">&quot;/icon&quot;</span>
+</span><span class='line'><span class="nv">AllowToUpdateStatsFromBrowser</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">AllowFullYearView</span><span class="o">=</span>2
+</span><span class='line'><span class="c">#同一时间只能有一个update运行</span>
+</span><span class='line'><span class="nv">EnableLockForUpdate</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">DNSStaticCacheFile</span><span class="o">=</span><span class="s2">&quot;dnscache.txt&quot;</span>
+</span><span class='line'><span class="nv">DNSLastUpdateCacheFile</span><span class="o">=</span><span class="s2">&quot;dnscachelastupdate.txt&quot;</span>
+</span><span class='line'><span class="nv">SkipDNSLookupFor</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">AllowAccessFromWebToAuthenticatedUsersOnly</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">AllowAccessFromWebToFollowingAuthenticatedUsers</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">AllowAccessFromWebToFollowingIPAddresses</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">CreateDirDataIfNotExists</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">BuildHistoryFormat</span><span class="o">=</span>text
+</span><span class='line'><span class="nv">BuildReportFormat</span><span class="o">=</span>html
+</span><span class='line'><span class="nv">SaveDatabaseFilesWithPermissionsForEveryone</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">PurgeLogFile</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ArchiveLogRecords</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">KeepBackupOfHistoricFiles</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">DefaultFile</span><span class="o">=</span><span class="s2">&quot;index.php index.html&quot;</span>
+</span><span class='line'><span class="c">#这里可以指定那些地址不纳入分析结果,比如私网地址的访客</span>
+</span><span class='line'><span class="nv">SkipHosts</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">SkipUserAgents</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">SkipFiles</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">SkipReferrersBlackList</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">OnlyHosts</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">OnlyUserAgents</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">OnlyUsers</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">OnlyFiles</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">NotPageList</span><span class="o">=</span><span class="s2">&quot;css js class gif jpg jpeg png bmp ico rss xml swf&quot;</span>
+</span><span class='line'><span class="nv">ValidHTTPCodes</span><span class="o">=</span><span class="s2">&quot;200 304&quot;</span>
+</span><span class='line'><span class="nv">ValidSMTPCodes</span><span class="o">=</span><span class="s2">&quot;1 250&quot;</span>
+</span><span class='line'><span class="nv">AuthenticatedUsersNotCaseSensitive</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">URLNotCaseSensitive</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">URLWithAnchor</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">URLQuerySeparators</span><span class="o">=</span><span class="s2">&quot;?;&quot;</span>
+</span><span class='line'><span class="nv">URLWithQuery</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">URLWithQueryWithOnlyFollowingParameters</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">URLWithQueryWithoutFollowingParameters</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">URLReferrerWithQuery</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">WarningMessages</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ErrorMessages</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">DebugMessages</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">NbOfLinesForCorruptedLog</span><span class="o">=</span>50
+</span><span class='line'><span class="nv">WrapperScript</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">DecodeUA</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">MiscTrackerUrl</span><span class="o">=</span><span class="s2">&quot;/js/awstats_misc_tracker.js&quot;</span>
+</span><span class='line'><span class="nv">LevelForBrowsersDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForOSDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForRefererAnalyze</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForRobotsDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForSearchEnginesDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForKeywordsDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForFileTypesDetection</span><span class="o">=</span>2
+</span><span class='line'><span class="nv">LevelForWormsDetection</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">UseFramesWhenCGI</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">DetailedReportsOnNewWindows</span><span class="o">=</span>1
+</span><span class='line'><span class="c">#分析结果页面的缓存时间,默认不缓存,这样你就可以手工通过浏览器更新,时时查看最新数据了</span>
+</span><span class='line'><span class="nv">Expires</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">MaxRowsInHTMLOutput</span><span class="o">=</span>1000
+</span><span class='line'><span class="c">#Lang默认是auto,根据浏览器设置现实页面语言,这里强制为汉语了</span>
+</span><span class='line'><span class="nv">Lang</span><span class="o">=</span><span class="s2">&quot;cn&quot;</span>
+</span><span class='line'><span class="nv">DirLang</span><span class="o">=</span><span class="s2">&quot;./lang&quot;</span>
+</span><span class='line'><span class="nv">ShowMenu</span><span class="o">=</span>1                 
+</span><span class='line'><span class="nv">ShowSummary</span><span class="o">=</span>UVPHB
+</span><span class='line'><span class="nv">ShowMonthStats</span><span class="o">=</span>UVPHB
+</span><span class='line'><span class="nv">ShowDaysOfMonthStats</span><span class="o">=</span>VPHB
+</span><span class='line'><span class="nv">ShowDaysOfWeekStats</span><span class="o">=</span>PHB
+</span><span class='line'><span class="nv">ShowHoursStats</span><span class="o">=</span>PHB
+</span><span class='line'><span class="nv">ShowDomainsStats</span><span class="o">=</span>PHB
+</span><span class='line'><span class="nv">ShowHostsStats</span><span class="o">=</span>PHBL
+</span><span class='line'><span class="nv">ShowAuthenticatedUsers</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowRobotsStats</span><span class="o">=</span>HBL
+</span><span class='line'><span class="nv">ShowWormsStats</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowEMailSenders</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowEMailReceivers</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowSessionsStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowPagesStats</span><span class="o">=</span>PBEX
+</span><span class='line'><span class="nv">ShowFileTypesStats</span><span class="o">=</span>HB
+</span><span class='line'><span class="nv">ShowFileSizesStats</span><span class="o">=</span>0   
+</span><span class='line'><span class="nv">ShowDownloadsStats</span><span class="o">=</span>HB  
+</span><span class='line'><span class="nv">ShowOSStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowBrowsersStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowScreenSizeStats</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowOriginStats</span><span class="o">=</span>PH
+</span><span class='line'><span class="nv">ShowKeyphrasesStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowKeywordsStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowMiscStats</span><span class="o">=</span>a
+</span><span class='line'><span class="nv">ShowHTTPErrorsStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowSMTPErrorsStats</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">ShowClusterStats</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">AddDataArrayMonthStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">AddDataArrayShowDaysOfMonthStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">AddDataArrayShowDaysOfWeekStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">AddDataArrayShowHoursStats</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">IncludeInternalLinksInOriginSection</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">MaxNbOfDomain</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitDomain</span>  <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfHostsShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitHost</span>    <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfLoginShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitLogin</span>   <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfRobotShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitRobot</span>   <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfDownloadsShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitDownloads</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfPageShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitFile</span>    <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfOsShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitOs</span>      <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfBrowsersShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitBrowser</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfScreenSizesShown</span> <span class="o">=</span> 5
+</span><span class='line'><span class="nv">MinHitScreenSize</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfWindowSizesShown</span> <span class="o">=</span> 5
+</span><span class='line'><span class="nv">MinHitWindowSize</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfRefererShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitRefer</span>   <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfKeyphrasesShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitKeyphrase</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfKeywordsShown</span> <span class="o">=</span> 10
+</span><span class='line'><span class="nv">MinHitKeyword</span> <span class="o">=</span> 1
+</span><span class='line'><span class="nv">MaxNbOfEMailsShown</span> <span class="o">=</span> 20
+</span><span class='line'><span class="nv">MinHitEMail</span>   <span class="o">=</span> 1
+</span><span class='line'><span class="nv">FirstDayOfWeek</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">ShowFlagLinks</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">ShowLinksOnUrl</span><span class="o">=</span>1
+</span><span class='line'><span class="nv">UseHTTPSLinkForUrl</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">MaxLengthOfShownURL</span><span class="o">=</span>64
+</span><span class='line'><span class="nv">HTMLHeadSection</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">HTMLEndSection</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">MetaRobot</span><span class="o">=</span>0
+</span><span class='line'><span class="nv">Logo</span><span class="o">=</span><span class="s2">&quot;awstats_logo6.png&quot;</span>
+</span><span class='line'><span class="nv">LogoLink</span><span class="o">=</span><span class="s2">&quot;http://www.awstats.org&quot;</span>
+</span><span class='line'><span class="nv">BarWidth</span>   <span class="o">=</span> 260
+</span><span class='line'><span class="nv">BarHeight</span>  <span class="o">=</span> 90
+</span><span class='line'><span class="nv">StyleSheet</span><span class="o">=</span><span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nv">color_Background</span><span class="o">=</span><span class="s2">&quot;FFFFFF&quot;</span>    
+</span><span class='line'><span class="nv">color_TableBGTitle</span><span class="o">=</span><span class="s2">&quot;CCCCDD&quot;</span>  
+</span><span class='line'><span class="nv">color_TableTitle</span><span class="o">=</span><span class="s2">&quot;000000&quot;</span>    
+</span><span class='line'><span class="nv">color_TableBG</span><span class="o">=</span><span class="s2">&quot;CCCCDD&quot;</span>       
+</span><span class='line'><span class="nv">color_TableRowTitle</span><span class="o">=</span><span class="s2">&quot;FFFFFF&quot;</span> 
+</span><span class='line'><span class="nv">color_TableBGRowTitle</span><span class="o">=</span><span class="s2">&quot;ECECEC&quot;</span>   
+</span><span class='line'><span class="nv">color_TableBorder</span><span class="o">=</span><span class="s2">&quot;ECECEC&quot;</span>   
+</span><span class='line'><span class="nv">color_text</span><span class="o">=</span><span class="s2">&quot;000000&quot;</span>      
+</span><span class='line'><span class="nv">color_textpercent</span><span class="o">=</span><span class="s2">&quot;606060&quot;</span>   
+</span><span class='line'><span class="nv">color_titletext</span><span class="o">=</span><span class="s2">&quot;000000&quot;</span>
+</span><span class='line'><span class="nv">color_weekend</span><span class="o">=</span><span class="s2">&quot;EAEAEA&quot;</span>
+</span><span class='line'><span class="nv">color_link</span><span class="o">=</span><span class="s2">&quot;0011BB&quot;</span>
+</span><span class='line'><span class="nv">color_hover</span><span class="o">=</span><span class="s2">&quot;605040&quot;</span>
+</span><span class='line'><span class="nv">color_u</span><span class="o">=</span><span class="s2">&quot;FFAA66&quot;</span>
+</span><span class='line'><span class="nv">color_v</span><span class="o">=</span><span class="s2">&quot;F4F090&quot;</span>
+</span><span class='line'><span class="nv">color_p</span><span class="o">=</span><span class="s2">&quot;4477DD&quot;</span>
+</span><span class='line'><span class="nv">color_h</span><span class="o">=</span><span class="s2">&quot;66DDEE&quot;</span>
+</span><span class='line'><span class="nv">color_k</span><span class="o">=</span><span class="s2">&quot;2EA495&quot;</span>
+</span><span class='line'><span class="nv">color_s</span><span class="o">=</span><span class="s2">&quot;8888DD&quot;</span>
+</span><span class='line'><span class="nv">color_e</span><span class="o">=</span><span class="s2">&quot;CEC2E8&quot;</span>
+</span><span class='line'><span class="nv">color_x</span><span class="o">=</span><span class="s2">&quot;C1B2E2&quot;</span>
+</span><span class='line'><span class="nv">ExtraTrackedRowsLimit</span><span class="o">=</span>500
+</span><span class='line'>
+</span><span class='line'><span class="c">#以下是启用的插件们</span>
+</span><span class='line'><span class="nv">HTMLHeadSection</span><span class="o">=</span><span class="s2">&quot;&amp;lt;script language=javascript src=&#39;/js/day-by-day-head.js&#39;&amp;gt;&amp;lt;/script&amp;gt;&quot;</span>
+</span><span class='line'><span class="nv">HTMLEndSection</span><span class="o">=</span><span class="s2">&quot;&amp;lt;script language=javascript src=&#39;/js/day-by-day-end.js&#39;&amp;gt;&amp;lt;/script&amp;gt;&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;geoip GEOIP_STANDARD C:/LogAnalyse/awstats/cgi-bin/plugins/GeoIP.dat&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;geoip_city_maxmind GEOIP_STANDARD C:/LogAnalyse/awstats/cgi-bin/plugins/GeoLiteCity.dat&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;hostinfo&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;qqhostinfo&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;decodeutfkeys&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;timezone +8&quot;</span>
+</span><span class='line'><span class="nv">LoadPlugin</span><span class="o">=</span><span class="s2">&quot;tooltips&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>点击开始-运行-cmd,输入以下命令,安装所需要的软件包.</p>
+
+<pre>
+ ppm install Geo::IP::PurePerl
+ ppm install Geography::Countries
+ ppm install IP::Country 
+ ppm install Geo-IPfree 
+ ppm install Net-Xwhois
+</pre>
+
+
+<p>下载<a href="http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP.dat</a>和<a href="http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz">GeoLiteCity.dat</a>,解压缩以后,放入<code>C:\LogAnalyse\awstats\cgi-bin\plugins</code>目录.
+下载<a href="/downloads/code/qqhostinfo.pm">qqhostinfo.pm</a>和<a href="/downloads/code/qqwry.pl">qqwry.pl</a>和<a href="http://www.cz88.net/">QQWry.Dat</a>到<code>C:\LogAnalyse\awstats\cgi-bin\plugins</code>目录下.</p>
+
+<p><span style="color: #d14;">然后选中这5个文件,右击选择属性,安全,添加Everyone的读取权限(如图1-4)</span></p>
+
+<p>图1-4</p>
+
+<p><img src="/downloads/images/awstats.1-4.png" alt="awstats.1-4.png" /></p>
+
+<p>下载<a href="/downloads/code/day-by-day-head.js">day-by-day-head.js</a>和<a href="/downloads/code/day-by-day-end.js">day-by-day-end.js</a>到<code>C:\LogAnalyse\awstats\js</code>目录下.</p>
+
+<p>在C:\LogAnalyse\awstats_data_dir目录下新建一个<code>crontab.bat</code>文件.输入下面的内容</p>
+
+<pre>
+perl %cd%/../awstats/cgi-bin/awstats.pl -update -config=logWin  -lang=cn  -databasebreak=day
+</pre>
+
+
+<p>解释一下,这个bat文件是要设立计划任务时用的,比如每隔30分钟自动更新下分析数据.</p>
+
+<ul>
+<li>%cd%/../awstats/cgi-bin/awstats.pl文件是awstats执行分析的主程序perl脚本(%cd%当前目录)</li>
+<li>-update 表示更新</li>
+<li>-config=logWin 知道为什么上面的文件为什么必须叫awstats.logWin.conf了吧, awstats.pl会掐头去尾留中间的找配置文件,如果你上面的文件不叫awstats.logWin.conf,而是awstats.bbkanba.conf的话,这里也需要改成-config=bbkanba</li>
+<li>-lang=cn 告诉awstats.pl生成中文页面,你喜欢其他语言可以去C:/LogAnalyse/awstats/cgi-bin/lang目录下瞅瞅,看看这个参数的值可以是什么.</li>
+<li>-databasebreak=day 这个重要哦, awstas默认是以月为单位分析展示数据的,而这里的我们安装了day-by-day插件, 就要求它以天为单位展示.</li>
+</ul>
+
+
+<p>保存好以后,点击开始-运行-cmd,直接用鼠标将<code>crontab.bat</code>文件拖放到黑窗口里,然后回车,你会看到类似图1-5的效果,说明成功配置好了,反之,根据错误提示自己排查吧.原因无非权限呀,路径呀,依赖的perl库啊之类的.</p>
+
+<p>图1-5</p>
+
+<p><img src="/downloads/images/awstats.1-5.png" alt="awstats.1-5.png" /></p>
+
+<p>然后在控制面板,计划任务,添加计划任务,达到如图1-6的样子就可以了,不然就是你配错了.</p>
+
+<p>图1-6<br/>
+<img src="/downloads/images/awstats.1-6.png" alt="awstats.1-6.png" /></p>
+
+<p>到此,我们已经配置好了awstas的工作环境,下面新建立一个网站来展示数据吧.</p>
+
+<p>打开 &ldquo;Internet 信息服务(IIS)管理器&rdquo; –> &ldquo;网站&rdquo; 右击 –> &ldquo;新建网站&rdquo; –> 新建网站向导,下一步 –> 描述 &ldquo;log.bbkanba.com&rdquo;,下一步 –> 全部未分配,80,主机头:log.bbkanba.com –> 主目录路径C:\LogAnalyse\awstats –> 最后一定要勾上 &ldquo;执行(如ISAPI 应用程序或 CGI)&rdquo; –> 下一步完成.</p>
+
+<p>还需要一个perl脚本重定向,创建到C:\LogAnalyse\awstats\index.pl下面,这样每次打开<code>http://log.bbkanba.com</code>就可以看到最新的统计数据了(还的改一下网站的设置，添加index.pl到默认内容文档里,网站属性-文档-默认内容文档).</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='perl'><span class='line'><span class="c1">#!/usr/bin/perl</span>
+</span><span class='line'><span class="k">use</span> <span class="n">POSIX</span> <span class="sx">qw(strftime)</span><span class="p">;</span>
+</span><span class='line'><span class="k">print</span> <span class="n">strftime</span> <span class="s">&quot;Location: http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n&quot;</span> <span class="p">,</span><span class="nb">localtime</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>congratulation you are finished! celebrate吧.
+windows的到这里打完,收工,我去煮个泡面,待会继续Linux下的.</p>
+
+<h2>2. Install Awstats with Lighttpd under Linux(CentOS)</h2>
+
+<p>到了，我最爱的Linux服务器环境安装就变的容易多了.<br/>
+首先通过yum安装perl的依赖包,然后下载安装awstats的rpm安装包,然后安装所需要的插件,创建配置文件,创建计划任务,就ok了.全部命令如下.<br/>
+配置文件同上面window2003下的基本一样，只是变更了一下路径.这里我们分析<code>/var/log/lighttpd/access.log</code>这个日志文件.配置文件的意思看上面.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#需要从http://packages.sw.be/rpmforge-release/ 选择自己平台的rpm包安装,这里我的系统是CentOS6 x86_64,你要根据自己的平台选择,下面是wiki地址</span>
+</span><span class='line'><span class="c">##http://wiki.centos.org/AdditionalResources/Repositories/RPMForge</span>
+</span><span class='line'>
+</span><span class='line'>wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm
+</span><span class='line'>rpm -Uvh rpmforge-release*rpm
+</span><span class='line'>
+</span><span class='line'>yum -y install perl  perl-CPAN perl-Compress-Raw-Zlib  perl-Compress-Zlib  perl-GSSAPI  perl-HTML-Parser  perl-HTML-Tagset  perl-IO-Compress-Base perl-IO-Compress-Zlib  perl-URI  perl-libwww-perl gzip perl-Geo-IP perl-Net-XWhois perl-FCGI perl-FCGI-ProcManager
+</span><span class='line'>
+</span><span class='line'>wget http://prdownloads.sourceforge.net/awstats/awstats-7.1-1.noarch.rpm
+</span><span class='line'>rpm -ivh awstats-7.1-1.noarch.rpm
+</span><span class='line'>rm -rf awstats-7.1-1.noarch.rpm
+</span><span class='line'>
+</span><span class='line'><span class="nb">cd</span>  /usr/local/awstats/wwwroot/cgi-bin/plugins/
+</span><span class='line'>wget http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz
+</span><span class='line'>wget http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+</span><span class='line'>gunzip GeoIP.dat.gz GeoLiteCity.dat.gz
+</span><span class='line'>
+</span><span class='line'>wget http://leolovenet.com/downloads/code/qqhostinfo.pm
+</span><span class='line'>wget http://leolovenet.com/downloads/code/qqwry.pl
+</span><span class='line'>wget http://leolovenet.com/downloads/code/QQWry.Dat
+</span><span class='line'><span class="nb">cd</span> /usr/local/awstats/wwwroot/js/
+</span><span class='line'>wget http://leolovenet.com/downloads/code/day-by-day-head.js
+</span><span class='line'>wget http://leolovenet.com/downloads/code/day-by-day-end.js
+</span><span class='line'>mkdir -p /usr/local/awstats/awstats_data_dir
+</span><span class='line'>chmod -R 777 /usr/local/awstats/awstats_data_dir
+</span><span class='line'>
+</span><span class='line'>cat &gt; /etc/awstats/awstats.log.conf <span class="s">&lt;&lt;ALLENDEND</span>
+</span><span class='line'><span class="s"># AWSTATS CONFIGURE FILE</span>
+</span><span class='line'><span class="s">LogFile=&quot;/var/log/lighttpd/access.log&quot;</span>
+</span><span class='line'><span class="s">LogType=W</span>
+</span><span class='line'><span class="s">LogFormat=1</span>
+</span><span class='line'><span class="s">LogSeparator=&quot; &quot;</span>
+</span><span class='line'><span class="s">SiteDomain=&quot;blog.bbkanba.com&quot;</span>
+</span><span class='line'><span class="s">HostAliases=&quot;localhost 127.0.0.1&quot;</span>
+</span><span class='line'><span class="s">DNSLookup=0</span>
+</span><span class='line'><span class="s">DirData=&quot;/usr/local/awstats/awstats_data_dir&quot;</span>
+</span><span class='line'><span class="s">DirCgi=&quot;/cgi-bin&quot;</span>
+</span><span class='line'><span class="s">DirIcons=&quot;/icon&quot;</span>
+</span><span class='line'><span class="s">AllowToUpdateStatsFromBrowser=1</span>
+</span><span class='line'><span class="s">AllowFullYearView=2</span>
+</span><span class='line'><span class="s">EnableLockForUpdate=1</span>
+</span><span class='line'><span class="s">DNSStaticCacheFile=&quot;dnscache.txt&quot;</span>
+</span><span class='line'><span class="s">DNSLastUpdateCacheFile=&quot;dnscachelastupdate.txt&quot;</span>
+</span><span class='line'><span class="s">SkipDNSLookupFor=&quot;&quot;</span>
+</span><span class='line'><span class="s">AllowAccessFromWebToAuthenticatedUsersOnly=0</span>
+</span><span class='line'><span class="s">AllowAccessFromWebToFollowingAuthenticatedUsers=&quot;&quot;</span>
+</span><span class='line'><span class="s">AllowAccessFromWebToFollowingIPAddresses=&quot;&quot;</span>
+</span><span class='line'><span class="s">CreateDirDataIfNotExists=0</span>
+</span><span class='line'><span class="s">BuildHistoryFormat=text</span>
+</span><span class='line'><span class="s">BuildReportFormat=html</span>
+</span><span class='line'><span class="s">SaveDatabaseFilesWithPermissionsForEveryone=0</span>
+</span><span class='line'><span class="s">PurgeLogFile=0</span>
+</span><span class='line'><span class="s">ArchiveLogRecords=0</span>
+</span><span class='line'><span class="s">KeepBackupOfHistoricFiles=0</span>
+</span><span class='line'><span class="s">DefaultFile=&quot;index.php index.html&quot;</span>
+</span><span class='line'><span class="s">SkipHosts=&quot;&quot;</span>
+</span><span class='line'><span class="s">SkipUserAgents=&quot;&quot;</span>
+</span><span class='line'><span class="s">SkipFiles=&quot;&quot;</span>
+</span><span class='line'><span class="s">SkipReferrersBlackList=&quot;&quot;</span>
+</span><span class='line'><span class="s">OnlyHosts=&quot;&quot;</span>
+</span><span class='line'><span class="s">OnlyUserAgents=&quot;&quot;</span>
+</span><span class='line'><span class="s">OnlyUsers=&quot;&quot;</span>
+</span><span class='line'><span class="s">OnlyFiles=&quot;&quot;</span>
+</span><span class='line'><span class="s">NotPageList=&quot;css js class gif jpg jpeg png bmp ico rss xml swf&quot;</span>
+</span><span class='line'><span class="s">ValidHTTPCodes=&quot;200 304&quot;</span>
+</span><span class='line'><span class="s">ValidSMTPCodes=&quot;1 250&quot;</span>
+</span><span class='line'><span class="s">AuthenticatedUsersNotCaseSensitive=0</span>
+</span><span class='line'><span class="s">URLNotCaseSensitive=0</span>
+</span><span class='line'><span class="s">URLWithAnchor=0</span>
+</span><span class='line'><span class="s">URLQuerySeparators=&quot;?;&quot;</span>
+</span><span class='line'><span class="s">URLWithQuery=0</span>
+</span><span class='line'><span class="s">URLWithQueryWithOnlyFollowingParameters=&quot;&quot;</span>
+</span><span class='line'><span class="s">URLWithQueryWithoutFollowingParameters=&quot;&quot;</span>
+</span><span class='line'><span class="s">URLReferrerWithQuery=0</span>
+</span><span class='line'><span class="s">WarningMessages=1</span>
+</span><span class='line'><span class="s">ErrorMessages=&quot;&quot;</span>
+</span><span class='line'><span class="s">DebugMessages=0</span>
+</span><span class='line'><span class="s">NbOfLinesForCorruptedLog=50</span>
+</span><span class='line'><span class="s">WrapperScript=&quot;&quot;</span>
+</span><span class='line'><span class="s">DecodeUA=0</span>
+</span><span class='line'><span class="s">MiscTrackerUrl=&quot;/js/awstats_misc_tracker.js&quot;</span>
+</span><span class='line'><span class="s">LevelForBrowsersDetection=2</span>
+</span><span class='line'><span class="s">LevelForOSDetection=2</span>
+</span><span class='line'><span class="s">LevelForRefererAnalyze=2</span>
+</span><span class='line'><span class="s">LevelForRobotsDetection=2</span>
+</span><span class='line'><span class="s">LevelForSearchEnginesDetection=2</span>
+</span><span class='line'><span class="s">LevelForKeywordsDetection=2</span>
+</span><span class='line'><span class="s">LevelForFileTypesDetection=2</span>
+</span><span class='line'><span class="s">LevelForWormsDetection=0</span>
+</span><span class='line'><span class="s">UseFramesWhenCGI=1</span>
+</span><span class='line'><span class="s">DetailedReportsOnNewWindows=1</span>
+</span><span class='line'><span class="s">Expires=0</span>
+</span><span class='line'><span class="s">MaxRowsInHTMLOutput=1000</span>
+</span><span class='line'><span class="s">Lang=&quot;cn&quot;</span>
+</span><span class='line'><span class="s">DirLang=&quot;./lang&quot;</span>
+</span><span class='line'><span class="s">ShowMenu=1                  </span>
+</span><span class='line'><span class="s">ShowSummary=UVPHB</span>
+</span><span class='line'><span class="s">ShowMonthStats=UVPHB</span>
+</span><span class='line'><span class="s">ShowDaysOfMonthStats=VPHB</span>
+</span><span class='line'><span class="s">ShowDaysOfWeekStats=PHB</span>
+</span><span class='line'><span class="s">ShowHoursStats=PHB</span>
+</span><span class='line'><span class="s">ShowDomainsStats=PHB</span>
+</span><span class='line'><span class="s">ShowHostsStats=PHBL</span>
+</span><span class='line'><span class="s">ShowAuthenticatedUsers=0</span>
+</span><span class='line'><span class="s">ShowRobotsStats=HBL</span>
+</span><span class='line'><span class="s">ShowWormsStats=0</span>
+</span><span class='line'><span class="s">ShowEMailSenders=0</span>
+</span><span class='line'><span class="s">ShowEMailReceivers=0</span>
+</span><span class='line'><span class="s">ShowSessionsStats=1</span>
+</span><span class='line'><span class="s">ShowPagesStats=PBEX</span>
+</span><span class='line'><span class="s">ShowFileTypesStats=HB</span>
+</span><span class='line'><span class="s">ShowFileSizesStats=0    </span>
+</span><span class='line'><span class="s">ShowDownloadsStats=HB   </span>
+</span><span class='line'><span class="s">ShowOSStats=1</span>
+</span><span class='line'><span class="s">ShowBrowsersStats=1</span>
+</span><span class='line'><span class="s">ShowScreenSizeStats=0</span>
+</span><span class='line'><span class="s">ShowOriginStats=PH</span>
+</span><span class='line'><span class="s">ShowKeyphrasesStats=1</span>
+</span><span class='line'><span class="s">ShowKeywordsStats=1</span>
+</span><span class='line'><span class="s">ShowMiscStats=a</span>
+</span><span class='line'><span class="s">ShowHTTPErrorsStats=1</span>
+</span><span class='line'><span class="s">ShowSMTPErrorsStats=0</span>
+</span><span class='line'><span class="s">ShowClusterStats=0</span>
+</span><span class='line'><span class="s">AddDataArrayMonthStats=1</span>
+</span><span class='line'><span class="s">AddDataArrayShowDaysOfMonthStats=1</span>
+</span><span class='line'><span class="s">AddDataArrayShowDaysOfWeekStats=1</span>
+</span><span class='line'><span class="s">AddDataArrayShowHoursStats=1</span>
+</span><span class='line'><span class="s">IncludeInternalLinksInOriginSection=0</span>
+</span><span class='line'><span class="s">MaxNbOfDomain = 10</span>
+</span><span class='line'><span class="s">MinHitDomain  = 1</span>
+</span><span class='line'><span class="s">MaxNbOfHostsShown = 10</span>
+</span><span class='line'><span class="s">MinHitHost    = 1</span>
+</span><span class='line'><span class="s">MaxNbOfLoginShown = 10</span>
+</span><span class='line'><span class="s">MinHitLogin   = 1</span>
+</span><span class='line'><span class="s">MaxNbOfRobotShown = 10</span>
+</span><span class='line'><span class="s">MinHitRobot   = 1</span>
+</span><span class='line'><span class="s">MaxNbOfDownloadsShown = 10</span>
+</span><span class='line'><span class="s">MinHitDownloads = 1</span>
+</span><span class='line'><span class="s">MaxNbOfPageShown = 10</span>
+</span><span class='line'><span class="s">MinHitFile    = 1</span>
+</span><span class='line'><span class="s">MaxNbOfOsShown = 10</span>
+</span><span class='line'><span class="s">MinHitOs      = 1</span>
+</span><span class='line'><span class="s">MaxNbOfBrowsersShown = 10</span>
+</span><span class='line'><span class="s">MinHitBrowser = 1</span>
+</span><span class='line'><span class="s">MaxNbOfScreenSizesShown = 5</span>
+</span><span class='line'><span class="s">MinHitScreenSize = 1</span>
+</span><span class='line'><span class="s">MaxNbOfWindowSizesShown = 5</span>
+</span><span class='line'><span class="s">MinHitWindowSize = 1</span>
+</span><span class='line'><span class="s">MaxNbOfRefererShown = 10</span>
+</span><span class='line'><span class="s">MinHitRefer   = 1</span>
+</span><span class='line'><span class="s">MaxNbOfKeyphrasesShown = 10</span>
+</span><span class='line'><span class="s">MinHitKeyphrase = 1</span>
+</span><span class='line'><span class="s">MaxNbOfKeywordsShown = 10</span>
+</span><span class='line'><span class="s">MinHitKeyword = 1</span>
+</span><span class='line'><span class="s">MaxNbOfEMailsShown = 20</span>
+</span><span class='line'><span class="s">MinHitEMail   = 1</span>
+</span><span class='line'><span class="s">FirstDayOfWeek=1</span>
+</span><span class='line'><span class="s">ShowFlagLinks=&quot;&quot;</span>
+</span><span class='line'><span class="s">ShowLinksOnUrl=1</span>
+</span><span class='line'><span class="s">UseHTTPSLinkForUrl=&quot;&quot;</span>
+</span><span class='line'><span class="s">MaxLengthOfShownURL=64</span>
+</span><span class='line'><span class="s">HTMLHeadSection=&quot;&quot;</span>
+</span><span class='line'><span class="s">HTMLEndSection=&quot;&quot;</span>
+</span><span class='line'><span class="s">MetaRobot=0</span>
+</span><span class='line'><span class="s">Logo=&quot;awstats_logo6.png&quot;</span>
+</span><span class='line'><span class="s">LogoLink=&quot;http://www.awstats.org&quot;</span>
+</span><span class='line'><span class="s">BarWidth   = 260</span>
+</span><span class='line'><span class="s">BarHeight  = 90</span>
+</span><span class='line'><span class="s">StyleSheet=&quot;&quot;</span>
+</span><span class='line'><span class="s">color_Background=&quot;FFFFFF&quot;</span>
+</span><span class='line'><span class="s">color_TableBGTitle=&quot;CCCCDD&quot;</span>
+</span><span class='line'><span class="s">color_TableTitle=&quot;000000&quot;</span>
+</span><span class='line'><span class="s">color_TableBG=&quot;CCCCDD&quot;</span>
+</span><span class='line'><span class="s">color_TableRowTitle=&quot;FFFFFF&quot;</span>
+</span><span class='line'><span class="s">color_TableBGRowTitle=&quot;ECECEC&quot;</span>
+</span><span class='line'><span class="s">color_TableBorder=&quot;ECECEC&quot;</span>
+</span><span class='line'><span class="s">color_text=&quot;000000&quot;</span>
+</span><span class='line'><span class="s">color_textpercent=&quot;606060&quot;</span>
+</span><span class='line'><span class="s">color_titletext=&quot;000000&quot;</span>
+</span><span class='line'><span class="s">color_weekend=&quot;EAEAEA&quot;</span>
+</span><span class='line'><span class="s">color_link=&quot;0011BB&quot;</span>
+</span><span class='line'><span class="s">color_hover=&quot;605040&quot;</span>
+</span><span class='line'><span class="s">color_u=&quot;FFAA66&quot;</span>
+</span><span class='line'><span class="s">color_v=&quot;F4F090&quot;</span>
+</span><span class='line'><span class="s">color_p=&quot;4477DD&quot;</span>
+</span><span class='line'><span class="s">color_h=&quot;66DDEE&quot;</span>
+</span><span class='line'><span class="s">color_k=&quot;2EA495&quot;</span>
+</span><span class='line'><span class="s">color_s=&quot;8888DD&quot;</span>
+</span><span class='line'><span class="s">color_e=&quot;CEC2E8&quot;</span>
+</span><span class='line'><span class="s">color_x=&quot;C1B2E2&quot;</span>
+</span><span class='line'><span class="s">ExtraTrackedRowsLimit=500</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">HTMLHeadSection=&quot;&lt;script language=javascript src=&#39;/js/day-by-day-head.js&#39;&gt;&lt;/script&gt;&quot;</span>
+</span><span class='line'><span class="s">HTMLEndSection=&quot;&lt;script language=javascript src=&#39;/js/day-by-day-end.js&#39;&gt;&lt;/script&gt;&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;geoip GEOIP_STANDARD /usr/local/awstats/wwwroot/cgi-bin/plugins/GeoIP.dat&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;geoip_city_maxmind GEOIP_STANDARD /usr/local/awstats/wwwroot/cgi-bin/plugins/GeoLiteCity.dat&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;hostinfo&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;qqhostinfo&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;decodeutfkeys&quot;</span>
+</span><span class='line'><span class="s">LoadPlugin=&quot;tooltips&quot;</span>
+</span><span class='line'><span class="s">ALLENDEND</span>
+</span><span class='line'>
+</span><span class='line'>cat &gt; /usr/local/awstats/wwwroot/index.pl  <span class="s">&lt;&lt;ALLENDEND</span>
+</span><span class='line'><span class="s">#!/usr/bin/perl</span>
+</span><span class='line'><span class="s">use POSIX qw(strftime);</span>
+</span><span class='line'><span class="s">print strftime &quot;Location: http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n&quot; ,localtime;</span>
+</span><span class='line'><span class="s">ALLENDEND</span>
+</span><span class='line'>
+</span><span class='line'>cat &gt; /etc/cron.hourly/00awstats <span class="s">&lt;&lt;ALLENDEND</span>
+</span><span class='line'><span class="s">#!/bin/bash</span>
+</span><span class='line'><span class="s"># path to cgi-bin</span>
+</span><span class='line'><span class="s">AWS=/usr/local/awstats/wwwroot/cgi-bin/awstats.pl</span>
+</span><span class='line'><span class="s"># append your domain</span>
+</span><span class='line'><span class="s">DOMAINS=&quot;log&quot;</span>
+</span><span class='line'><span class="s"># loop through all domains</span>
+</span><span class='line'><span class="s">for d in \${DOMAINS}</span>
+</span><span class='line'><span class="s">do</span>
+</span><span class='line'><span class="s">   \${AWS} -update -config=\${d}  -lang=cn  -databasebreak=day</span>
+</span><span class='line'><span class="s">done</span>
+</span><span class='line'><span class="s">ALLENDEND</span>
+</span><span class='line'>chmod +x /etc/cron.hourly/00awstats
+</span><span class='line'>/etc/cron.hourly/00awstats
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>linux平台下的web日志时间一般没有问题，所以没有添加<code>LoadPlugin="timezone +8"</code></p>
+
+<p>执行完上面的内容你应该可以看到与 图1-5 类似的结果,就说明安装awstats成功了。<br/>
+下面添加一个虚拟站点给lighttpd,好让我们可以通过浏览器查看统计结果,全部命令如下</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sed -e <span class="s1">&#39;s/.*mod_ssi.*/&quot;mod_ssi&quot;,/&#39;</span> /etc/lighttpd/lighttpd.conf &gt; /tmp/lighttpd.conf
+</span><span class='line'>mv /tmp/lighttpd.conf /etc/lighttpd/lighttpd.conf
+</span><span class='line'>cat &gt;&gt; /etc/lighttpd/lighttpd.conf <span class="s">&lt;&lt;ALLALLEND</span>
+</span><span class='line'><span class="s">\$HTTP[&quot;host&quot;] =~ &quot;log.bbkanba.com&quot; {</span>
+</span><span class='line'><span class="s">index-file.names   = ( &quot;index.pl&quot;,&quot;index.php&quot;, &quot;index.html&quot;,&quot;index.htm&quot; )</span>
+</span><span class='line'><span class="s">server.port = 80</span>
+</span><span class='line'><span class="s">cgi.assign = (</span>
+</span><span class='line'><span class="s">&quot;.pl&quot; =&gt; &quot;/usr/bin/perl&quot;,</span>
+</span><span class='line'><span class="s">&quot;.cgi&quot; =&gt; &quot;/usr/bin/perl&quot;</span>
+</span><span class='line'><span class="s">)</span>
+</span><span class='line'><span class="s">server.document-root = &quot;/usr/local/awstats/wwwroot/&quot;</span>
+</span><span class='line'><span class="s">accesslog.filename = &quot;/var/log/lighttpd/log.access.log&quot;</span>
+</span><span class='line'><span class="s">}</span>
+</span><span class='line'><span class="s">ALLALLEND</span>
+</span><span class='line'>
+</span><span class='line'>/etc/init.d/lighttpd restart
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ok,到此结束.</p>
+
+<h2>3. Install Awstats with Nginx under Linux(CentOS)</h2>
+
+<p>awstats与Nginx合作还是有点复杂的,不像Lighttpd支持perl扩展那么容易,这里我们要让nginx支持perl扩展是通过一个perl脚本实现的。</p>
+
+<p>不过,<strong>7.1</strong>版本的awstats的<a href="http://awstats.sourceforge.net/docs/awstats_changelog.txt">ChangLog</a>里说明了Add example of nginx setup.<br/>
+我还没有试过官方的办法,好像是通过一个php的脚本,可以在最新发行版本包里的tools/nginx目录看看.</p>
+
+<p>下面我讲的是通过 <a href="/downloads/code/fastcgi-wrapper.pl">fastcgi-wrapper.pl</a> 实现的.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://leolovenet.com/downloads/code/fastcgi-wrapper.pl
+</span><span class='line'>mv  fastcgi-wrapper.pl /usr/local/bin/
+</span><span class='line'>chmod +x fastcgi-wrapper.pl
+</span><span class='line'>mkdir -p /var/run/nginx/
+</span><span class='line'>/usr/local/bin/fastcgi-wrapper.pl &amp;
+</span><span class='line'>ps aux|grep  fcgi-wrapper.pl
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>awstats的安装与上面Lighttpd篇里的一样,添加一个虚拟站点给nginx,好让我们可以通过浏览器查看统计结果的命令如下,这里假设nginx安装在了<code>/usr/local/nginx</code>目录下,并且虚拟站点的配置文件在<code>/usr/local/nginx/conf/vhost</code>下.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p /var/run/nginx/
+</span><span class='line'>mkdir -p /usr/local/nginx/conf/vhost
+</span><span class='line'>
+</span><span class='line'>cat &gt;  /usr/local/nginx/conf/vhost/awstats.conf<span class="s">&lt;&lt;ALLALLEND</span>
+</span><span class='line'><span class="s">log_format  awstat  &#39;\$remote_addr - \$remote_user [\$time_local] \$request &#39;</span>
+</span><span class='line'><span class="s">             &#39;\$status \$body_bytes_sent \$http_referer &#39;</span>
+</span><span class='line'><span class="s">             &#39;\$http_user_agent \$http_x_forwarded_for&#39;;</span>
+</span><span class='line'><span class="s">server</span>
+</span><span class='line'><span class="s">     {</span>
+</span><span class='line'><span class="s">          listen       80;</span>
+</span><span class='line'><span class="s">          server_name log.bbkanba.com;</span>
+</span><span class='line'><span class="s">          index index.pl index.html index.htm index.php default.html default.htm default.php;</span>
+</span><span class='line'><span class="s">          root  /usr/local/awstats/wwwroot/;</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">      location ~ .*\.(pl|cgi)?\$</span>
+</span><span class='line'><span class="s">         {</span>
+</span><span class='line'><span class="s">                gzip off;</span>
+</span><span class='line'><span class="s">                fastcgi_pass   unix:/var/run/nginx/perl_cgi-dispatch.sock;</span>
+</span><span class='line'><span class="s">                root /usr/local/awstats/wwwroot;</span>
+</span><span class='line'><span class="s">                fastcgi_index  index.cgi;</span>
+</span><span class='line'><span class="s">                fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_SOFTWARE    nginx;</span>
+</span><span class='line'><span class="s">                fastcgi_param  QUERY_STRING       \$query_string;</span>
+</span><span class='line'><span class="s">                fastcgi_param  REQUEST_METHOD     \$request_method;</span>
+</span><span class='line'><span class="s">                fastcgi_param  CONTENT_TYPE       \$content_type;</span>
+</span><span class='line'><span class="s">                fastcgi_param  CONTENT_LENGTH     \$content_length;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SCRIPT_FILENAME    \$document_root\$fastcgi_script_name;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SCRIPT_NAME        \$fastcgi_script_name;</span>
+</span><span class='line'><span class="s">                fastcgi_param  REQUEST_URI        \$request_uri;</span>
+</span><span class='line'><span class="s">                fastcgi_param  DOCUMENT_URI       \$document_uri;</span>
+</span><span class='line'><span class="s">                fastcgi_param  DOCUMENT_ROOT      \$document_root;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_PROTOCOL    \$server_protocol;</span>
+</span><span class='line'><span class="s">                fastcgi_param  REMOTE_ADDR        \$remote_addr;</span>
+</span><span class='line'><span class="s">                fastcgi_param  REMOTE_PORT        \$remote_port;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_ADDR        \$server_addr;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_PORT        \$server_port;</span>
+</span><span class='line'><span class="s">                fastcgi_param  SERVER_NAME        \$server_name;</span>
+</span><span class='line'><span class="s">                fastcgi_read_timeout   60;</span>
+</span><span class='line'><span class="s">          }</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">          location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)\$</span>
+</span><span class='line'><span class="s">               {</span>
+</span><span class='line'><span class="s">                    expires      30d;</span>
+</span><span class='line'><span class="s">               }</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">          location ~ .*\.(js|css)?\$</span>
+</span><span class='line'><span class="s">               {</span>
+</span><span class='line'><span class="s">                    expires      12h;</span>
+</span><span class='line'><span class="s">               }</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">          access_log  /var/log/awstat.log  awstat;</span>
+</span><span class='line'><span class="s">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="s">ALLALLEND</span>
+</span><span class='line'>
+</span><span class='line'>chmod +x /etc/cron.hourly/00awstats
+</span><span class='line'>/etc/init.d/nginx reload
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ok,到此结束.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">leolovenet</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-19T00:00:00+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/awstats/'>Awstats</a>, <a class='category' href='/blog/categories/iis/'>IIS</a>, <a class='category' href='/blog/categories/lighttpd/'>Lighttpd</a>, <a class='category' href='/blog/categories/linux/'>Linux</a>, <a class='category' href='/blog/categories/nginx/'>Nginx</a>, <a class='category' href='/blog/categories/qqwry/'>QQWry</a>, <a class='category' href='/blog/categories/windows/'>Windows</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/12/colorful-the-Terminal/" title="Previous Post: 使终端(iTerm2/Terminal)色彩缤纷">&laquo; 使终端(iTerm2/Terminal)色彩缤纷</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/01/21/my-windows-office-excel-vba-script/" title="Next Post: windows office excel vba script 一例">windows office excel vba script 一例 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/10/11/enhanced-ping-command-function-with-ruby/">用Ruby增强ping命令</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/07/my-sharing-notes/">我的Evernote笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">[翻译]TED的一个四轴飞行器字幕</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/">关于开发Squid的ecap动态库插件的指导</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/leolovenet">@leolovenet</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'leolovenet',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - leolovenet -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'leolovenet';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://leolovenet.com/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry/';
+        var disqus_url = 'http://leolovenet.com/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

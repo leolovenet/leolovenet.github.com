@@ -4,7 +4,7 @@
   <title><![CDATA[Category: APP | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/app/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-02-11T23:20:46+08:00</updated>
+  <updated>2014-02-13T12:28:37+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[将xcode编译的app程序打包为ipa文件]]></title>
-    <link href="http://leolovenet.com/blog/2013/02/22/xcode-packageapplication/"/>
+    <title type="html"><![CDATA[Xcode编译的app程序打包为ipa文件]]></title>
+    <link href="http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/"/>
     <updated>2013-02-22T00:00:00+08:00</updated>
-    <id>http://leolovenet.com/blog/2013/02/22/xcode-packageapplication</id>
+    <id>http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa</id>
     <content type="html"><![CDATA[<p>正确的方法是利用Xcode,The right way is –>”Xcode menu” –> Project –> Archive –> “Xcode menu Window” –> “Organizer” –> ” Organizer – Archives” –> Distribute –>”Save for Enterpirs of Ad-Hoc Deployment” –> next –> ***.ipa –> done.</p>
 
 <!-- more -->

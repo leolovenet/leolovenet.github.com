@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Xcode编译的app程序打包为ipa文件 - 末日前几天</title>
+  <meta name="author" content="leolovenet">
+
+  
+  <meta name="description" content="将xcode编译的app程序打包ipa文件" />
+  
+  <meta name="keywords" content="leolovenet,末日前几天,the days before the doomsday" />
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="末日前几天" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37154253-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">末日前几天</a></h1>
+  
+    <h2>the days before the doomsday</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:leolovenet.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Xcode编译的app程序打包为ipa文件</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-22T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>正确的方法是利用Xcode,The right way is –>”Xcode menu” –> Project –> Archive –> “Xcode menu Window” –> “Organizer” –> ” Organizer – Archives” –> Distribute –>”Save for Enterpirs of Ad-Hoc Deployment” –> next –> ***.ipa –> done.</p>
+
+<!-- more -->
+
+
+<p><del datetime="2013-03-09T14:05:58+00:00">新年回来以后的第一篇文章。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">项目需要将测试版本的app发到外地客户的iphone上测试效果,这时就需要客户手机的UDID，将他的手机UDID添加到开发团队里，创建新的签名，使用新的签名编译程序导出ipa文件，将ipa文件传输给远在外地的客户,让客户通过itunes安装上。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">这样相比开发,测试,上传到app store里,等待apple审核通过,客户在安装测试,要省不知多少时间（当然客户的手机如果越狱了那就没有必要这么麻烦了）. 下面我就具体说一下上面的操作过程,主要是将xcode编译的app变为ipa文件的过程.</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">1、登陆<a href="https://developer.apple.com/ios/manage/overview/index.action" target="_blank">iOS Provisioning Portal</a>，登入新的手机UDID,创建新的签名文件.</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">2、xcode打开Organizer(⌘+shift+2), Devices标签下,左边Provisioning Profiles标签下，点击下面的Refresh,将新创建的签名下载下来。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">3、在项目的targets下指定用新的签名.</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">4、编译好的app，右击在Finder下显示.(如果显示不了,打开Finder,⌘+shift+G,输入~/Library/Developer/Xcode/DerivedData,找到XXX-<strong><em>**/Build/Products/</em></strong>/XXX.app).</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">5、打开iTunes,切换置App标签，将XXX.app鼠标拖放置iTunes的App标签内.</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">6、在iTunes的XXX.app上,右击,选择&#8221;Show in finder&#8221;。现在你就有了你的ipa文件了。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">因为这个ipa已经是用最新的签名编译好了的，所以，它可以直接在客户的机器上安装。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">传输给客户后，让客户双击ipa文件，默认自动导入到客户的iTunes的app标签下，让客户使用数据线链接自己的iphone，然后在itunes里选中iphone，切换到iphone的app标签下，找到XXX,此时在右边会有一个安装的按钮，点击，然后点击下面的应用，之后点击同步就可以了。</del></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">leolovenet</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-22T00:00:00+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/app/'>APP</a>, <a class='category' href='/blog/categories/ios/'>IOS</a>, <a class='category' href='/blog/categories/xcode/'>Xcode</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/28/xcode-keyboard-shortcuts/" title="Previous Post: Xcode 快捷键收集整理">&laquo; Xcode 快捷键收集整理</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/" title="Next Post: 关于开发Squid的ecap动态库插件的指导">关于开发Squid的ecap动态库插件的指导 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/10/11/enhanced-ping-command-function-with-ruby/">用Ruby增强ping命令</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/07/my-sharing-notes/">我的Evernote笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">[翻译]TED的一个四轴飞行器字幕</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/">关于开发Squid的ecap动态库插件的指导</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/leolovenet">@leolovenet</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'leolovenet',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - leolovenet -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'leolovenet';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/';
+        var disqus_url = 'http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

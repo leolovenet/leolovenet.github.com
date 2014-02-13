@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Squid | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/squid/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-02-11T23:20:46+08:00</updated>
+  <updated>2014-02-13T12:28:37+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -29,7 +29,94 @@
 <!--more-->
 
 
-<p>wiki给出了5种技术方案:</p>
+<p>wiki给出了<a href="http://wiki.squid-cache.org/SquidFaq/ContentAdaptation#Summary">5种技术方案</a></p>
+
+<div class="squid">
+<style>
+.squid table
+{
+    margin: 0.5em 0;
+    border-collapse: collapse;
+}
+
+.squid table td
+{
+    padding: 0.25em;
+    border: 1px solid #ADB9CC;
+}
+
+.squid td p {
+    margin: 0;
+    padding: 0;
+}
+</style>
+<table><tbody><tr>  <td colspan="1" rowspan="2" style="text-align: center"><p class="line862"> <strong>Mechanism</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Request</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Response</strong> </p></td>
+</tr>
+<tr>  <td style="text-align: center"><span class="anchor" id="line-101"></span><p class="line891"><strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-102"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-103"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> </p></td>
+  <td><p class="line862">  </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-104"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-105"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">del </p></td>
+  <td><p class="line862">  </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-106"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>而这几种方案又各有优缺点,最好的排序方式是:</p>
+
+<div class="squid"><table><tbody><tr>  <td><p class="line862"> <strong>Evaluation Criteria</strong> </p></td>
+  <td><p class="line862"> <strong>Mechanisms in rough order from "best" to "worst"</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-111"></span><p class="line862"> Squid independence </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-112"></span><p class="line862"> Processing speed </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> or <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> or <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a> or <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-113"></span><p class="line862"> Development effort (header adaptation)</p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-114"></span><p class="line862"> Development effort (content adaptation)</p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-115"></span><p class="line862"> Versatility </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-116"></span><p class="line862"> Maintenance overheads </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+</tbody></table></div>
+
 
 <p>我先简单介绍一下ICAP(<a href="http://tools.ietf.org/html/rfc3507">Internet Content Adaptation Protocol</a>)协议, ICAP是工作在web缓存代理服务器和真正的服务器之间的一个服务,通常来讲用户的HTTP请求送到代理缓存服务器之后,由代理缓存服务器判断是否可以命中缓存,或者把用户的请求转向真正的web服务,代理用户请求,并响应用户,记录缓存,待用户下次请求时,直接响应用户请求,省去向真正服务器的请求过程,加快响应速度,节约带宽成本.<br/>
 而加入了ICAP的代理缓存服务器的工作逻辑是:</p>
@@ -136,7 +223,7 @@ make install
 </pre>
 
 
-<p>如果你之前没有使用autotool工具的经验,这里有<a href="/downloads/code/autotools.pdf">一篇短文介绍</a>,很快速的了解一下autotool工具. (autotool通常来说是autoconf, automake, autolib, 但是还有很多辅助的工具,包括 autoheader, aclocal, autoscan,运行这些命令之后,你就可以 <code>./configure &amp;&amp; make &amp;&amp; make install</code> ).<br/>
+<p>如果你之前没有使用autotool工具的经验,这里有<a href="/downloads/files/autotools.pdf">一篇短文介绍</a>,很快速的了解一下autotool工具. (autotool通常来说是autoconf, automake, autolib, 但是还有很多辅助的工具,包括 autoheader, aclocal, autoscan,运行这些命令之后,你就可以 <code>./configure &amp;&amp; make &amp;&amp; make install</code> ).<br/>
 写ecap插件很简单,例子包给出了3个例子插件.基本上一个插件只有一个源文件就可以搞定.所以写和部署起来还是蛮方便的.<br/>
 这里我们在原有的例子程序框架下修改一下. 然后写出我们自己的插件来.</p>
 
@@ -868,7 +955,39 @@ return x;
 <p>// create the adapter and register with libecap to reach the host application
 static const bool Registered = (libecap::RegisterService(new Adapter::Service), true);
 ```
-可以下载我写的上面的例子文件<a href="/downloads/code/eCAP_bbkanba_Adapter-0.0.1.tar.gz">eCAP_bbkanba_Adapter-0.0.1.tar.gz</a></p>
+可以下载我写的上面的例子文件<a href="/downloads/files/eCAP_bbkanba_Adapter-0.0.1.tar.gz">eCAP_bbkanba_Adapter-0.0.1.tar.gz</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[squid-3.2.5 CentOS X86_64 Configure: Error: C Compiler Cannot Create Executables]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/28/squid-3-2-5-centos-x86_64-configure-error-c-compiler-cannot-create-executables/"/>
+    <updated>2013-01-28T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/28/squid-3-2-5-centos-x86_64-configure-error-c-compiler-cannot-create-executables</id>
+    <content type="html"><![CDATA[<p>squid-3.2.5 在CentOS X86_64位的环境下默认配置编译会遇到错误，如下:</p>
+
+<pre>
+checking whether the C compiler works... no
+configure: error: in `/opt/packages/goodlePackages/squid/squid_src/squid-3.2.5':
+configure: error: C compiler cannot create executables
+</pre>
+
+
+<p>x86_64解决办法如下:</p>
+
+<p><code>bash
+./configure CXXFLAGS="-g -O2"  CFLAGS="-O2 -march=x86-64" --prefix=/usr/local/squid
+make
+make install
+</code></p>
+
+<p>i686</p>
+
+<p><code>bash
+./configure -disable-64bit CFLAGS="-O3 -march=i686" --prefix=/usr/local/squid
+make
+make install
+</code></p>
 ]]></content>
   </entry>
   
