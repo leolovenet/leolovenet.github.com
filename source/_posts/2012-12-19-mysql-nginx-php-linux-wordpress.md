@@ -1,0 +1,523 @@
+---
+title: 手工编译安装Mysql+Nginx+PHP+CentOS+wordpress
+author: leolovenet
+layout: post
+comments: true
+categories:
+  - Linux
+  - Mysql
+  - Nginx
+  - PHP
+  - WordPress
+tags:
+  - Linux
+  - Mysql
+  - Nginx
+  - PHP
+  - WordPress
+sidebar: collapse  
+---
+首先,关于这个组合非常的出名,(早先是apache用做web服务,后被nginx篡位), 他们的好处就不细讲了,具体的可以看一下<a href="http://blog.s135.com/nginx_php_v6/" title="张宴" target="_blank">张宴同学的Nginx 0.8.x + PHP 5.2.13（FastCGI）搭建胜过Apache十倍的Web服务器（第6版）[原创]</a>,那篇文章写的很详细,不过有段时间没有更新了,有些软件有些老,而且我的搭建环境是在CentOS(x86_64)位下,有一些不同的地方.  
+OK, Next.
+安装步骤为先安装Mysql, 然后PHP, 然后Nginx, 最后讲一下nginx下配置worldpress时怎样修改配置文件.  
+顺便说一下,本文中提到的所有开源软件截止到<span style="color:red;">2012年12月21日</span>,全部为最新**稳定版**.  
+
+本文提及的所有的软件全部下载到了`/data/packages/`目录下. 
+本文提及的所有的软件全部安装到了`/data/webservers/`目录下.
+(如果你的安装环境跟本文有出处的话,只需要在下面的初始环境命令中更换变量`{TEMP_DIR_PACKAGES|TEMP_DIR_WEBSERVERS}`即可)
+本文所有安装的新服务都会利用`chkconfig`添加到系统启动服务里,确保机器重启后服务能够自动启动.  
+本文所有安装好的新服务都可以利用标准的命令格式`/etc/init.d/XXX {start|stop|restart|reload}`进行手工的`{start|stop|restart|reload}`  
+Ready Go.  
+初步准备,利用CentOS系统自带的yum命令安装、升级所需的程序库,建立基本目录,构建初始环境.
+<!--more-->
+
+``` bash
+mkdir -p /data/packages
+mkdir -p /data/webservers
+export TEMP_DIR_PACKAGES=/data/packages
+export TEMP_DIR_WEBSERVERS=/data/webservers
+yum -y install gcc gcc-c++ autoconf libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel libidn libidn-devel openssl openssl-devel openldap openldap-devel openldap-clients openldap-servers cmake
+```
+
+敲入回车之后,让yum飞一会... ...
+
+## Mysql
+我们第一个要安装mysql,全部安装命令如下,注意我把下载的压缩包的详细版本换成了`*`,这样有助与解决小版本的不同,可能你下载的mysql会升级小版本号:
+
+``` bash
+cd $TEMP_DIR_PACKAGES
+wget http://dev.mysql.com/downloads/mirror.php?id=411115
+tar -zxf mysql-5.5.*.tar.gz
+cd mysql-5.5.*
+groupadd mysql
+useradd -r -g mysql mysql
+cmake -D  CMAKE_INSTALL_PREFIX:PATH=$TEMP_DIR_WEBSERVERS/mysql/  -D MYSQL_DATADIR:PATH=$TEMP_DIR_WEBSERVERS/mysql/data/ .
+make 
+make install
+
+echo "$TEMP_DIR_WEBSERVERS/mysql/lib/" >> /etc/ld.so.conf.d/webservers.conf
+/sbin/ldconfig
+
+cd $TEMP_DIR_WEBSERVERS/mysql/
+chown -R mysql .
+chgrp -R mysql .
+scripts/mysql_install_db --user=mysql
+chown -R root .
+chown -R mysql data
+cp support-files/my-medium.cnf /etc/my.cnf
+cp support-files/mysql.server /etc/init.d/mysql.server
+chkconfig --add mysql.server
+chkconfig --list mysql.server
+/etc/init.d/mysql.server start
+```
+
+上面最后一行命令就是用我说的标准启动服务格式,开启mysql服务.当然你也可以用`service xxx start`这种格式.  
+下面的的命令是可选的,你也可以不这样做,但是还是建议看一下,毕竟没有坏处只有好处.  
+**Next command is optional**
+
+``` bash
+#运行脚本,给mysql的root用户设置密码,删除测试的用户和测试数据库
+$TEMP_DIR_WEBSERVERS/mysql/bin/mysql_secure_installation 
+#修改mysql配置文件,让它避免中文乱码问题
+vim /etc/my.cnf
+#在[client]后面添加
+default-character-set = utf8
+#在[mysqld]后面添加
+character-set-server = utf8
+#用你刚刚设置的root密码登陆mysql,为mysql创建一个新的用户
+$TEMP_DIR_WEBSERVERS/mysql/bin/mysql -uroot -p
+GRANT ALL PRIVILEGES ON *.* TO 'leolovenet'@'%' IDENTIFIED BY '123';
+```
+
+##安装php的依赖软件
+
+``` bash
+cd $TEMP_DIR_PACKAGES
+
+wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
+tar zxf libiconv-1.14.tar.gz
+cd libiconv-1.14/
+./configure
+make 
+make install
+cd ../
+
+wget http://sourceforge.net/projects/mcrypt/files/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz/download
+tar zxf libmcrypt-2.5.8.tar.gz 
+cd libmcrypt-2.5.8/
+./configure
+make
+make install
+echo "/usr/local/lib/" >> /etc/ld.so.conf.d/webservers.conf
+/sbin/ldconfig
+cd libltdl/
+./configure --enable-ltdl-install
+make
+make install
+cd ../../
+
+wget http://sourceforge.net/projects/mhash/files/latest/download
+tar zxvf mhash-*.tar.gz
+cd mhash-*/
+./configure
+make
+make install
+cd ../
+
+
+wget http://sourceforge.net/projects/mcrypt/files/latest/download
+tar zxvf mcrypt-*.tar.gz
+cd mcrypt-*/
+/sbin/ldconfig
+./configure
+make
+make install
+cd ../
+```
+
+##安装php
+因为我的机器是x86_64位环境,所以在配置php的时候加入了`--with-libdir=lib64`选项.  
+此时,php会检查mysql的`$TEMP_DIR_WEBSERVERS/mysql/lib64`目录,而不是`$TEMP_DIR_WEBSERVERS/mysql/lib`目录,所以我们加入了一个软链接
+
+``` bash
+ln -s $TEMP_DIR_WEBSERVERS/mysql/lib $TEMP_DIR_WEBSERVERS/mysql/lib64
+
+cd $TEMP_DIR_PACKAGES
+wget http://cn2.php.net/get/php-5.3.20.tar.gz/from/this/mirror
+tar zxf php-5.3.20.tar.gz
+cd php-5.3.20
+./configure --prefix=$TEMP_DIR_WEBSERVERS/php --with-config-file-path=$TEMP_DIR_WEBSERVERS/php/etc --with-mysql=$TEMP_DIR_WEBSERVERS/mysql --with-mysqli=$TEMP_DIR_WEBSERVERS/mysql/bin/mysql_config --with-iconv-dir=/usr/local --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-libxml-dir=/usr --enable-xml --disable-rpath  --enable-safe-mode --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --with-curl --with-curlwrappers --enable-mbregex  --enable-fpm  --enable-mbstring --with-mcrypt --with-gd --enable-gd-native-ttf --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-ldap --with-ldap-sasl --with-xmlrpc --enable-zip --enable-soap --enable-sqlite-utf8 --with-libdir=lib64
+make ZEND_EXTRA_LIBS='-liconv'
+make install
+cp $TEMP_DIR_PACKAGES/php-5.3.20/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
+chmod 755 /etc/init.d/php-fpm
+chkconfig --add php-fpm
+cp $TEMP_DIR_PACKAGES/php-5.3.20/php.ini-production $TEMP_DIR_WEBSERVERS/php/etc/php.ini
+cp $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.conf.default $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.conf
+
+#手工修改php.ini文件,vim $TEMP_DIR_WEBSERVERS/php/etc/php.ini
+#修改cgi.fix_pathinfo=0,防止Nginx文件类型错误解析漏洞.
+#手工修改vim $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.ini文件,根据自己机器的内存大小,修改php-fpm开启的运行进程数
+#pm.max_spare_servers = 5
+
+/etc/init.d/php-fpm start
+```
+
+##Nginx  
+``` bash
+wget http://sourceforge.net/projects/pcre/files/latest/download
+tar zxf pcre-*
+cd pcre-*/
+./configure
+make && make install
+cd ../
+
+wget http://nginx.org/download/nginx-1.2.6.tar.gz
+./configure --user=www --group=www --prefix=$TEMP_DIR_WEBSERVERS/nginx --with-http_stub_status_module --with-http_ssl_module  
+make && make install
+cd $TEMP_DIR_WEBSERVERS/nginx/conf
+mkdir global
+mkdir vhost
+mkdir -p $TEMP_DIR_WEBSERVERS/www/other/
+mv nginx.conf nginx.conf.org
+```
+
+手工编辑 `vim $TEMP_DIR_WEBSERVERS/nginx/conf/nginx.conf`,输入下面的内容.  
+注意下面内容的路径`/data/webservers`,如果你的环境不同,请手工更换.
+
+<pre>
+user  www www;
+#ususally equal to number of CPU's you have. run command "grep processor /proc/cpuinfo | wc -l" to find it
+worker_processes  1;
+error_log  /data/webservers/nginx/logs/nginx_error.log  crit;
+pid        /data/webservers/nginx/nginx.pid;
+
+#Specifies the value for maximum file descriptors that can be opened by this process. 
+#worker_rlimit_nofile 65535;
+
+events {
+    #use epoll;
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+      
+    #rewrite_log on;
+    sendfile on;
+    #tcp_nopush     on;
+    keepalive_timeout 3;
+    #tcp_nodelay on;
+    
+    fastcgi_connect_timeout 300;
+    fastcgi_send_timeout 300;
+    fastcgi_read_timeout 300;
+    fastcgi_buffer_size 64k;
+    fastcgi_buffers 4 64k;
+    fastcgi_busy_buffers_size 128k;
+    fastcgi_temp_file_write_size 128k;
+  
+    gzip on;
+    gzip_min_length  1k;
+    gzip_buffers     4 16k;
+    gzip_http_version 1.0;
+    gzip_comp_level 2;
+    gzip_types       text/plain application/x-javascript text/css application/xml;
+    gzip_vary on;
+
+    #php max upload limit cannot be larger than this       
+    client_max_body_size 13m;
+    server_names_hash_bucket_size 128;
+    client_header_buffer_size 32k;
+    large_client_header_buffers 4 32k;
+      
+    index  index.php index.html index.htm;
+  # Upstream to abstract backend connection(s) for PHP.
+    upstream php {
+                #this should match value of "listen" directive in php-fpm pool
+                #server unix:/tmp/php-fpm.sock;
+                server 127.0.0.1:9000;
+      }
+
+    log_format  access  '$remote_addr - $remote_user [$time_local] "$request" '
+              '$status $body_bytes_sent "$http_referer" '
+              '"$http_user_agent" $http_x_forwarded_for';
+
+    server  {
+        listen       80;
+        server_name  bbkanba.com  www.bbkanba.com;
+        charset utf-8;
+      root      /data/webservers/www/other/;
+      access_log  /data/webservers/nginx/logs/access.log  access;
+    
+    include   global/restrictions.conf;
+    include   global/php.conf;
+    } 
+  include vhost/*.conf;
+}
+</pre>
+
+进入到`cd $TEMP_DIR_WEBSERVERS/nginx/conf/global/`,创建php.conf,输入下面的内容:
+
+<pre>
+# Pass all .php files onto a php-fpm/php-fcgi server.
+location ~ \.php$ {
+    # Zero-day exploit defense.
+    # http://forum.nginx.org/read.php?2,88845,page=3
+    # Won't work properly (404 error) if the file is not stored on this server, which is entirely possible with php-fpm/php-fcgi.
+    # Comment the 'try_files' line out if you set up php-fpm/php-fcgi on another machine.  And then cross your fingers that you won't get hacked.
+    try_files $uri =404;
+
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+    #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+
+    include fastcgi_params;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    #fastcgi_intercept_errors on;
+    fastcgi_pass php;
+}
+</pre>
+
+继续创建restrictions.conf,输入下面的内容:
+
+<pre>
+# Global restrictions configuration file.
+# Designed to be included in any server {} block.
+
+location = /favicon.ico {
+  log_not_found off;
+  access_log off;
+}
+
+location = /robots.txt {
+  allow all;
+  log_not_found off;
+  access_log off;
+}
+
+# Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
+# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+location ~ /\. {
+  deny all;
+}
+
+# Deny access to any files with a .php extension in the uploads directory
+# Works in sub-directory installs and also in multisite network
+# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
+location ~* /(?:uploads|files)/.*\.php$ {
+  deny all;
+}
+</pre>
+
+配置文件创建完毕,为了遵循我们之前说的,可以用`/etc/init.d/XXX {start|stop|restart|reload}`这种格式进行服务的控制,需要手工创建脚本,  
+`vim /etc/init.d/nginx`,输入下面内容:  
+注意下面内容的路径`/data/webservers`,如果你的环境不同,请手工更换.
+
+``` bash
+#!/bin/sh
+# nginx - this script starts and stops the nginx daemon
+#
+# chkconfig:   - 85 15
+# Required-Start:    $remote_fs $network
+# Required-Stop:     $remote_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# description:  Nginx is an HTTP(S) server, HTTP(S) reverse \
+#               proxy and IMAP/POP3 proxy server
+# processname: nginx
+# config:      /data/webservers/nginx/conf/nginx.conf
+# pidfile:     /data/webservers/nginx/nginx.pid
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ "$NETWORKING" = "no" ] && exit 0
+
+nginx="/data/webservers/nginx/sbin/nginx"
+prog=$(basename $nginx)
+
+NGINX_CONF_FILE="/data/webservers/nginx/conf/nginx.conf"
+
+[ -f /etc/sysconfig/nginx ] && . /etc/sysconfig/nginx
+
+lockfile=/var/lock/subsys/nginx
+
+make_dirs() {
+   # make required directories
+   user=`$nginx -V 2>&1 | grep "configure arguments:" | sed 's/[^*]*--user=\([^ ]*\).*/\1/g' -`
+   if [ -z "`grep $user /etc/passwd`" ]; then
+       useradd -M -s /bin/nologin $user
+   fi
+   options=`$nginx -V 2>&1 | grep 'configure arguments:'`
+   for opt in $options; do
+       if [ `echo $opt | grep '.*-temp-path'` ]; then
+           value=`echo $opt | cut -d "=" -f 2`
+           if [ ! -d "$value" ]; then
+               # echo "creating" $value
+               mkdir -p $value && chown -R $user $value
+           fi
+       fi
+   done
+}
+
+start() {
+    [ -x $nginx ] || exit 5
+    [ -f $NGINX_CONF_FILE ] || exit 6
+    make_dirs
+    echo -n $"Starting $prog: "
+    daemon $nginx -c $NGINX_CONF_FILE
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog -QUIT
+    retval=$?
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    configtest || return $?
+    stop
+    sleep 1
+    start
+}
+
+reload() {
+    configtest || return $?
+    echo -n $"Reloading $prog: "
+    killproc $nginx -HUP
+    RETVAL=$?
+    echo
+}
+
+force_reload() {
+    restart
+}
+
+configtest() {
+  $nginx -t -c $NGINX_CONF_FILE
+}
+
+
+rh_status() {
+    status $prog
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart|configtest)
+        $1
+        ;;
+    reload)
+        rh_status_q || exit 7
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+            ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
+        exit 2
+esac
+```
+
+然后,需要赋予脚本可执行权限:
+
+``` bash
+chmod 755 /etc/init.d/nginx
+chkconfig --add nginx
+/etc/init.d/nginx start
+```
+
+到此,nginx+php+mysql已经部署完毕.下面是配置wordpress了.
+
+##wordpress
+
+``` bash
+cd $TEMP_DIR_PACKAGES
+wget http://wordpress.org/latest.zip
+unzip latest.zip
+mv wordpress $TEMP_DIR_WEBSERVERS/www/
+```
+
+剩下的是添加wordpress的nginx配置文件:`vim $TEMP_DIR_WEBSERVERS/www/nginx/conf/global/wordpress.conf`
+
+<pre>
+# WordPress single blog rules.
+# Designed to be included in any server {} block.
+
+# This order might seem weird - this is attempted to match last if rules below fail.
+# http://wiki.nginx.org/HttpCoreModule
+location / {
+  try_files $uri $uri/ /index.php?$args;
+}
+
+# Add trailing slash to */wp-admin requests.
+rewrite /wp-admin$ $scheme://$host$uri/ permanent;
+
+# Directives to send expires headers and turn off 404 error logging.
+location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+       access_log off; log_not_found off; expires max;
+}
+
+# Uncomment one of the lines below for the appropriate caching plugin (if used).
+#include global/wordpress-wp-super-cache.conf;
+#include global/wordpress-w3-total-cache.conf;
+</pre>
+
+接着是另外一个配置文件:`vim $TEMP_DIR_WEBSERVERS/www/nginx/conf/vhost/wordpress.conf`
+
+<pre>
+server {
+    listen       80;
+    server_name  blog.bbkanba.com;
+    charset utf-8;
+    index index.html index.php;
+    root  /data/webservers/www/wordpress/;
+    access_log  /data/webservers/nginx/logs/wordpress.log  access;
+
+    include   global/restrictions.conf;
+    include   global/php.conf;  
+    include   global/wordpress.conf;
+}
+</pre>
+
+接着重新加载一下nginx的配置文件
+
+``` bash
+/etc/init.d/nginx reload
+```
+
+你就可以访问自己上面配置的blog地址, `http://blog.bbkanba.com`, 进行著名的5分钟安装了.  
+如果你需要在nginx上使用更高级的cache规则,对wordpress进行优化的话,建议查看这里:
+
+http://codex.wordpress.org/Nginx

@@ -2,6 +2,7 @@
 title: Xcode 快捷键收集整理
 author: leolovenet
 layout: post
+comments: true
 categories:
   - IOS
   - Mac

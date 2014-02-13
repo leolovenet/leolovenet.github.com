@@ -24,8 +24,90 @@ sidebar: collapse
 
 Squid拥有强大的<a target="_blank" href="http://www.squid-cache.org/Doc/config/acl/">ACL(访问控制)</a>配置指令,可以实现一些通用的访问控制,但是如果想要更加灵活的控制,应该怎么办? 在官网wiki中(<a target="_blank" href="http://wiki.squid-cache.org/SquidFaq/ContentAdaptation">Content Adaptation</a>)给出了答案.
 <!--more-->
-wiki给出了5种技术方案:
+wiki给出了[5种技术方案](http://wiki.squid-cache.org/SquidFaq/ContentAdaptation#Summary)
 
+<div class="squid">
+<style>
+.squid table
+{
+    margin: 0.5em 0;
+    border-collapse: collapse;
+}
+
+.squid table td
+{
+    padding: 0.25em;
+    border: 1px solid #ADB9CC;
+}
+
+.squid td p {
+    margin: 0;
+    padding: 0;
+}
+</style>
+<table><tbody><tr>  <td colspan="1" rowspan="2" style="text-align: center"><p class="line862"> <strong>Mechanism</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Request</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Response</strong> </p></td>
+</tr>
+<tr>  <td style="text-align: center"><span class="anchor" id="line-101"></span><p class="line891"><strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-102"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-103"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> </p></td>
+  <td><p class="line862">  </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-104"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-105"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">del </p></td>
+  <td><p class="line862">  </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-106"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+</tbody></table></div>
+而这几种方案又各有优缺点,最好的排序方式是:
+<div class="squid"><table><tbody><tr>  <td><p class="line862"> <strong>Evaluation Criteria</strong> </p></td>
+  <td><p class="line862"> <strong>Mechanisms in rough order from "best" to "worst"</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-111"></span><p class="line862"> Squid independence </p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-112"></span><p class="line862"> Processing speed </p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> or <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> or <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a> or <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-113"></span><p class="line862"> Development effort (header adaptation)</p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-114"></span><p class="line862"> Development effort (content adaptation)</p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-115"></span><p class="line862"> Versatility </p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-116"></span><p class="line862"> Maintenance overheads </p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+</tbody></table></div>
 
 我先简单介绍一下ICAP([Internet Content Adaptation Protocol](http://tools.ietf.org/html/rfc3507))协议, ICAP是工作在web缓存代理服务器和真正的服务器之间的一个服务,通常来讲用户的HTTP请求送到代理缓存服务器之后,由代理缓存服务器判断是否可以命中缓存,或者把用户的请求转向真正的web服务,代理用户请求,并响应用户,记录缓存,待用户下次请求时,直接响应用户请求,省去向真正服务器的请求过程,加快响应速度,节约带宽成本.  
 而加入了ICAP的代理缓存服务器的工作逻辑是:
@@ -129,7 +211,7 @@ make install
     └── sample.h    //例子的头文件
 </pre>
 
-如果你之前没有使用autotool工具的经验,这里有[一篇短文介绍](/downloads/code/autotools.pdf),很快速的了解一下autotool工具. (autotool通常来说是autoconf, automake, autolib, 但是还有很多辅助的工具,包括 autoheader, aclocal, autoscan,运行这些命令之后,你就可以 `./configure && make && make install` ).  
+如果你之前没有使用autotool工具的经验,这里有[一篇短文介绍](/downloads/files/autotools.pdf),很快速的了解一下autotool工具. (autotool通常来说是autoconf, automake, autolib, 但是还有很多辅助的工具,包括 autoheader, aclocal, autoscan,运行这些命令之后,你就可以 `./configure && make && make install` ).  
 写ecap插件很简单,例子包给出了3个例子插件.基本上一个插件只有一个源文件就可以搞定.所以写和部署起来还是蛮方便的.  
 这里我们在原有的例子程序框架下修改一下. 然后写出我们自己的插件来.
 
@@ -713,5 +795,5 @@ libecap::host::Xaction *Adapter::Xaction::lastHostCall() {
 // create the adapter and register with libecap to reach the host application
 static const bool Registered = (libecap::RegisterService(new Adapter::Service), true);
 ```
-可以下载我写的上面的例子文件[eCAP_bbkanba_Adapter-0.0.1.tar.gz](/downloads/code/eCAP_bbkanba_Adapter-0.0.1.tar.gz)
+可以下载我写的上面的例子文件[eCAP_bbkanba_Adapter-0.0.1.tar.gz](/downloads/files/eCAP_bbkanba_Adapter-0.0.1.tar.gz)
 

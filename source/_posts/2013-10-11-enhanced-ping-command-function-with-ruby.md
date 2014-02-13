@@ -9,12 +9,14 @@ categories:
 - Mac
 - Ruby
 - Shell
+- QQWry
 tags:
 - Bash
 - Linux
 - Mac
 - Ruby
 - Shell
+- QQWry
 keywords: "Bash, Linux, Mac, Ruby,escape, Shell"
 description: "a Ruby script enhanced ping command function."
 sidebar: collapse

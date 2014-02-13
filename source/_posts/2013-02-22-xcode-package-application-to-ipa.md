@@ -1,5 +1,5 @@
 ---
-title: '将xcode编译的app程序打包为ipa文件'
+title: 'xcode编译的app程序打包为ipa文件'
 author: leolovenet
 layout: post
 comments: true
