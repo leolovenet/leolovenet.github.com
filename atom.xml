@@ -4,7 +4,7 @@
   <title><![CDATA[末日前几天]]></title>
   <link href="http://leolovenet.com/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-02-13T16:05:22+08:00</updated>
+  <updated>2014-02-13T17:33:17+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -12,6 +12,52 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Hi Octopress]]></title>
+    <link href="http://leolovenet.com/blog/2014/02/13/hi-octopress/"/>
+    <updated>2014-02-13T17:16:08+08:00</updated>
+    <id>http://leolovenet.com/blog/2014/02/13/hi-octopress</id>
+    <content type="html"><![CDATA[<p>完成了 Blog 由 Wordpress 转向 Octopress 的迁移.
+我的 Blog 的迁移轨迹是 <a href="blog.csdn.net/apoxlo">CSDN</a> &mdash;> <a href="http://blog.bbkanba.com">Wordpress</a> &mdash;> Octepress.
+由于 CSDN 上面没有什么有用的文章我就没有迁移过来, Wordpress 的代码共享功能没有 Octepress 好用, 所以最终选择了 Octepress.</p>
+
+<p>Github Pages 对用户使用 master 分支作为 <code>http://username.github.io</code> 网站的公共目录.因此,你需要在 source 分支上对你的 blog 源代码编辑,然后 commit 生成的内容到 master 分支上.</p>
+
+<!--more-->
+
+
+<h2>创建并部署一篇新博文的完整过程：</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake new_post<span class="o">[</span><span class="s2">&quot;New Post”]</span>
+</span><span class='line'><span class="s2">rake generate</span>
+</span><span class='line'><span class="s2">git add .</span>
+</span><span class='line'><span class="s2">git commit -am &quot;</span>Some comment here.”
+</span><span class='line'>git push origin <span class="nb">source</span>
+</span><span class='line'>rake deploy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>How to Update Octopress</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git pull octopress master     <span class="c"># Get the latest Octopress</span>
+</span><span class='line'>bundle install                <span class="c"># Keep gems updated</span>
+</span><span class='line'>rake update_source            <span class="c"># update the template&#39;s source</span>
+</span><span class='line'>rake update_style             <span class="c"># update the template&#39;s style</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[用Ruby增强ping命令]]></title>

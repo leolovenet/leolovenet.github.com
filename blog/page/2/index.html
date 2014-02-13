@@ -84,6 +84,251 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/01/21/my-windows-office-excel-vba-script/">Windows Office Excel Vba Script 一例</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-21T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>上周学习vba的总结.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+</pre></td><td class='code'><pre><code class='vbnet'><span class='line'><span class="k">Sub</span> <span class="nf">getData</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;单引号开始的是注视行</span>
+</span><span class='line'>    <span class="c">&#39;声明变量</span>
+</span><span class='line'>    <span class="k">Dim</span> <span class="n">RowNumMax</span> <span class="ow">As</span> <span class="kt">Integer</span><span class="p">,</span> <span class="n">RowNumMax2</span> <span class="ow">As</span> <span class="kt">Integer</span>
+</span><span class='line'>    <span class="k">Dim</span> <span class="n">ASht</span> <span class="ow">As</span> <span class="n">Worksheet</span><span class="p">,</span> <span class="n">BSht</span> <span class="ow">As</span> <span class="n">Worksheet</span>
+</span><span class='line'>    <span class="k">Dim</span> <span class="n">Site</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;根据表格名字获得表格,并赋值个变量</span>
+</span><span class='line'>    <span class="k">Set</span> <span class="n">ASht</span> <span class="o">=</span> <span class="n">Sheets</span><span class="p">(</span><span class="s">&quot;Sheet1&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">Set</span> <span class="n">BSht</span> <span class="o">=</span> <span class="n">Sheets</span><span class="p">(</span><span class="s">&quot;Sheet2&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="c">&#39;锁定屏幕更新</span>
+</span><span class='line'>    <span class="n">Application</span><span class="p">.</span><span class="n">ScreenUpdating</span> <span class="o">=</span> <span class="k">False</span>
+</span><span class='line'>    <span class="k">On</span> <span class="k">Error</span> <span class="k">Resume</span> <span class="k">Next</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;检查表格数据</span>
+</span><span class='line'>    <span class="c">&#39;定位数据的函数有两个Range 或者 Cells</span>
+</span><span class='line'>    <span class="c">&#39;Range是表示法是Range(&quot;E2&quot;)</span>
+</span><span class='line'>    <span class="c">&#39;Cells的表示法是坐标类似Cells(1,1)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">If</span> <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;E2&quot;</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="k">Then</span>
+</span><span class='line'>    <span class="n">MsgBox</span> <span class="s">&quot;E2列中没有网站数据&quot;</span>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Activate</span>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Cells</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="k">End</span>
+</span><span class='line'>    <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="n">RowNumMax</span> <span class="o">=</span> <span class="n">ASht</span><span class="p">.</span><span class="err">[</span><span class="n">E65536</span><span class="err">]</span><span class="p">.</span><span class="n">End</span><span class="p">(</span><span class="n">xlUp</span><span class="p">).</span><span class="n">Row</span>   <span class="c">&#39;E列最下面一行的行数，中间有空格也行</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">BSht</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="n">RowNumMax2</span> <span class="o">=</span> <span class="n">BSht</span><span class="p">.</span><span class="err">[</span><span class="n">A65536</span><span class="err">]</span><span class="p">.</span><span class="n">End</span><span class="p">(</span><span class="n">xlUp</span><span class="p">).</span><span class="n">Row</span>
+</span><span class='line'>    <span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;A2:A&quot;</span> <span class="o">&amp;</span> <span class="n">RowNumMax2</span><span class="p">).</span><span class="n">ClearFormats</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;清除格式</span>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Cells</span><span class="p">.</span><span class="n">Select</span>
+</span><span class='line'>    <span class="n">Selection</span><span class="p">.</span><span class="n">ClearFormats</span>
+</span><span class='line'>    <span class="c">&#39;快捷设置选中单元格de属性</span>
+</span><span class='line'>    <span class="k">With</span> <span class="n">Selection</span><span class="p">.</span><span class="n">Interior</span>
+</span><span class='line'>        <span class="p">.</span><span class="n">Pattern</span> <span class="o">=</span> <span class="n">xlNone</span>
+</span><span class='line'>        <span class="p">.</span><span class="n">TintAndShade</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>        <span class="p">.</span><span class="n">PatternTintAndShade</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>    <span class="k">End</span> <span class="k">With</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c">&#39;for循环</span>
+</span><span class='line'>    <span class="k">For</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">To</span> <span class="n">RowNumMax</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="n">Site</span> <span class="o">=</span> <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;E&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span>
+</span><span class='line'>        <span class="c">&#39;不等于操作符 &amp;lt;&amp;gt;</span>
+</span><span class='line'>        <span class="k">If</span> <span class="n">Site</span> <span class="o">&amp;</span><span class="n">lt</span><span class="err">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="err">;</span> <span class="s">&quot;&quot;</span> <span class="k">Then</span>
+</span><span class='line'>         <span class="c">&#39;MsgBox Site</span>
+</span><span class='line'>          <span class="c">&#39;Unique</span>
+</span><span class='line'>           <span class="k">For</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">To</span> <span class="n">RowNumMax</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>               <span class="k">If</span> <span class="n">a</span> <span class="o">&amp;</span><span class="n">lt</span><span class="err">;</span><span class="o">&amp;</span><span class="n">gt</span><span class="err">;</span> <span class="n">x</span> <span class="k">Then</span>
+</span><span class='line'>                    <span class="k">If</span> <span class="n">Site</span> <span class="o">=</span> <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;E&quot;</span> <span class="o">&amp;</span> <span class="n">a</span><span class="p">)</span> <span class="k">Then</span>
+</span><span class='line'>                        <span class="n">MsgBox</span> <span class="s">&quot;E&quot;</span> <span class="o">&amp;</span> <span class="n">a</span> <span class="o">&amp;</span> <span class="s">&quot;跟E&quot;</span> <span class="o">&amp;</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="s">&quot;重复，整理被迫中断&quot;</span>
+</span><span class='line'>                    <span class="k">End</span>
+</span><span class='line'>                <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>               <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>           <span class="k">Next</span> <span class="n">a</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="k">For</span> <span class="n">xx</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">To</span> <span class="n">RowNumMax2</span> <span class="o">+</span> <span class="mi">1</span>
+</span><span class='line'>             <span class="c">&#39;MsgBox BSht.Range(&quot;A&quot; &amp; xx)</span>
+</span><span class='line'>             <span class="c">&#39;If xx &amp;gt; 3 Then</span>
+</span><span class='line'>             <span class="c">&#39;Exit For</span>
+</span><span class='line'>             <span class="c">&#39;End If</span>
+</span><span class='line'>             <span class="k">If</span> <span class="n">Trim</span><span class="p">(</span><span class="n">Site</span><span class="p">)</span> <span class="o">=</span> <span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;A&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">))</span> <span class="k">Then</span>
+</span><span class='line'>               <span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;A&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">).</span><span class="n">Interior</span><span class="p">.</span><span class="n">ColorIndex</span> <span class="o">=</span> <span class="mi">15</span>
+</span><span class='line'>              <span class="c">&#39;MsgBox &quot;A&quot; &amp; xx</span>
+</span><span class='line'>              <span class="c">&#39;字符串处理函数Trim去除字符串开头结尾的空格符号,跟php的一样</span>
+</span><span class='line'>              <span class="c">&#39;换行符常量,vbLf</span>
+</span><span class='line'>              <span class="c">&#39;利用Replace函数删除换行符              </span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;F&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;H&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>               <span class="c">&#39;ASht.Range(&quot;G&quot; &amp; x) = Trim(BSht.Range(&quot;K&quot; &amp; xx))</span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;H&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;C&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;J&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;B&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;K&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;F&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>               <span class="c">&#39;MsgBox BSht.Range(&quot;F&quot; &amp; xx).Formula =</span>
+</span><span class='line'>               <span class="c">&#39;BSht.Range(&quot;D&quot; &amp; xx).MergeArea.Cells(1, 1) 读取合并单元格的值</span>
+</span><span class='line'>               <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;L&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Replace</span><span class="p">(</span><span class="n">Trim</span><span class="p">(</span><span class="n">BSht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;D&quot;</span> <span class="o">&amp;</span> <span class="n">xx</span><span class="p">).</span><span class="n">MergeArea</span><span class="p">.</span><span class="n">Cells</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">vbLf</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+</span><span class='line'>             <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="k">Next</span> <span class="n">xx</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">Else</span>
+</span><span class='line'>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;F&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;H&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;J&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;K&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>         <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;L&quot;</span> <span class="o">&amp;</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">End</span> <span class="k">If</span>
+</span><span class='line'>        <span class="c">&#39;If x &amp;gt; 3 Then</span>
+</span><span class='line'>        <span class="c">&#39;Exit For</span>
+</span><span class='line'>        <span class="c">&#39;End If</span>
+</span><span class='line'>    <span class="k">Next</span> <span class="n">x</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ASht</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="s">&quot;F2:G53&quot;</span><span class="p">).</span><span class="n">ClearContents</span>
+</span><span class='line'>    <span class="c">&#39;ASht.Range(&quot;G2:G5555&quot;).ClearContents</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">Application</span><span class="p">.</span><span class="n">ScreenUpdating</span> <span class="o">=</span> <span class="k">True</span>
+</span><span class='line'><span class="k">End</span> <span class="k">Sub</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry/">Config Awstats on Window2003 or Linux With GeoIP/QQWry</a></h1>
     
     
@@ -496,6 +741,10 @@ Ready Go.<br/>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/02/13/hi-octopress/">Hi Octopress</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/10/11/enhanced-ping-command-function-with-ruby/">用Ruby增强ping命令</a>
       </li>
     
@@ -509,10 +758,6 @@ Ready Go.<br/>
     
       <li class="post">
         <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">[翻译]TED的一个四轴飞行器字幕</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/">关于开发Squid的ecap动态库插件的指导</a>
       </li>
     
   </ul>

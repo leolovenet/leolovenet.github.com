@@ -5,13 +5,13 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>我的Evernote笔记 - 末日前几天</title>
+  <title>Hi Octopress - 末日前几天</title>
   <meta name="author" content="leolovenet">
 
   
-  <meta name="description" content="平时积累的Evernote的笔记,有关 linux, VritualBox, Vagrant, Git, Pow" />
+  <meta name="description" content="这里是leolovenet的记忆自留地,有关leolovenet的信息." />
   
-  <meta name="keywords" content="Linux, Vagrant, Git, Pow, Evernote" />
+  <meta name="keywords" content="leolovenet,末日前几天,the days before the doomsday" />
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -19,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://leolovenet.com/blog/2013/10/07/my-sharing-notes">
+  <link rel="canonical" href="http://leolovenet.com/blog/2014/02/13/hi-octopress">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="末日前几天" type="application/atom+xml">
@@ -47,7 +47,7 @@
 
 </head>
 
-<body    class="collapse-sidebar sidebar-footer" >
+<body   >
   <header role="banner"><hgroup>
   <h1><a href="/">末日前几天</a></h1>
   
@@ -81,7 +81,7 @@
   
   <header>
     
-      <h1 class="entry-title">我的Evernote笔记</h1>
+      <h1 class="entry-title">Hi Octopress</h1>
     
     
       <p class="meta">
@@ -97,28 +97,51 @@
   
 
 
-<time datetime="2013-10-07T00:00:00+08:00" pubdate data-updated="true"></time>
+<time datetime="2014-02-13T17:16:08+08:00" pubdate data-updated="true">Feb 13<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>最近发生了很多事情,刚刚从未来的丈母娘那里回来.</p>
+<div class="entry-content"><p>完成了 Blog 由 Wordpress 转向 Octopress 的迁移.
+我的 Blog 的迁移轨迹是 <a href="blog.csdn.net/apoxlo">CSDN</a> &mdash;> <a href="http://blog.bbkanba.com">Wordpress</a> &mdash;> Octepress.
+由于 CSDN 上面没有什么有用的文章我就没有迁移过来, Wordpress 的代码共享功能没有 Octepress 好用, 所以最终选择了 Octepress.</p>
 
-<p>没有什么主要的技术文章,就发一些自己平时积累的Evernote的笔记.</p>
+<p>Github Pages 对用户使用 master 分支作为 <code>http://username.github.io</code> 网站的公共目录.因此,你需要在 source 分支上对你的 blog 源代码编辑,然后 commit 生成的内容到 master 分支上.</p>
 
-<blockquote><p>★★★★ <a href="https://www.evernote.com/shard/s170/sh/901e7847-78f3-4560-ae64-72825f8f5c45/b43546d281d47bbbdc745184e83f1fad">一些常用的linux的命令</a></p>
+<!--more-->
 
-<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
-vagrant是一个创建和分发虚拟化开发环境的工具，使用ruby编写，基于Oracle的VirtualBox，它提供了一个可配置的、轻量级的、可重用的、便携的虚拟化开发环境.</p>
 
-<p>★★ <a href="https://www.evernote.com/shard/s170/sh/5ee87faa-0c73-46a6-9cd1-7117ee8971ea/4bbf353bae719e4ef65e2b57530732a1">Git的学习笔记</a></p>
+<h2>创建并部署一篇新博文的完整过程：</h2>
 
-<p>★★ <a href="https://www.evernote.com/shard/s170/sh/c6fa9447-727c-474a-b75d-4492b5764f08/cd5ee8ca706b35bbc969e5205964bbd3">Pow 相关笔记</a>
-Pow是一个Rack Server for Mac OS X.</p>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>rake new_post<span class="o">[</span><span class="s2">&quot;New Post”]</span>
+</span><span class='line'><span class="s2">rake generate</span>
+</span><span class='line'><span class="s2">git add .</span>
+</span><span class='line'><span class="s2">git commit -am &quot;</span>Some comment here.”
+</span><span class='line'>git push origin <span class="nb">source</span>
+</span><span class='line'>rake deploy
+</span></code></pre></td></tr></table></div></figure>
 
-<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d408e6c7-c997-4fc1-b4ae-97f20445e491/424b9f322830d7debaeb976ed870ff7d">读Postfix权威指南笔记</a></p></blockquote>
+
+<h2>How to Update Octopress</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>git pull octopress master     <span class="c"># Get the latest Octopress</span>
+</span><span class='line'>bundle install                <span class="c"># Keep gems updated</span>
+</span><span class='line'>rake update_source            <span class="c"># update the template&#39;s source</span>
+</span><span class='line'>rake update_style             <span class="c"># update the template&#39;s style</span>
+</span></code></pre></td></tr></table></div></figure>
+
 </div>
 
 
@@ -141,12 +164,12 @@ Pow是一个Rack Server for Mac OS X.</p>
   
 
 
-<time datetime="2013-10-07T00:00:00+08:00" pubdate data-updated="true"></time>
+<time datetime="2014-02-13T17:16:08+08:00" pubdate data-updated="true">Feb 13<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/evernote/'>Evernote</a>, <a class='category' href='/blog/categories/git/'>Git</a>, <a class='category' href='/blog/categories/linux/'>Linux</a>, <a class='category' href='/blog/categories/mac/'>Mac</a>, <a class='category' href='/blog/categories/postfix/'>Postfix</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/categories/vritualbox/'>VritualBox</a>
+    <a class='category' href='/blog/categories/octopress/'>Octopress</a>
   
 </span>
 
@@ -162,10 +185,8 @@ Pow是一个Rack Server for Mac OS X.</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/07/11/machinebill/" title="Previous Post: 简单的机器资产管理,machineBill">&laquo; 简单的机器资产管理,machineBill</a>
+        <a class="basic-alignment left" href="/blog/2013/10/11/enhanced-ping-command-function-with-ruby/" title="Previous Post: 用Ruby增强ping命令">&laquo; 用Ruby增强ping命令</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/10/11/enhanced-ping-command-function-with-ruby/" title="Next Post: 用Ruby增强ping命令">用Ruby增强ping命令 &raquo;</a>
       
     </p>
   </footer>
@@ -260,8 +281,8 @@ Pow是一个Rack Server for Mac OS X.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://leolovenet.com/blog/2013/10/07/my-sharing-notes/';
-        var disqus_url = 'http://leolovenet.com/blog/2013/10/07/my-sharing-notes/';
+        var disqus_identifier = 'http://leolovenet.com/blog/2014/02/13/hi-octopress/';
+        var disqus_url = 'http://leolovenet.com/blog/2014/02/13/hi-octopress/';
         var disqus_script = 'embed.js';
       
     (function () {
