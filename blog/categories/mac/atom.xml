@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Mac | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/mac/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-02-13T17:33:17+08:00</updated>
+  <updated>2014-02-15T18:23:24+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -224,80 +224,7 @@ Options:
 
 <p>下面是具体命令</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[execute below script in terminal]  (terminal_colorful.sh)</span> <a href='/downloads/code/terminal_colorful.sh'>download</a></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
-</span><span class='line'>
-</span><span class='line'><span class="nb">cd</span> ~
-</span><span class='line'><span class="nv">WGET_CMD</span><span class="o">=</span><span class="k">$(</span><span class="nb">type</span> -P wget<span class="k">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$WGET_CMD</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span>;<span class="k">then</span>
-</span><span class='line'><span class="k">     </span>yum -y install wget
-</span><span class='line'><span class="k">fi</span>
-</span><span class='line'>
-</span><span class='line'>wget http://leolovenet.com/downloads/code/dircolors
-</span><span class='line'><span class="c">#or</span>
-</span><span class='line'><span class="c">#wget --no-check-certificate https://github.com/seebi/dircolors-solarized/raw/master/dircolors.ansi-universal</span>
-</span><span class='line'>
-</span><span class='line'>mv dircolors  ~/.dir_colors
-</span><span class='line'><span class="nb">eval</span> <span class="sb">`</span>dircolors ~/.dir_colors<span class="sb">`</span>
-</span><span class='line'>cat &gt;&gt;  ~/.bashrc <span class="s">&lt;&lt;END</span>
-</span><span class='line'><span class="s">########bash color######################</span>
-</span><span class='line'><span class="s">if [ -x /usr/bin/dircolors ]; then</span>
-</span><span class='line'><span class="s">    alias ls=&#39;ls --color=auto&#39;</span>
-</span><span class='line'><span class="s">    alias dir=&#39;dir --color=auto&#39;</span>
-</span><span class='line'><span class="s">    alias vdir=&#39;vdir --color=auto&#39;</span>
-</span><span class='line'><span class="s">    alias grep=&#39;grep --color=auto&#39;</span>
-</span><span class='line'><span class="s">    alias fgrep=&#39;fgrep --color=auto&#39;</span>
-</span><span class='line'><span class="s">    alias egrep=&#39;egrep --color=auto&#39;</span>
-</span><span class='line'><span class="s">    alias tree=&#39;tree -C&#39;</span>
-</span><span class='line'><span class="s">fi</span>
-</span><span class='line'><span class="s">alias ..=&quot;cd ..&quot;</span>
-</span><span class='line'><span class="s">alias ..2=&quot;cd ../..&quot;</span>
-</span><span class='line'><span class="s">alias ..3=&quot;cd ../../..&quot;</span>
-</span><span class='line'><span class="s">alias ..4=&quot;cd ../../../..&quot;</span>
-</span><span class='line'><span class="s">alias ..5=&quot;cd ../../../../..&quot;</span>
-</span><span class='line'><span class="s">alias  &quot;l&quot;=&quot;ls -ahl --full-time&quot;</span>
-</span><span class='line'><span class="s">########################################</span>
-</span><span class='line'><span class="s">END</span>
-</span><span class='line'><span class="nb">source</span> ~/.bashrc
-</span><span class='line'>ls /
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% include_code  [execute below script in terminal] lang:bash terminal_colorful.sh  %}</p>
 
 <p>该项目的<a href="https://github.com/seebi/dircolors-solarized/blob/master/README.md">ReadMe</a>文件还有很多信息,比如怎样配置265色的终端,感兴趣的可以仔细看看.</p>
 
