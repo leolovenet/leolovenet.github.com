@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: IIS | 末日前几天]]></title>
+  <link href="http://leolovenet.com/blog/categories/iis/atom.xml" rel="self"/>
+  <link href="http://leolovenet.com/"/>
+  <updated>2014-02-18T17:51:56+08:00</updated>
+  <id>http://leolovenet.com/</id>
+  <author>
+    <name><![CDATA[leolovenet]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Config Awstats on Window2003 or Linux With GeoIP/QQWry]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry/"/>
+    <updated>2013-01-19T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry</id>
+    <content type="html"><![CDATA[<p><img src="/downloads/images/awstats.png" title="awstats example" alt="awstats.png" /></p>
+
+<p>Awstats是一个日志分析工具(web log分析为强),很好很强大,不多解释,感兴趣的wiki一下。这是一个安装教程文章.</p>
+
+<p>首先是awstas在windows 2003下与iis6的配置过程,然后是在Linux下和Nginx一起的配置，紧跟着Linux下与Lighttpd一起配置的过程,总之,这个可能是目前市面上最仔细全面安装awstas的教程了.</p>
+
+<!--more-->
+
+
+<p>Awstas官方网站de下载地址<a href="http://awstats.sourceforge.net/#DOWNLOAD">点击这里</a>.<br/>
+目前为止最新版本是7.1 释放时间是 <strong>2012-12-20 18:32</strong></p>
+
+<p>本文将会安装awstas的插件与启用的功能如下列表:</p>
+
+<pre>
+GeoIP       显示IP属于那个国家
+GeoLiteCity 显示IP属于那个城市
+hostinfo    可以查询IP的Whois信息
+qqhostinfo  显示IP纯真版数据库de信息
+decodeutfkeys   解决"用以搜索的关键词"乱码
+timezone    解决windows平台下的日志时间差8小时问题
+day-by-day  可以根据日期(以天为单位)查看日志的js
+tooltips    显示一些详细的提示信息
+AllowToUpdateStatsFromBrowser 允许通过浏览器执行更新,显示最新的日志分析结果
+</pre>
+
+
+<h2>1. Install Awstats with IIS6 under windowns 2003</h2>
+
+<p>用Windows做服务器真心难用,所以安装配置起来最麻烦.<br/>
+在windows平台下载Zip版本的<a href="http://prdownloads.sourceforge.net/awstats/awstats-7.1.zip">7.1稳定发行包</a></p>
+
+<p>Awstas是用perl（一个夸平台脚本语言）写成的, 所以要在windows平台下工作的话,必须先安装搭建Perl语言环境. 在windows平台下, 我们需要安装ActivePerl的免费版本.<br/>
+ActivePerl官方网站de下载地址<a href="http://www.activestate.com/activeperl">点击这里</a>,截止今天,最新版本是 <strong>5.16.2.1602</strong> ,在官方下载页面根据自己的操作系统选择下载64位还是32位的安装包.</p>
+
+<p>安装过程直接点击下一步下一步就可以了.没有什么要特别要特别注意的,只是在选择安装路径的时候,如果不能默认的<code>c:\Perl</code>的话,就放到其他盘符里吧,类似<code>D:\Perl</code>,不要安装在乱七八糟的路径下,避免不必要的错误.验证安装是否完成的的办法,我认为最好的是注销一下当前用户,再登陆进来,然后点击<code>开始 &gt;&gt; 运行 &gt;&gt; cmd</code>,然后输入命令<code>perl -v</code>,看看反应,如果能正常打印perl的版本号的话,就说明安装的没有问题,反之,就不用再往下看了,因为必须解决这个问题才可以往下进行.</p>
+
+<p>一般安装包会自动整合Perl的功能到IIS6中去,但如果你发现它没有做到的话,也不用着急,手动添加一下就好了,很容易,检查方法,打开 <code>"Internet 信息服务(IIS)管理器" – "Web服务扩展" – 查看右面"web 服务器扩展"</code> 列表里有没有Perl的字样.如果没有的话,就点击<code>添加一个新的web服务扩展</code>,如图1-1,填写扩展名(当然你也可以自己随便定义扩展名,只要你喜欢),然后点击添加按钮,然后根据你的Perl安装路径填写,比如,<code>c:\Perl\bin\perl.exe "%s" %s</code>,这里我的Perl安装路径是默认的<code>c:\Perl</code>, 如果你的不同,请做相应修改,点击确定完成. 这样你就可以通过浏览器查看perl在iis上的执行结果了,这是进行下面步骤的基础.</p>
+
+<p>图1-1
+<img src="/downloads/images/awstats.1-1.png" alt="awstats.1-1.png" /></p>
+
+<p>因为IIS6的默认日志格式很奇特,所以想要用awstas分析的话,需要修改一下默认的日志的格式.具体步骤,打开 &ldquo;Internet 信息服务(IIS)管理器&rdquo; ,在网站列表中找到你想要分析日志的网站,右击选择属性,在网站标签下,确保 &ldquo;启用日志记录&rdquo; 被勾选着,然后点击右边的属性按钮,确保日志计划是 &ldquo;每天&rdquo;, 勾选 &ldquo;文件命名和创建使用当地时间&rdquo;, 并记住 &ldquo;日志文件路径&rdquo; 待会我们会进到这个目录里(如图1-2).</p>
+
+<p>图1-2<br/>
+<img src="/downloads/images/awstats.1-2.png" alt="awstats.1-2.png" /></p>
+
+<p>然后点击高级标签(如图1-3).关键时刻来临了,兴奋起来吧!这里你真的不能出错,一定要再三检查你勾选的选项,不然很容易出错,还不容易发现.</p>
+
+<p>图1-3
+<img src="/downloads/images/awstats.1-3.png" alt="awstats.1-3.png" /></p>
+
+<p>请确保有且仅有以下几项是选中状态,不能多也不能少.</p>
+
+<pre>
+date
+time
+c-ip
+cs-username
+cs-method
+cs-uri-stem
+sc-status
+sc-bytes
+cs-version
+cs(User-Agent)
+cs(Referer)
+</pre>
+
+
+<p>然后点击确定,保存配置,再然后关掉网站,打开我的电脑,进入到上面说的 &ldquo;日志文件路径&rdquo; 中去,删除所有现有的日志,重新开始网站.</p>
+
+<p>下面建立两个目录(当然你也可以建立在其他盘符,不过要记得修改以下所有步骤的路径):</p>
+
+<pre>
+#用于存放awstats的程序文件
+C:\LogAnalyse\awstats
+#用于存放awstats程序分析log之后的结果数据文件
+C:\LogAnalyse\awstats_data_dir
+</pre>
+
+
+<p><span style="color: #d14;">右击awstats_data_dir目录选择属性,安全,添加Everyone的完全控制权限,不然无法从浏览器端更新.</span></p>
+
+<p>将下载下来的zip包解压,并把<code>wwwroot</code>目录下的所有内容放到<code>C:\LogAnalyse\awstats</code>下.<br/>
+进入到<code>C:\LogAnalyse\awstats\cgi-bin</code>目录下,新建一个叫<code>awstats.logWin.conf</code>的文件(必须叫这个名字,没得商量,待会要用的),然后输入下面的内容,注意修改<code>SiteDomain&lt;code&gt;与</code>LogFile</code>选项值.<br/>
+如果你想知道具体每个选项的意思<a href="http://awstats.sourceforge.net/docs/awstats_config.html">点击这里查看官网说明</a></p>
+
+<p>``` bash</p>
+
+<h1>AWSTATS CONFIGURE FILE</h1>
+
+<h1>需要分析的日志路径,注意替成 C:/WINDOWS/system32/LogFiles/W3SVC952692957  为图1-2中你的网站日志路径</h1>
+
+<p>LogFile=&ldquo;C:/WINDOWS/system32/LogFiles/W3SVC952692957/ex%YY-0%MM-0%DD-0.log&rdquo;
+LogType=W</p>
+
+<h1>这个很重要,因为IIS6的日志不标准,木有办法啦</h1>
+
+<p>LogFormat=&ldquo;date time cs-method cs-uri-stem cs-username c-ip cs-version cs(User-Agent) cs(Referer) sc-status sc-bytes&rdquo;
+LogSeparator=&ldquo; &rdquo;</p>
+
+<h1>就是说明一下你给那个站点做的分析,分析结果页面左上角显示</h1>
+
+<p>SiteDomain=&ldquo;blog.bbkanba.com&rdquo;
+HostAliases=&ldquo;localhost 127.0.0.1&rdquo;
+DNSLookup=0</p>
+
+<h1>看上面,不解释</h1>
+
+<p>DirData=&ldquo;C:/LogAnalyse/awstats_data_dir/&rdquo;
+DirCgi=&ldquo;/cgi-bin&rdquo;
+DirIcons=&ldquo;/icon&rdquo;
+AllowToUpdateStatsFromBrowser=1
+AllowFullYearView=2</p>
+
+<h1>同一时间只能有一个update运行</h1>
+
+<p>EnableLockForUpdate=1
+DNSStaticCacheFile=&ldquo;dnscache.txt&rdquo;
+DNSLastUpdateCacheFile=&ldquo;dnscachelastupdate.txt&rdquo;
+SkipDNSLookupFor=&ldquo;&rdquo;
+AllowAccessFromWebToAuthenticatedUsersOnly=0
+AllowAccessFromWebToFollowingAuthenticatedUsers=&ldquo;&rdquo;
+AllowAccessFromWebToFollowingIPAddresses=&ldquo;&rdquo;
+CreateDirDataIfNotExists=0
+BuildHistoryFormat=text
+BuildReportFormat=html
+SaveDatabaseFilesWithPermissionsForEveryone=0
+PurgeLogFile=0
+ArchiveLogRecords=0
+KeepBackupOfHistoricFiles=0
+DefaultFile=&ldquo;index.php index.html&rdquo;</p>
+
+<h1>这里可以指定那些地址不纳入分析结果,比如私网地址的访客</h1>
+
+<p>SkipHosts=&ldquo;&rdquo;
+SkipUserAgents=&ldquo;&rdquo;
+SkipFiles=&ldquo;&rdquo;
+SkipReferrersBlackList=&ldquo;&rdquo;
+OnlyHosts=&ldquo;&rdquo;
+OnlyUserAgents=&ldquo;&rdquo;
+OnlyUsers=&ldquo;&rdquo;
+OnlyFiles=&ldquo;&rdquo;
+NotPageList=&ldquo;css js class gif jpg jpeg png bmp ico rss xml swf&rdquo;
+ValidHTTPCodes=&ldquo;200 304&rdquo;
+ValidSMTPCodes=&ldquo;1 250&rdquo;
+AuthenticatedUsersNotCaseSensitive=0
+URLNotCaseSensitive=0
+URLWithAnchor=0
+URLQuerySeparators=&ldquo;?;&rdquo;
+URLWithQuery=0
+URLWithQueryWithOnlyFollowingParameters=&ldquo;&rdquo;
+URLWithQueryWithoutFollowingParameters=&ldquo;&rdquo;
+URLReferrerWithQuery=0
+WarningMessages=1
+ErrorMessages=&ldquo;&rdquo;
+DebugMessages=0
+NbOfLinesForCorruptedLog=50
+WrapperScript=&ldquo;&rdquo;
+DecodeUA=0
+MiscTrackerUrl=&ldquo;/js/awstats_misc_tracker.js&rdquo;
+LevelForBrowsersDetection=2
+LevelForOSDetection=2
+LevelForRefererAnalyze=2
+LevelForRobotsDetection=2
+LevelForSearchEnginesDetection=2
+LevelForKeywordsDetection=2
+LevelForFileTypesDetection=2
+LevelForWormsDetection=0
+UseFramesWhenCGI=1
+DetailedReportsOnNewWindows=1</p>
+
+<h1>分析结果页面的缓存时间,默认不缓存,这样你就可以手工通过浏览器更新,时时查看最新数据了</h1>
+
+<p>Expires=0
+MaxRowsInHTMLOutput=1000</p>
+
+<h1>Lang默认是auto,根据浏览器设置现实页面语言,这里强制为汉语了</h1>
+
+<p>Lang=&ldquo;cn&rdquo;
+DirLang=&ldquo;./lang&rdquo;
+ShowMenu=1                <br/>
+ShowSummary=UVPHB
+ShowMonthStats=UVPHB
+ShowDaysOfMonthStats=VPHB
+ShowDaysOfWeekStats=PHB
+ShowHoursStats=PHB
+ShowDomainsStats=PHB
+ShowHostsStats=PHBL
+ShowAuthenticatedUsers=0
+ShowRobotsStats=HBL
+ShowWormsStats=0
+ShowEMailSenders=0
+ShowEMailReceivers=0
+ShowSessionsStats=1
+ShowPagesStats=PBEX
+ShowFileTypesStats=HB
+ShowFileSizesStats=0  <br/>
+ShowDownloadsStats=HB <br/>
+ShowOSStats=1
+ShowBrowsersStats=1
+ShowScreenSizeStats=0
+ShowOriginStats=PH
+ShowKeyphrasesStats=1
+ShowKeywordsStats=1
+ShowMiscStats=a
+ShowHTTPErrorsStats=1
+ShowSMTPErrorsStats=0
+ShowClusterStats=0
+AddDataArrayMonthStats=1
+AddDataArrayShowDaysOfMonthStats=1
+AddDataArrayShowDaysOfWeekStats=1
+AddDataArrayShowHoursStats=1
+IncludeInternalLinksInOriginSection=0
+MaxNbOfDomain = 10
+MinHitDomain  = 1
+MaxNbOfHostsShown = 10
+MinHitHost    = 1
+MaxNbOfLoginShown = 10
+MinHitLogin   = 1
+MaxNbOfRobotShown = 10
+MinHitRobot   = 1
+MaxNbOfDownloadsShown = 10
+MinHitDownloads = 1
+MaxNbOfPageShown = 10
+MinHitFile    = 1
+MaxNbOfOsShown = 10
+MinHitOs      = 1
+MaxNbOfBrowsersShown = 10
+MinHitBrowser = 1
+MaxNbOfScreenSizesShown = 5
+MinHitScreenSize = 1
+MaxNbOfWindowSizesShown = 5
+MinHitWindowSize = 1
+MaxNbOfRefererShown = 10
+MinHitRefer   = 1
+MaxNbOfKeyphrasesShown = 10
+MinHitKeyphrase = 1
+MaxNbOfKeywordsShown = 10
+MinHitKeyword = 1
+MaxNbOfEMailsShown = 20
+MinHitEMail   = 1
+FirstDayOfWeek=1
+ShowFlagLinks=&ldquo;&rdquo;
+ShowLinksOnUrl=1
+UseHTTPSLinkForUrl=&ldquo;&rdquo;
+MaxLengthOfShownURL=64
+HTMLHeadSection=&ldquo;&rdquo;
+HTMLEndSection=&ldquo;&rdquo;
+MetaRobot=0
+Logo=&ldquo;awstats_logo6.png&rdquo;
+LogoLink=&ldquo;<a href="http://www.awstats.org">http://www.awstats.org</a>&rdquo;
+BarWidth   = 260
+BarHeight  = 90
+StyleSheet=&ldquo;&rdquo;
+color_Background=&ldquo;FFFFFF&rdquo; <br/>
+color_TableBGTitle=&ldquo;CCCCDD&rdquo;
+color_TableTitle=&ldquo;000000&rdquo; <br/>
+color_TableBG=&ldquo;CCCCDD&rdquo;    <br/>
+color_TableRowTitle=&ldquo;FFFFFF&rdquo;  <br/>
+color_TableBGRowTitle=&ldquo;ECECEC"<br/>
+color_TableBorder="ECECEC"<br/>
+color_text="000000&rdquo;   <br/>
+color_textpercent=&ldquo;606060"<br/>
+color_titletext="000000&rdquo;
+color_weekend=&ldquo;EAEAEA&rdquo;
+color_link=&ldquo;0011BB&rdquo;
+color_hover=&ldquo;605040&rdquo;
+color_u=&ldquo;FFAA66&rdquo;
+color_v=&ldquo;F4F090&rdquo;
+color_p=&ldquo;4477DD&rdquo;
+color_h=&ldquo;66DDEE&rdquo;
+color_k=&ldquo;2EA495&rdquo;
+color_s=&ldquo;8888DD&rdquo;
+color_e=&ldquo;CEC2E8&rdquo;
+color_x=&ldquo;C1B2E2&rdquo;
+ExtraTrackedRowsLimit=500</p>
+
+<h1>以下是启用的插件们</h1>
+
+<p>HTMLHeadSection=&ldquo;&lt;script language=javascript src=&lsquo;<a href="http://leolovenet.com/js/day-by-day-head.js">http://leolovenet.com/js/day-by-day-head.js</a>&rsquo;&gt;&lt;/script&gt;&rdquo;
+HTMLEndSection=&ldquo;&lt;script language=javascript src=&lsquo;<a href="http://leolovenet.com/js/day-by-day-end.js">http://leolovenet.com/js/day-by-day-end.js</a>&rsquo;&gt;&lt;/script&gt;&rdquo;
+LoadPlugin=&ldquo;geoip GEOIP_STANDARD C:/LogAnalyse/awstats/cgi-bin/plugins/GeoIP.dat&rdquo;
+LoadPlugin=&ldquo;geoip_city_maxmind GEOIP_STANDARD C:/LogAnalyse/awstats/cgi-bin/plugins/GeoLiteCity.dat&rdquo;
+LoadPlugin=&ldquo;hostinfo&rdquo;
+LoadPlugin=&ldquo;qqhostinfo&rdquo;
+LoadPlugin=&ldquo;decodeutfkeys&rdquo;
+LoadPlugin=&ldquo;timezone +8&rdquo;
+LoadPlugin=&ldquo;tooltips&rdquo;
+```</p>
+
+<p>点击开始-运行-cmd,输入以下命令,安装所需要的软件包.</p>
+
+<pre>
+ ppm install Geo::IP::PurePerl
+ ppm install Geography::Countries
+ ppm install IP::Country 
+ ppm install Geo-IPfree 
+ ppm install Net-Xwhois
+</pre>
+
+
+<p>下载<a href="http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP.dat</a>和<a href="http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz">GeoLiteCity.dat</a>,解压缩以后,放入<code>C:\LogAnalyse\awstats\cgi-bin\plugins</code>目录.
+下载<a href="/downloads/code/qqhostinfo.pm">qqhostinfo.pm</a>和<a href="/downloads/code/qqwry.pl">qqwry.pl</a>和<a href="http://www.cz88.net/">QQWry.Dat</a>到<code>C:\LogAnalyse\awstats\cgi-bin\plugins</code>目录下.</p>
+
+<p><span style="color: #d14;">然后选中这5个文件,右击选择属性,安全,添加Everyone的读取权限(如图1-4)</span></p>
+
+<p>图1-4</p>
+
+<p><img src="/downloads/images/awstats.1-4.png" alt="awstats.1-4.png" /></p>
+
+<p>下载<a href="/downloads/code/day-by-day-head.js">day-by-day-head.js</a>和<a href="/downloads/code/day-by-day-end.js">day-by-day-end.js</a>到<code>C:\LogAnalyse\awstats\js</code>目录下.</p>
+
+<p>在C:\LogAnalyse\awstats_data_dir目录下新建一个<code>crontab.bat</code>文件.输入下面的内容</p>
+
+<pre>
+perl %cd%/../awstats/cgi-bin/awstats.pl -update -config=logWin  -lang=cn  -databasebreak=day
+</pre>
+
+
+<p>解释一下,这个bat文件是要设立计划任务时用的,比如每隔30分钟自动更新下分析数据.</p>
+
+<ul>
+<li>%cd%/../awstats/cgi-bin/awstats.pl文件是awstats执行分析的主程序perl脚本(%cd%当前目录)</li>
+<li>-update 表示更新</li>
+<li>-config=logWin 知道为什么上面的文件为什么必须叫awstats.logWin.conf了吧, awstats.pl会掐头去尾留中间的找配置文件,如果你上面的文件不叫awstats.logWin.conf,而是awstats.bbkanba.conf的话,这里也需要改成-config=bbkanba</li>
+<li>-lang=cn 告诉awstats.pl生成中文页面,你喜欢其他语言可以去C:/LogAnalyse/awstats/cgi-bin/lang目录下瞅瞅,看看这个参数的值可以是什么.</li>
+<li>-databasebreak=day 这个重要哦, awstas默认是以月为单位分析展示数据的,而这里的我们安装了day-by-day插件, 就要求它以天为单位展示.</li>
+</ul>
+
+
+<p>保存好以后,点击开始-运行-cmd,直接用鼠标将<code>crontab.bat</code>文件拖放到黑窗口里,然后回车,你会看到类似图1-5的效果,说明成功配置好了,反之,根据错误提示自己排查吧.原因无非权限呀,路径呀,依赖的perl库啊之类的.</p>
+
+<p>图1-5</p>
+
+<p><img src="/downloads/images/awstats.1-5.png" alt="awstats.1-5.png" /></p>
+
+<p>然后在控制面板,计划任务,添加计划任务,达到如图1-6的样子就可以了,不然就是你配错了.</p>
+
+<p>图1-6<br/>
+<img src="/downloads/images/awstats.1-6.png" alt="awstats.1-6.png" /></p>
+
+<p>到此,我们已经配置好了awstas的工作环境,下面新建立一个网站来展示数据吧.</p>
+
+<p>打开 &ldquo;Internet 信息服务(IIS)管理器&rdquo; –> &ldquo;网站&rdquo; 右击 –> &ldquo;新建网站&rdquo; –> 新建网站向导,下一步 –> 描述 &ldquo;log.bbkanba.com&rdquo;,下一步 –> 全部未分配,80,主机头:log.bbkanba.com –> 主目录路径C:\LogAnalyse\awstats –> 最后一定要勾上 &ldquo;执行(如ISAPI 应用程序或 CGI)&rdquo; –> 下一步完成.</p>
+
+<p>还需要一个perl脚本重定向,创建到C:\LogAnalyse\awstats\index.pl下面,这样每次打开<code>http://log.bbkanba.com</code>就可以看到最新的统计数据了(还的改一下网站的设置，添加index.pl到默认内容文档里,网站属性-文档-默认内容文档).</p>
+
+<p>``` perl</p>
+
+<h1>!/usr/bin/perl</h1>
+
+<p>use POSIX qw(strftime);
+print strftime &ldquo;Location: <a href="http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n">http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n</a>&rdquo; ,localtime;
+```</p>
+
+<p>congratulation you are finished! celebrate吧.
+windows的到这里打完,收工,我去煮个泡面,待会继续Linux下的.</p>
+
+<h2>2. Install Awstats with Lighttpd under Linux(CentOS)</h2>
+
+<p>到了，我最爱的Linux服务器环境安装就变的容易多了.<br/>
+首先通过yum安装perl的依赖包,然后下载安装awstats的rpm安装包,然后安装所需要的插件,创建配置文件,创建计划任务,就ok了.全部命令如下.<br/>
+配置文件同上面window2003下的基本一样，只是变更了一下路径.这里我们分析<code>/var/log/lighttpd/access.log</code>这个日志文件.配置文件的意思看上面.</p>
+
+<p>``` bash</p>
+
+<h1>需要从<a href="http://packages.sw.be/rpmforge-release/">http://packages.sw.be/rpmforge-release/</a> 选择自己平台的rpm包安装,这里我的系统是CentOS6 x86_64,你要根据自己的平台选择,下面是wiki地址</h1>
+
+<h2><a href="http://wiki.centos.org/AdditionalResources/Repositories/RPMForge">http://wiki.centos.org/AdditionalResources/Repositories/RPMForge</a></h2>
+
+<p>wget <a href="http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm">http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm</a>
+rpm -Uvh rpmforge-release*rpm</p>
+
+<p>yum -y install perl  perl-CPAN perl-Compress-Raw-Zlib  perl-Compress-Zlib  perl-GSSAPI  perl-HTML-Parser  perl-HTML-Tagset  perl-IO-Compress-Base perl-IO-Compress-Zlib  perl-URI  perl-libwww-perl gzip perl-Geo-IP perl-Net-XWhois perl-FCGI perl-FCGI-ProcManager</p>
+
+<p>wget <a href="http://prdownloads.sourceforge.net/awstats/awstats-7.1-1.noarch.rpm">http://prdownloads.sourceforge.net/awstats/awstats-7.1-1.noarch.rpm</a>
+rpm -ivh awstats-7.1-1.noarch.rpm
+rm -rf awstats-7.1-1.noarch.rpm</p>
+
+<p>cd  /usr/local/awstats/wwwroot/cgi-bin/plugins/
+wget <a href="http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz</a>
+wget <a href="http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz">http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz</a>
+gunzip GeoIP.dat.gz GeoLiteCity.dat.gz</p>
+
+<p>wget <a href="http://leolovenet.com/downloads/code/qqhostinfo.pm">http://leolovenet.com/downloads/code/qqhostinfo.pm</a>
+wget <a href="http://leolovenet.com/downloads/code/qqwry.pl">http://leolovenet.com/downloads/code/qqwry.pl</a>
+wget <a href="http://leolovenet.com/downloads/code/QQWry.Dat">http://leolovenet.com/downloads/code/QQWry.Dat</a>
+cd /usr/local/awstats/wwwroot/js/
+wget <a href="http://leolovenet.com/downloads/code/day-by-day-head.js">http://leolovenet.com/downloads/code/day-by-day-head.js</a>
+wget <a href="http://leolovenet.com/downloads/code/day-by-day-end.js">http://leolovenet.com/downloads/code/day-by-day-end.js</a>
+mkdir -p /usr/local/awstats/awstats_data_dir
+chmod -R 777 /usr/local/awstats/awstats_data_dir</p>
+
+<p>cat > /etc/awstats/awstats.log.conf &lt;&lt;ALLENDEND</p>
+
+<h1>AWSTATS CONFIGURE FILE</h1>
+
+<p>LogFile=&ldquo;/var/log/lighttpd/access.log&rdquo;
+LogType=W
+LogFormat=1
+LogSeparator=&ldquo; &rdquo;
+SiteDomain=&ldquo;blog.bbkanba.com&rdquo;
+HostAliases=&ldquo;localhost 127.0.0.1&rdquo;
+DNSLookup=0
+DirData=&ldquo;/usr/local/awstats/awstats_data_dir&rdquo;
+DirCgi=&ldquo;/cgi-bin&rdquo;
+DirIcons=&ldquo;/icon&rdquo;
+AllowToUpdateStatsFromBrowser=1
+AllowFullYearView=2
+EnableLockForUpdate=1
+DNSStaticCacheFile=&ldquo;dnscache.txt&rdquo;
+DNSLastUpdateCacheFile=&ldquo;dnscachelastupdate.txt&rdquo;
+SkipDNSLookupFor=&ldquo;&rdquo;
+AllowAccessFromWebToAuthenticatedUsersOnly=0
+AllowAccessFromWebToFollowingAuthenticatedUsers=&ldquo;&rdquo;
+AllowAccessFromWebToFollowingIPAddresses=&ldquo;&rdquo;
+CreateDirDataIfNotExists=0
+BuildHistoryFormat=text
+BuildReportFormat=html
+SaveDatabaseFilesWithPermissionsForEveryone=0
+PurgeLogFile=0
+ArchiveLogRecords=0
+KeepBackupOfHistoricFiles=0
+DefaultFile=&ldquo;index.php index.html&rdquo;
+SkipHosts=&ldquo;&rdquo;
+SkipUserAgents=&ldquo;&rdquo;
+SkipFiles=&ldquo;&rdquo;
+SkipReferrersBlackList=&ldquo;&rdquo;
+OnlyHosts=&ldquo;&rdquo;
+OnlyUserAgents=&ldquo;&rdquo;
+OnlyUsers=&ldquo;&rdquo;
+OnlyFiles=&ldquo;&rdquo;
+NotPageList=&ldquo;css js class gif jpg jpeg png bmp ico rss xml swf&rdquo;
+ValidHTTPCodes=&ldquo;200 304&rdquo;
+ValidSMTPCodes=&ldquo;1 250&rdquo;
+AuthenticatedUsersNotCaseSensitive=0
+URLNotCaseSensitive=0
+URLWithAnchor=0
+URLQuerySeparators=&ldquo;?;&rdquo;
+URLWithQuery=0
+URLWithQueryWithOnlyFollowingParameters=&ldquo;&rdquo;
+URLWithQueryWithoutFollowingParameters=&ldquo;&rdquo;
+URLReferrerWithQuery=0
+WarningMessages=1
+ErrorMessages=&ldquo;&rdquo;
+DebugMessages=0
+NbOfLinesForCorruptedLog=50
+WrapperScript=&ldquo;&rdquo;
+DecodeUA=0
+MiscTrackerUrl=&ldquo;/js/awstats_misc_tracker.js&rdquo;
+LevelForBrowsersDetection=2
+LevelForOSDetection=2
+LevelForRefererAnalyze=2
+LevelForRobotsDetection=2
+LevelForSearchEnginesDetection=2
+LevelForKeywordsDetection=2
+LevelForFileTypesDetection=2
+LevelForWormsDetection=0
+UseFramesWhenCGI=1
+DetailedReportsOnNewWindows=1
+Expires=0
+MaxRowsInHTMLOutput=1000
+Lang=&ldquo;cn&rdquo;
+DirLang=&ldquo;./lang&rdquo;
+ShowMenu=1                <br/>
+ShowSummary=UVPHB
+ShowMonthStats=UVPHB
+ShowDaysOfMonthStats=VPHB
+ShowDaysOfWeekStats=PHB
+ShowHoursStats=PHB
+ShowDomainsStats=PHB
+ShowHostsStats=PHBL
+ShowAuthenticatedUsers=0
+ShowRobotsStats=HBL
+ShowWormsStats=0
+ShowEMailSenders=0
+ShowEMailReceivers=0
+ShowSessionsStats=1
+ShowPagesStats=PBEX
+ShowFileTypesStats=HB
+ShowFileSizesStats=0  <br/>
+ShowDownloadsStats=HB <br/>
+ShowOSStats=1
+ShowBrowsersStats=1
+ShowScreenSizeStats=0
+ShowOriginStats=PH
+ShowKeyphrasesStats=1
+ShowKeywordsStats=1
+ShowMiscStats=a
+ShowHTTPErrorsStats=1
+ShowSMTPErrorsStats=0
+ShowClusterStats=0
+AddDataArrayMonthStats=1
+AddDataArrayShowDaysOfMonthStats=1
+AddDataArrayShowDaysOfWeekStats=1
+AddDataArrayShowHoursStats=1
+IncludeInternalLinksInOriginSection=0
+MaxNbOfDomain = 10
+MinHitDomain  = 1
+MaxNbOfHostsShown = 10
+MinHitHost    = 1
+MaxNbOfLoginShown = 10
+MinHitLogin   = 1
+MaxNbOfRobotShown = 10
+MinHitRobot   = 1
+MaxNbOfDownloadsShown = 10
+MinHitDownloads = 1
+MaxNbOfPageShown = 10
+MinHitFile    = 1
+MaxNbOfOsShown = 10
+MinHitOs      = 1
+MaxNbOfBrowsersShown = 10
+MinHitBrowser = 1
+MaxNbOfScreenSizesShown = 5
+MinHitScreenSize = 1
+MaxNbOfWindowSizesShown = 5
+MinHitWindowSize = 1
+MaxNbOfRefererShown = 10
+MinHitRefer   = 1
+MaxNbOfKeyphrasesShown = 10
+MinHitKeyphrase = 1
+MaxNbOfKeywordsShown = 10
+MinHitKeyword = 1
+MaxNbOfEMailsShown = 20
+MinHitEMail   = 1
+FirstDayOfWeek=1
+ShowFlagLinks=&ldquo;&rdquo;
+ShowLinksOnUrl=1
+UseHTTPSLinkForUrl=&ldquo;&rdquo;
+MaxLengthOfShownURL=64
+HTMLHeadSection=&ldquo;&rdquo;
+HTMLEndSection=&ldquo;&rdquo;
+MetaRobot=0
+Logo=&ldquo;awstats_logo6.png&rdquo;
+LogoLink=&ldquo;<a href="http://www.awstats.org">http://www.awstats.org</a>&rdquo;
+BarWidth   = 260
+BarHeight  = 90
+StyleSheet=&ldquo;&rdquo;
+color_Background=&ldquo;FFFFFF&rdquo;
+color_TableBGTitle=&ldquo;CCCCDD&rdquo;
+color_TableTitle=&ldquo;000000&rdquo;
+color_TableBG=&ldquo;CCCCDD&rdquo;
+color_TableRowTitle=&ldquo;FFFFFF&rdquo;
+color_TableBGRowTitle=&ldquo;ECECEC&rdquo;
+color_TableBorder=&ldquo;ECECEC&rdquo;
+color_text=&ldquo;000000&rdquo;
+color_textpercent=&ldquo;606060&rdquo;
+color_titletext=&ldquo;000000&rdquo;
+color_weekend=&ldquo;EAEAEA&rdquo;
+color_link=&ldquo;0011BB&rdquo;
+color_hover=&ldquo;605040&rdquo;
+color_u=&ldquo;FFAA66&rdquo;
+color_v=&ldquo;F4F090&rdquo;
+color_p=&ldquo;4477DD&rdquo;
+color_h=&ldquo;66DDEE&rdquo;
+color_k=&ldquo;2EA495&rdquo;
+color_s=&ldquo;8888DD&rdquo;
+color_e=&ldquo;CEC2E8&rdquo;
+color_x=&ldquo;C1B2E2&rdquo;
+ExtraTrackedRowsLimit=500</p>
+
+<p>HTMLHeadSection=&ldquo;<script language=javascript src='http://leolovenet.com/js/day-by-day-head.js'></script>&rdquo;
+HTMLEndSection=&ldquo;<script language=javascript src='http://leolovenet.com/js/day-by-day-end.js'></script>&rdquo;
+LoadPlugin=&ldquo;geoip GEOIP_STANDARD /usr/local/awstats/wwwroot/cgi-bin/plugins/GeoIP.dat&rdquo;
+LoadPlugin=&ldquo;geoip_city_maxmind GEOIP_STANDARD /usr/local/awstats/wwwroot/cgi-bin/plugins/GeoLiteCity.dat&rdquo;
+LoadPlugin=&ldquo;hostinfo&rdquo;
+LoadPlugin=&ldquo;qqhostinfo&rdquo;
+LoadPlugin=&ldquo;decodeutfkeys&rdquo;
+LoadPlugin=&ldquo;tooltips&rdquo;
+ALLENDEND</p>
+
+<p>cat > /usr/local/awstats/wwwroot/index.pl  &lt;&lt;ALLENDEND</p>
+
+<h1>!/usr/bin/perl</h1>
+
+<p>use POSIX qw(strftime);
+print strftime &ldquo;Location: <a href="http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n">http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n</a>&rdquo; ,localtime;
+ALLENDEND</p>
+
+<p>cat > /etc/cron.hourly/00awstats &lt;&lt;ALLENDEND</p>
+
+<h1>!/bin/bash</h1>
+
+<h1>path to cgi-bin</h1>
+
+<p>AWS=/usr/local/awstats/wwwroot/cgi-bin/awstats.pl</p>
+
+<h1>append your domain</h1>
+
+<p>DOMAINS=&ldquo;log&rdquo;</p>
+
+<h1>loop through all domains</h1>
+
+<p>for d in \${DOMAINS}
+do
+   \${AWS} -update -config=\${d}  -lang=cn  -databasebreak=day
+done
+ALLENDEND
+chmod +x /etc/cron.hourly/00awstats
+/etc/cron.hourly/00awstats
+```</p>
+
+<p>linux平台下的web日志时间一般没有问题，所以没有添加<code>LoadPlugin="timezone +8"</code></p>
+
+<p>执行完上面的内容你应该可以看到与 图1-5 类似的结果,就说明安装awstats成功了。<br/>
+下面添加一个虚拟站点给lighttpd,好让我们可以通过浏览器查看统计结果,全部命令如下</p>
+
+<p>``` bash
+sed -e &rsquo;s/.<em>mod_ssi.</em>/&ldquo;mod_ssi&rdquo;,/&lsquo; /etc/lighttpd/lighttpd.conf > /tmp/lighttpd.conf
+mv /tmp/lighttpd.conf /etc/lighttpd/lighttpd.conf
+cat >> /etc/lighttpd/lighttpd.conf &lt;<ALLALLEND
+\$HTTP["host"] =~ "log.bbkanba.com" {
+index-file.names   = ( "index.pl","index.php", "index.html","index.htm" )
+server.port = 80
+cgi.assign = (
+".pl" => &ldquo;/usr/bin/perl&rdquo;,
+&ldquo;.cgi&rdquo; => &ldquo;/usr/bin/perl&rdquo;
+)
+server.document-root = &ldquo;/usr/local/awstats/wwwroot/&rdquo;
+accesslog.filename = &ldquo;/var/log/lighttpd/log.access.log&rdquo;
+}
+ALLALLEND</p>
+
+<p>/etc/init.d/lighttpd restart
+```
+ok,到此结束.</p>
+
+<h2>3. Install Awstats with Nginx under Linux(CentOS)</h2>
+
+<p>awstats与Nginx合作还是有点复杂的,不像Lighttpd支持perl扩展那么容易,这里我们要让nginx支持perl扩展是通过一个perl脚本实现的。</p>
+
+<p>不过,<strong>7.1</strong>版本的awstats的<a href="http://awstats.sourceforge.net/docs/awstats_changelog.txt">ChangLog</a>里说明了Add example of nginx setup.<br/>
+我还没有试过官方的办法,好像是通过一个php的脚本,可以在最新发行版本包里的tools/nginx目录看看.</p>
+
+<p>下面我讲的是通过 <a href="/downloads/code/fastcgi-wrapper.pl">fastcgi-wrapper.pl</a> 实现的.</p>
+
+<p><code>bash
+wget http://leolovenet.com/downloads/code/fastcgi-wrapper.pl
+mv  fastcgi-wrapper.pl /usr/local/bin/
+chmod +x fastcgi-wrapper.pl
+mkdir -p /var/run/nginx/
+/usr/local/bin/fastcgi-wrapper.pl &amp;
+ps aux|grep  fcgi-wrapper.pl
+</code></p>
+
+<p>awstats的安装与上面Lighttpd篇里的一样,添加一个虚拟站点给nginx,好让我们可以通过浏览器查看统计结果的命令如下,这里假设nginx安装在了<code>/usr/local/nginx</code>目录下,并且虚拟站点的配置文件在<code>/usr/local/nginx/conf/vhost</code>下.</p>
+
+<p>``` bash
+mkdir -p /var/run/nginx/
+mkdir -p /usr/local/nginx/conf/vhost</p>
+
+<p>cat >  /usr/local/nginx/conf/vhost/awstats.conf&lt;&lt;ALLALLEND
+log_format  awstat  &lsquo;\$remote_addr &ndash; \$remote_user [\$time_local] \$request &rsquo;</p>
+
+<pre><code>         '\$status \$body_bytes_sent \$http_referer '
+         '\$http_user_agent \$http_x_forwarded_for';
+</code></pre>
+
+<p>server</p>
+
+<pre><code> {
+      listen       80;
+      server_name log.bbkanba.com;
+      index index.pl index.html index.htm index.php default.html default.htm default.php;
+      root  /usr/local/awstats/wwwroot/;
+
+  location ~ .*\.(pl|cgi)?\$
+     {
+            gzip off;
+            fastcgi_pass   unix:/var/run/nginx/perl_cgi-dispatch.sock;
+            root /usr/local/awstats/wwwroot;
+            fastcgi_index  index.cgi;
+            fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+            fastcgi_param  SERVER_SOFTWARE    nginx;
+            fastcgi_param  QUERY_STRING       \$query_string;
+            fastcgi_param  REQUEST_METHOD     \$request_method;
+            fastcgi_param  CONTENT_TYPE       \$content_type;
+            fastcgi_param  CONTENT_LENGTH     \$content_length;
+            fastcgi_param  SCRIPT_FILENAME    \$document_root\$fastcgi_script_name;
+            fastcgi_param  SCRIPT_NAME        \$fastcgi_script_name;
+            fastcgi_param  REQUEST_URI        \$request_uri;
+            fastcgi_param  DOCUMENT_URI       \$document_uri;
+            fastcgi_param  DOCUMENT_ROOT      \$document_root;
+            fastcgi_param  SERVER_PROTOCOL    \$server_protocol;
+            fastcgi_param  REMOTE_ADDR        \$remote_addr;
+            fastcgi_param  REMOTE_PORT        \$remote_port;
+            fastcgi_param  SERVER_ADDR        \$server_addr;
+            fastcgi_param  SERVER_PORT        \$server_port;
+            fastcgi_param  SERVER_NAME        \$server_name;
+            fastcgi_read_timeout   60;
+      }
+
+      location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)\$
+           {
+                expires      30d;
+           }
+
+      location ~ .*\.(js|css)?\$
+           {
+                expires      12h;
+           }
+
+      access_log  /var/log/awstat.log  awstat;
+</code></pre>
+
+<p>}</p>
+
+<p>ALLALLEND</p>
+
+<p>chmod +x /etc/cron.hourly/00awstats
+/etc/init.d/nginx reload
+```</p>
+
+<p>ok,到此结束.</p>
+]]></content>
+  </entry>
+  
+</feed>

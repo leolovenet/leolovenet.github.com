@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>使终端(iTerm2/Terminal)色彩缤纷 - 末日前几天</title>
+  <meta name="author" content="leolovenet">
+
+  
+  <meta name="description" content="这里是leolovenet的记忆自留地,有关leolovenet的信息." />
+  
+  <meta name="keywords" content="leolovenet,末日前几天,the days before the doomsday" />
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://leolovenet.com/blog/2013/01/12/colorful-the-Terminal">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="末日前几天" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37154253-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">末日前几天</a></h1>
+  
+    <h2>the days before the doomsday</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:leolovenet.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">使终端(iTerm2/Terminal)色彩缤纷</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-12T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>因为经常使用终端 (iTerm|Terminal) ssh到服务器上去,所以整日盯着黑乎乎的屏幕很头痛,还不利于眼睛,所谓“工欲善其事,必先利其器”,所以今天就想让终端也色彩缤纷起来,让我们锻炼眼睛识别颜色的能力吧.</p>
+
+<p><img src="/downloads/images/terminal-colorful.png" title="terminal colorful example" alt="terminal-colorful.png" /></p>
+
+<!--more-->
+
+
+<p>在git上找到了<a href="http://ethanschoonover.com/solarized" target="_blank">SOLARIZED</a>这个项目,可以配置很多很多程序的颜色主体哦,哈哈,很是激动,下面具体讲讲配置过程.</p>
+
+<p>我的机器主要用到iTerm2,而服务器因为是CentOS,那就要用到<a href="https://github.com/seebi/dircolors-solarized" target="_blank">dircolors-solarized</a>子项目.</p>
+
+<p>首先讲一下, CentOS 下的ls配置  Solarized Color Theme for GNU ls (as setup by GNU dircolors).</p>
+
+<p>Linux下的 <code>ls --color=auto</code> 命令,其实是根据两个文件来显示颜色的, <code>/etc/DIR_COLORS</code> 或者 <code>~/.dir_colors</code>, 一个是系统级别的配置文件,一个用户级别的配置文件.</p>
+
+<p>Solarized Color Theme for GNU ls项目提供了配置好了的颜色配置文件,并且可以根据文件类型来展示不同的颜色,可以看看我上面的实例图片,色彩缤纷吧.</p>
+
+<p>我就不讲Terminal的 16-色 和 256-色 的差别了,因为我也一知半解.不过这个项目的<a href="https://github.com/seebi/dircolors-solarized/raw/master/dircolors.ansi-universal" target="_blank">dircolors.ansi-universal</a>配置文件可以工作在两种形式的终端下,而<a href="https://github.com/seebi/dircolors-solarized/raw/master/dircolors.256dark" target="_blank">dircolors.256dark</a>只能工作在265色的终端下,所以除非你知道自己的终端是支持265色的,不然还是下载<a href="https://github.com/seebi/dircolors-solarized/raw/master/dircolors.ansi-universal" target="_blank">dircolors.ansi-universal</a>.</p>
+
+<p>下面是具体命令</p>
+
+<figure class='code'><figcaption><span>[execute below script in terminal]  (terminal_colorful.sh)</span> <a href='/downloads/code/terminal_colorful.sh'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">cd</span> ~
+</span><span class='line'><span class="nv">WGET_CMD</span><span class="o">=</span><span class="k">$(</span><span class="nb">type</span> -P wget<span class="k">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="nv">$WGET_CMD</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="o">]</span>;<span class="k">then</span>
+</span><span class='line'><span class="k">     </span>yum -y install wget
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'>wget http://leolovenet.com/downloads/code/dircolors
+</span><span class='line'><span class="c">#or</span>
+</span><span class='line'><span class="c">#wget --no-check-certificate https://github.com/seebi/dircolors-solarized/raw/master/dircolors.ansi-universal</span>
+</span><span class='line'>
+</span><span class='line'>mv dircolors  ~/.dir_colors
+</span><span class='line'><span class="nb">eval</span> <span class="sb">`</span>dircolors ~/.dir_colors<span class="sb">`</span>
+</span><span class='line'>cat &gt;&gt;  ~/.bashrc <span class="s">&lt;&lt;END</span>
+</span><span class='line'><span class="s">########bash color######################</span>
+</span><span class='line'><span class="s">if [ -x /usr/bin/dircolors ]; then</span>
+</span><span class='line'><span class="s">    alias ls=&#39;ls --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias dir=&#39;dir --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias vdir=&#39;vdir --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias grep=&#39;grep --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias fgrep=&#39;fgrep --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias egrep=&#39;egrep --color=auto&#39;</span>
+</span><span class='line'><span class="s">    alias tree=&#39;tree -C&#39;</span>
+</span><span class='line'><span class="s">fi</span>
+</span><span class='line'><span class="s">alias ..=&quot;cd ..&quot;</span>
+</span><span class='line'><span class="s">alias ..2=&quot;cd ../..&quot;</span>
+</span><span class='line'><span class="s">alias ..3=&quot;cd ../../..&quot;</span>
+</span><span class='line'><span class="s">alias ..4=&quot;cd ../../../..&quot;</span>
+</span><span class='line'><span class="s">alias ..5=&quot;cd ../../../../..&quot;</span>
+</span><span class='line'><span class="s">alias  &quot;l&quot;=&quot;ls -ahl --full-time&quot;</span>
+</span><span class='line'><span class="s">########################################</span>
+</span><span class='line'><span class="s">END</span>
+</span><span class='line'><span class="nb">source</span> ~/.bashrc
+</span><span class='line'>ls /
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>该项目的<a href="https://github.com/seebi/dircolors-solarized/blob/master/README.md">ReadMe</a>文件还有很多信息,比如怎样配置265色的终端,感兴趣的可以仔细看看.</p>
+
+<p><strong>iTerm2的配置</strong></p>
+
+<p>iTerm2的配置配置更简单一点,进入到<a href="https://github.com/altercation/solarized/tree/master/iterm2-colors-solarized" target="_blank">iTerm2</a>的配置子项目下,下载配置文件<a href="https://github.com/altercation/solarized/raw/master/iterm2-colors-solarized/Solarized%20Dark.itermcolors" target="_blank">Solarized Dark.itermcolors</a>或者<a href="https://github.com/altercation/solarized/raw/master/iterm2-colors-solarized/Solarized%20Light.itermcolors" target="_blank">Solarized Light.itermcolors</a>,双击导入,然后更改首选项选择主题就可以.<br/>
+具体可以查看<a href="https://github.com/altercation/solarized/blob/master/iterm2-colors-solarized/README.md" target="_blank">ReadMe</a>文件.</p>
+
+<p>这里需要补充一点的是,mac 下的ls命令不是gun ls,所以即使iterm2安装了颜色主题,敲入ls命令以后,显示的文件颜色还是有问题的,这里有一个补救办法,运行下面这行,之后再看ls命令的颜色是不是变了</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">LSCOLORS</span><span class="o">=</span>gxfxbEaEBxxEhEhBaDaCaD
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但是,这种补救办法也不完美,比如不能根据文件类型来显示颜色.</p>
+
+<p>如果你想追求完美的话,还有另外一种办法,就是用 <code>brew install coreutils</code>, 安装 gun ls 命令到 mac 下,到时你还需要跟上面在linux下操作的一样,下载配置文件,放入到 ~/.dir_colors</p>
+
+<p>具体就不说了,累了,睡觉了.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">leolovenet</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-12T00:00:00+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/linux/'>Linux</a>, <a class='category' href='/blog/categories/mac/'>Mac</a>, <a class='category' href='/blog/categories/terminal/'>Terminal</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/01/10/xcode-packageapplication-command/" title="Previous Post: Xcode打包app命令-PackageApplication">&laquo; Xcode打包app命令-PackageApplication</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry/" title="Next Post: Config Awstats on Window2003 or Linux with GeoIP/QQWry">Config Awstats on Window2003 or Linux with GeoIP/QQWry &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/13/hi-octopress/">Hi Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/11/enhanced-ping-command-function-with-ruby/">用Ruby增强ping命令</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/07/my-sharing-notes/">我的Evernote笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">[翻译]TED的一个四轴飞行器字幕</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/leolovenet">@leolovenet</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'leolovenet',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - leolovenet -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'leolovenet';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://leolovenet.com/blog/2013/01/12/colorful-the-Terminal/';
+        var disqus_url = 'http://leolovenet.com/blog/2013/01/12/colorful-the-Terminal/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

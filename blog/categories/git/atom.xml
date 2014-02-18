@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Git | 末日前几天]]></title>
+  <link href="http://leolovenet.com/blog/categories/git/atom.xml" rel="self"/>
+  <link href="http://leolovenet.com/"/>
+  <updated>2014-02-18T17:51:56+08:00</updated>
+  <id>http://leolovenet.com/</id>
+  <author>
+    <name><![CDATA[leolovenet]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[我的Evernote笔记]]></title>
+    <link href="http://leolovenet.com/blog/2013/10/07/my-sharing-notes/"/>
+    <updated>2013-10-07T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/10/07/my-sharing-notes</id>
+    <content type="html"><![CDATA[<p>最近发生了很多事情,刚刚从未来的丈母娘那里回来.</p>
+
+<p>没有什么主要的技术文章,就发一些自己平时积累的Evernote的笔记.</p>
+
+<blockquote><p>★★★★ <a href="https://www.evernote.com/shard/s170/sh/901e7847-78f3-4560-ae64-72825f8f5c45/b43546d281d47bbbdc745184e83f1fad">一些常用的linux的命令</a></p>
+
+<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
+vagrant是一个创建和分发虚拟化开发环境的工具，使用ruby编写，基于Oracle的VirtualBox，它提供了一个可配置的、轻量级的、可重用的、便携的虚拟化开发环境.</p>
+
+<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/5ee87faa-0c73-46a6-9cd1-7117ee8971ea/4bbf353bae719e4ef65e2b57530732a1">Git的学习笔记</a></p>
+
+<p>★★ <a href="https://www.evernote.com/shard/s170/sh/c6fa9447-727c-474a-b75d-4492b5764f08/cd5ee8ca706b35bbc969e5205964bbd3">Pow 相关笔记</a>
+Pow是一个Rack Server for Mac OS X.</p>
+
+<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d408e6c7-c997-4fc1-b4ae-97f20445e491/424b9f322830d7debaeb976ed870ff7d">读Postfix权威指南笔记</a></p></blockquote>
+]]></content>
+  </entry>
+  
+</feed>

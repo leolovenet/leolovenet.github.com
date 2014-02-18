@@ -1,0 +1,355 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>用Ruby增强ping命令 - 末日前几天</title>
+  <meta name="author" content="leolovenet">
+
+  
+  <meta name="description" content="a Ruby script enhanced ping command function." />
+  
+  <meta name="keywords" content="Bash, Linux, Mac, Ruby,escape, Shell" />
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="末日前几天" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37154253-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">末日前几天</a></h1>
+  
+    <h2>the days before the doomsday</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:leolovenet.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">用Ruby增强ping命令</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-11T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>故事的起因是,我在mac下一直用chrome,但是chrome有一个很不爽的地方,是在地址栏copy的域名,每次都自动的加上<code>http://</code>的字符串, 这样就没有办法直接粘贴到 Terminal, 用ping命令查看ping值. 这个事情真的弄的我很头疼.</p>
+
+<p>所以就想办法关掉这个chrome的特性,google了半天也也没有找到,就放弃了.如果有人知道告诉我,十分感谢 :)</p>
+
+<p>转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名.</p>
+
+<p>正好,最近再看ruby的一些东西,感觉蛮方便的.就写了一个ruby脚本,可以自动的去掉http之类的协议头,然后传给ping命令执行.不就ok了嘛.</p>
+
+<p>写出来之后,又不爽不能及时的知道ip的地理位置,所以呢,就又增加了调用纯真的ip数据库,顺便把ip的地理位置信息现实出来.</p>
+
+<p>第一步,安装所需要的依赖库,qqwry.dat自己下载,然后改脚本里的路径信息.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem install escape qqwry</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面的代码我是另存为一个叫p的文件,放到了 <code>$home/bin/</code> 下面.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1">#!/usr/bin/env ruby</span>
+</span><span class='line'><span class="c1"># encoding : utf-8</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;escape&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s2">&quot;uri&quot;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;qqwry&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;resolv&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">unless</span> <span class="no">ARGV</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;Usage: p &lt;domain&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+</span><span class='line'>  <span class="nb">exit</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">domain</span><span class="o">=</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="n">dup</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="n">domain</span><span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="mi">3</span><span class="o">]</span> <span class="o">!=</span> <span class="s2">&quot;http&quot;</span>
+</span><span class='line'>   <span class="n">domain</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;http://&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'><span class="n">host</span><span class="o">=</span><span class="no">URI</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">#{</span><span class="n">domain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">host</span>
+</span><span class='line'><span class="n">ip</span><span class="o">=</span><span class="no">Resolv</span><span class="o">.</span><span class="n">getaddress</span> <span class="n">host</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">db</span> <span class="o">=</span> <span class="ss">QQWry</span><span class="p">:</span><span class="ss">:Database</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;/Users/yourname/Documents/vbox/ip/qqwry.dat&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="n">r</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">ip</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">host</span><span class="si">}</span><span class="se">\t</span><span class="s2">===&gt;</span><span class="se">\t</span><span class="si">#{</span><span class="n">ip</span><span class="si">}</span><span class="se">\t</span><span class="s2">===&gt;</span><span class="se">\t</span><span class="si">#{</span><span class="n">r</span><span class="o">.</span><span class="n">country</span><span class="si">}</span><span class="s2"> </span><span class="si">#{</span><span class="n">r</span><span class="o">.</span><span class="n">area</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span class='line'><span class="nb">puts</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'><span class="nb">exec</span> <span class="s2">&quot;ping </span><span class="si">#{</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>使用方法:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">p</span> <span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">www</span><span class="o">.</span><span class="n">google</span><span class="o">.</span><span class="n">com</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>脚本虽然很简单,但是用起来感觉很好.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">leolovenet</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-11T00:00:00+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/bash/'>Bash</a>, <a class='category' href='/blog/categories/linux/'>Linux</a>, <a class='category' href='/blog/categories/mac/'>Mac</a>, <a class='category' href='/blog/categories/qqwry/'>QQWry</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/categories/shell/'>Shell</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/10/07/my-sharing-notes/" title="Previous Post: 我的Evernote笔记">&laquo; 我的Evernote笔记</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/02/13/hi-octopress/" title="Next Post: Hi Octopress">Hi Octopress &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/13/hi-octopress/">Hi Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/11/enhanced-ping-command-function-with-ruby/">用Ruby增强ping命令</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/07/my-sharing-notes/">我的Evernote笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">[翻译]TED的一个四轴飞行器字幕</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/leolovenet">@leolovenet</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'leolovenet',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - leolovenet -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'leolovenet';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby/';
+        var disqus_url = 'http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

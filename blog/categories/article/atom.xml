@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Article | 末日前几天]]></title>
+  <link href="http://leolovenet.com/blog/categories/article/atom.xml" rel="self"/>
+  <link href="http://leolovenet.com/"/>
+  <updated>2014-02-18T17:51:56+08:00</updated>
+  <id>http://leolovenet.com/</id>
+  <author>
+    <name><![CDATA[leolovenet]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World]]></title>
+    <link href="http://leolovenet.com/blog/2012/12/18/hello-world/"/>
+    <updated>2012-12-18T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2012/12/18/hello-world</id>
+    <content type="html"><![CDATA[<p>终于在传说中的“世界末日(2012.12.20)”之前搭建起来这个blog了</p>
+
+<p>作为惯例，我要大喊一声</p>
+
+<blockquote><h2>Hello world!</h2></blockquote>
+
+<p>但是现在如果喊出</p>
+
+<blockquote><h2>Hello the end of the world!</h2></blockquote>
+
+<p>更加的贴切.</p>
+
+<p>其实我是不相信末日论的,最起码末日不会发生在一天之内.</p>
+
+<p>但要给blog起一个名字,就想到这个了, “末日前几天”,挺贴切,让人感觉要抓紧时间珍惜现在.</p>
+
+<p>拥有的只剩回忆,盼望的还有未来,愿我们珍惜现在.</p>
+]]></content>
+  </entry>
+  
+</feed>

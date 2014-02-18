@@ -1,0 +1,1802 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Linux | 末日前几天]]></title>
+  <link href="http://leolovenet.com/blog/categories/linux/atom.xml" rel="self"/>
+  <link href="http://leolovenet.com/"/>
+  <updated>2014-02-18T17:51:56+08:00</updated>
+  <id>http://leolovenet.com/</id>
+  <author>
+    <name><![CDATA[leolovenet]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[用Ruby增强ping命令]]></title>
+    <link href="http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby/"/>
+    <updated>2013-10-11T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby</id>
+    <content type="html"><![CDATA[<p>故事的起因是,我在mac下一直用chrome,但是chrome有一个很不爽的地方,是在地址栏copy的域名,每次都自动的加上<code>http://</code>的字符串, 这样就没有办法直接粘贴到 Terminal, 用ping命令查看ping值. 这个事情真的弄的我很头疼.</p>
+
+<p>所以就想办法关掉这个chrome的特性,google了半天也也没有找到,就放弃了.如果有人知道告诉我,十分感谢 :)</p>
+
+<p>转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名.</p>
+
+<p>正好,最近再看ruby的一些东西,感觉蛮方便的.就写了一个ruby脚本,可以自动的去掉http之类的协议头,然后传给ping命令执行.不就ok了嘛.</p>
+
+<p>写出来之后,又不爽不能及时的知道ip的地理位置,所以呢,就又增加了调用纯真的ip数据库,顺便把ip的地理位置信息现实出来.</p>
+
+<p>第一步,安装所需要的依赖库,qqwry.dat自己下载,然后改脚本里的路径信息.</p>
+
+<p><code>
+gem install escape qqwry
+</code>
+下面的代码我是另存为一个叫p的文件,放到了 <code>$home/bin/</code> 下面.
+``` ruby</p>
+
+<h1>!/usr/bin/env ruby</h1>
+
+<h1>encoding : utf-8</h1>
+
+<p>require &ldquo;escape&rdquo;
+require &ldquo;uri&rdquo;
+require &lsquo;qqwry&rsquo;
+require &lsquo;resolv&rsquo;</p>
+
+<p>unless ARGV.length == 1
+  puts &ldquo;Usage: p <domain>\n&rdquo;
+  exit
+end</p>
+
+<p>domain=ARGV[0].dup</p>
+
+<p>if domain[0..3] != &ldquo;http&rdquo;
+   domain.insert(0,&lsquo;<a href="http://">http://</a>&rsquo;)
+end
+host=URI.parse(&ldquo;#{domain}&rdquo;).host
+ip=Resolv.getaddress host</p>
+
+<p>db = QQWry::Database.new(&lsquo;/Users/yourname/Documents/vbox/ip/qqwry.dat&rsquo;)
+r = db.query(ip)</p>
+
+<p>puts &ldquo;&rdquo;
+puts &ldquo;#{host}\t===>\t#{ip}\t===>\t#{r.country} #{r.area}&rdquo;
+puts &ldquo;&rdquo;
+exec &ldquo;ping #{host}&rdquo;
+```</p>
+
+<p>使用方法:
+<code>
+p http://www.google.com
+</code>
+脚本虽然很简单,但是用起来感觉很好.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[我的Evernote笔记]]></title>
+    <link href="http://leolovenet.com/blog/2013/10/07/my-sharing-notes/"/>
+    <updated>2013-10-07T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/10/07/my-sharing-notes</id>
+    <content type="html"><![CDATA[<p>最近发生了很多事情,刚刚从未来的丈母娘那里回来.</p>
+
+<p>没有什么主要的技术文章,就发一些自己平时积累的Evernote的笔记.</p>
+
+<blockquote><p>★★★★ <a href="https://www.evernote.com/shard/s170/sh/901e7847-78f3-4560-ae64-72825f8f5c45/b43546d281d47bbbdc745184e83f1fad">一些常用的linux的命令</a></p>
+
+<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
+vagrant是一个创建和分发虚拟化开发环境的工具，使用ruby编写，基于Oracle的VirtualBox，它提供了一个可配置的、轻量级的、可重用的、便携的虚拟化开发环境.</p>
+
+<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/5ee87faa-0c73-46a6-9cd1-7117ee8971ea/4bbf353bae719e4ef65e2b57530732a1">Git的学习笔记</a></p>
+
+<p>★★ <a href="https://www.evernote.com/shard/s170/sh/c6fa9447-727c-474a-b75d-4492b5764f08/cd5ee8ca706b35bbc969e5205964bbd3">Pow 相关笔记</a>
+Pow是一个Rack Server for Mac OS X.</p>
+
+<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d408e6c7-c997-4fc1-b4ae-97f20445e491/424b9f322830d7debaeb976ed870ff7d">读Postfix权威指南笔记</a></p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[关于开发Squid的ecap动态库插件的指导]]></title>
+    <link href="http://leolovenet.com/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/"/>
+    <updated>2013-04-10T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance</id>
+    <content type="html"><![CDATA[<blockquote><p>&ldquo;Squid cache"（简称为Squid）是一个流行的自由软件（GNU通用公共许可证）的代理服务器和Web缓存服务器. Squid 有广泛的用途,从作为网页服务器的前置cache服务器缓存相关请求来提高Web服务器的速度,到为一组人共享网络资源而缓存万维网,域名系统和其他网络搜索,到通过过滤流量帮助网络安全,到局域网通过代理上网. Squid主要设计用于在Unix一类系统运行.</p></blockquote>
+
+<p>上面是摘自开源中国(oscine.net)对squid的中文介绍. squid的功能的确很强大,甚至有些需要深入挖掘一下,今天这篇文章主要讲述一下这几天研究成果. squid做透明代理或者网关的情况下,过滤用户请求内容,或者过滤用户请求的回应内容的技术.可以把 squid 当做一个理论上的“防火墙”来使用,避免用户浏览非法网站或下载带有病毒的文件(结合开源杀毒软件功能),甚至替换掉那些烦人的广告.当然,它还可以在服务器的返回结果中植入自己的广告代码,或者统计代码.最灵活的是可以控制操作用户请求的HTTP头内容,过滤不必要的HTTP头信息,或者添加自定义HTTP头信息.</p>
+
+<p>总之,<strong>我们可以利用squid分析,捕捉,拦截,替换,或者修改请求回应信息.</strong></p>
+
+<p>Squid拥有强大的<a target="_blank" href="http://www.squid-cache.org/Doc/config/acl/">ACL(访问控制)</a>配置指令,可以实现一些通用的访问控制,但是如果想要更加灵活的控制,应该怎么办? 在官网wiki中(<a target="_blank" href="http://wiki.squid-cache.org/SquidFaq/ContentAdaptation">Content Adaptation</a>)给出了答案.</p>
+
+<!--more-->
+
+
+<p>wiki给出了<a href="http://wiki.squid-cache.org/SquidFaq/ContentAdaptation#Summary">5种技术方案</a></p>
+
+<div class="squid">
+<style>
+.squid table
+{
+    margin: 0.5em 0;
+    border-collapse: collapse;
+}
+
+.squid table td
+{
+    padding: 0.25em;
+    border: 1px solid #ADB9CC;
+}
+
+.squid td p {
+    margin: 0;
+    padding: 0;
+}
+</style>
+<table><tbody><tr>  <td colspan="1" rowspan="2" style="text-align: center"><p class="line862"> <strong>Mechanism</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Request</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Response</strong> </p></td>
+</tr>
+<tr>  <td style="text-align: center"><span class="anchor" id="line-101"></span><p class="line891"><strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-102"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-103"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> </p></td>
+  <td><p class="line862">  </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-104"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-105"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">del </p></td>
+  <td><p class="line862">  </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-106"></span><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>而这几种方案又各有优缺点,最好的排序方式是:</p>
+
+<div class="squid"><table><tbody><tr>  <td><p class="line862"> <strong>Evaluation Criteria</strong> </p></td>
+  <td><p class="line862"> <strong>Mechanisms in rough order from "best" to "worst"</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-111"></span><p class="line862"> Squid independence </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-112"></span><p class="line862"> Processing speed </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> or <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> or <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a> or <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-113"></span><p class="line862"> Development effort (header adaptation)</p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-114"></span><p class="line862"> Development effort (content adaptation)</p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-115"></span><p class="line862"> Versatility </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-116"></span><p class="line862"> Maintenance overheads </p></td>
+  <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>我先简单介绍一下ICAP(<a href="http://tools.ietf.org/html/rfc3507">Internet Content Adaptation Protocol</a>)协议, ICAP是工作在web缓存代理服务器和真正的服务器之间的一个服务,通常来讲用户的HTTP请求送到代理缓存服务器之后,由代理缓存服务器判断是否可以命中缓存,或者把用户的请求转向真正的web服务,代理用户请求,并响应用户,记录缓存,待用户下次请求时,直接响应用户请求,省去向真正服务器的请求过程,加快响应速度,节约带宽成本.<br/>
+而加入了ICAP的代理缓存服务器的工作逻辑是:</p>
+
+<pre>
+1.用户的HTTP请求送到代理缓存服务器.
+2.代理缓存服务器将用户的请求消息发往ICAP服务器.
+3.ICAP服务器接受到用户请求消息进行处理(可以分析,捕捉,拦截,替换,或者修改),回应代理缓存服务器.
+4.代理缓存服务器使用处理过的请求头,进行余下的处理流程,或者直接返回用户,或者查看是否命中缓存,或者转发给真正的内容提供服务器.
+5.真正的内容提供服务器接受到请求以后回应代理缓存服务器相应的内容.
+6.代理缓存服务器将接受到的回应内容发往ICAP服务器.
+7.ICAP服务器接受到真正的服务器回应消息进行处理(可以分析,捕捉,拦截,替换,或者修改),回应代理缓存服务器.
+8.代理缓存服务器将内容回应给用户.
+</pre>
+
+
+<p>从上面的处理过程可以看出icap协议的强大之处.<br/>
+上面的icap服务器类似http的web服务器一样,监听一个端口,等待代理缓存服务器的请求,并响应请求.而ecap可以看做是一个嵌入式的icap服务. ecap不必提供监听端口,而是以动态库的形式加载到了squid程序里面,通过api实现icap的逻辑处理,相当于squid的一个插件一样的工作.</p>
+
+<p>经过尝试,我感觉目前最方便稳定的方式是开发squid的共享动态库ecap插件,实现自己的目的.<br/>
+当然你可以修改squid的源代码,但是那样做需要首先研究透彻squid的工作机理,而且需要谨慎的修改,原作者也不建议这样,因为可能会导致squid不稳定.<br/>
+当然还可以搭建icap服务,但是经过一轮的尝试和摸索一下,发现icap服务软件并没有像apache、nginx、和lighttpd这些成熟稳定的代码可以用,所以放弃,但是不乏一些小巧灵活的python架构的软件,可以使用,进行业务测试倒是可以,真正用于生产环境还是有点不足.<br/>
+比如：<br/>
+pyicap(<a target="_blank" href="https://github.com/netom/pyicap">A lightweight python framework for writing ICAP services</a>),简单方便,生产环境不太适合.<br/>
+bitz-server(<a target="_blank" href="https://github.com/uditha-atukorala/bitz-server">An ICAP server implementation in C++ and Python</a>),不太稳定.</p>
+
+<p>关于ICAP服务器的部署说明,请自行参考上面的wiki说明.<br/>
+今天主要讲一下ecap的开发,部署,服务器环境为CentOS release 6.4 (Final) x86_64.<br/>
+到<a href="http://www.e-cap.org/Downloads">http://www.e-cap.org/Downloads</a>下载安装最新版本的ecap库,编译安装.并同时下载最新版本的开发例子包<a href="http://www.measurement-factory.com/tmp/ecap/ecap_adapter_sample-0.2.0.tar.gz">ecap_adapter_sample-0.2.0.tar.gz</a></p>
+
+<p><code>bash
+yum -y install automake autoconf libtool
+mkdir -p /opt/packages
+cd /opt/packages
+wget http://www.measurement-factory.com/tmp/ecap/ecap_adapter_sample-0.2.0.tar.gz
+wget http://www.measurement-factory.com/tmp/ecap/libecap-0.2.0.tar.gz
+tar -zxf libecap-0.2.0.tar.gz
+cd libecap-0.2.0
+./configure
+make
+make install
+</code></p>
+
+<p>编译安装squid,并在configure要加入<code>–enable-ecap</code>,开启ecap支持,如果你还想squid同时支持icap的话,还需要加入<code>–enable-icap-client</code>开关,然后配置,编译安装.</p>
+
+<p><code>
+wget http://www.squid-cache.org/Versions/v3/3.3/squid-3.3.3.tar.bz2
+tar -xf squid-3.3.3.tar.bz2
+cd squid-3.3.3
+./configure --enable-http-violations --enable-ltdl-convenience --enable-icap-client --enable-ecap --prefix=/usr/local/squid PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+make
+make install
+</code></p>
+
+<p>下面讲一下ecap的具体开发步骤,举个案例,现在我们想实现用户第一次访问网络时跳转到一个用户认证页面,认证通过以后才可以继续浏览网络.<br/>
+实现原理大概是:</p>
+
+<pre>
+1.用户的请求送到squid,squid把用户请求http头交给ecap插件处理.
+2.squid判断用户请求的url是否为我们的认证登陆页面.是,则放行不处理,否,则进行下面的逻辑.
+2.ecap插件获取用户的ip地址,然后利用一个api接口去查询这个ip是否是否已经验证过,是,则放行通过,不处理,否,则进行下面的逻辑.
+3.如果查询结果是这个ip还没有进行用户密码验证或者用户密码验证已经过期,则修改用户的http请求头,跳转到一个新的url地址,即我们的认证登陆页面,附带上用户的原始请求url.
+4.用户在认证登陆页面输入账号密码登陆成功以后,数据库更新信息,然后跳转到用户原来的请求地址,继续浏览网络.
+</pre>
+
+
+<p>上面的功能有点类似radius,这里我们拿squid实现,还有就是用户每个请求都需要验证,所以上面的解决办法效率可能会有点低,但是这里只是举例讲解一下ecap这个插件的功能应用.上面的功能实现最好不要在生产环境下部属.</p>
+
+<p>下面让我们,解压开发例子包ecap_adapter_sample-0.2.0.tar.gz.</p>
+
+<pre>
+.
+├── acinclude.m4    //m4宏文件不需要手工修改
+├── aclocal.m4         //m4宏文件不需要手工修改
+├── bootstrap.sh     //脚本文件,自动运行autotool工具命令,不需要手工修改
+├── cfgaux           //此目录下的所有文件都不需要手动修改
+│   ├── ax_cxx_check_lib.m4
+│   ├── config.guess
+│   ├── config.sub
+│   ├── depcomp
+│   ├── install-sh
+│   ├── ltmain.sh
+│   ├── missing
+│   ├── xstd_common.ac
+│   └── xstd_cpp_checks.ac
+├── change.log
+├── configure       //生成的 configure 脚本
+├── configure.in    //configure 脚本的生成源文件,需要手工编辑一下.
+├── CREDITS       
+├── LICENSE
+├── Makefile.am     //Makefile.in脚本的生成源文件,此项目不需要手工修改.
+├── Makefile.in       //生成的 Makefile.in脚本
+├── NOTICE
+├── README
+└── src
+    ├── adapter_minimal.cc     //c++源文件,例子程序一
+    ├── adapter_modifying.cc   //c++源文件,例子程序二
+    ├── adapter_passthru.cc    //c++源文件,例子程序三
+    ├── autoconf.h            //不需要修改,运行./configure之后,由autoconf.h.in生成的文件
+    ├── autoconf.h.in         //不需要修改
+    ├── Makefile.am  //Makefile.in脚本的生成源文件,需要手工编辑一下.
+    ├── Makefile.in  //生成的 Makefile.in脚本
+    └── sample.h    //例子的头文件
+</pre>
+
+
+<p>如果你之前没有使用autotool工具的经验,这里有<a href="/downloads/files/autotools.pdf">一篇短文介绍</a>,很快速的了解一下autotool工具. (autotool通常来说是autoconf, automake, autolib, 但是还有很多辅助的工具,包括 autoheader, aclocal, autoscan,运行这些命令之后,你就可以 <code>./configure &amp;&amp; make &amp;&amp; make install</code> ).<br/>
+写ecap插件很简单,例子包给出了3个例子插件.基本上一个插件只有一个源文件就可以搞定.所以写和部署起来还是蛮方便的.<br/>
+这里我们在原有的例子程序框架下修改一下. 然后写出我们自己的插件来.</p>
+
+<p>``` bash
+tar -zxf ecap_adapter_sample-0.2.0.tar.gz
+mv ecap_adapter_sample-0.2.0 ecap_adapter_bbkanba
+cd ecap_adapter_bbkanba/src
+cp adapter_modifying.cc adapter_bbkanba.cc
+sed -i -e &rsquo;s/sample.h/bbkanba.h/&lsquo; adapter_bbkanba.cc
+sed -i -e &rsquo;/.<em>\/config.h.</em>/d' adapter_bbkanba.cc
+sed -i -e &rsquo;s/.<em>ecap:\/\/.</em>/return &ldquo;ecap:\/\/bbkanba.com\/bbkanba&rdquo;;/&lsquo; adapter_bbkanba.cc
+cat > Makefile.am &lt;&lt;ALLEND
+EXTRA_DIST = \</p>
+
+<pre><code>adapter_bbkanba.cc   
+</code></pre>
+
+<p>lib_LTLIBRARIES = \</p>
+
+<pre><code>ecap_adapter_bbkanba.la
+</code></pre>
+
+<p>noinst_HEADERS = \</p>
+
+<pre><code>bbkanba.h \
+Debugger.h \
+\
+autoconf.h 
+</code></pre>
+
+<p>ecap_adapter_bbkanba_la_SOURCES = adapter_bbkanba.cc \</p>
+
+<pre><code>                             Debugger.cc 
+</code></pre>
+
+<p>ecap_adapter_bbkanba_la_CPPFLAGS = \$(LIBECAP_CFLAGS)
+ecap_adapter_bbkanba_la_LDFLAGS = -module -avoid-version \$(libecap_LIBS)
+ecap_adapter_bbkanba_la_LIBADD= \$(LIBECAP_LIBS)  -lboost_system -lcppnetlib-uri</p>
+
+<p>DISTCLEANFILES = \</p>
+
+<pre><code>    autoconf.h
+</code></pre>
+
+<p>AM_CPPFLAGS = -I\$(top_srcdir)/src
+ALLEND
+mv sample.h  bbkanba.h
+cat > Debugger.h &lt;&lt;ALLEND
+/<em> eCAP ClamAV Adapter  <a href="http://www.e-cap.org/">http://www.e-cap.org/</a>
+ * Copyright &copy; 2011 The Measurement Factory.
+ * Distributed under GPL v2 without any warranty.  </em>/</p>
+
+<h1>ifndef ECAP_MBAIDU_ADAPTER_DEBUGGER_H</h1>
+
+<h1>define ECAP_MBAIDU_ADAPTER_DEBUGGER_H</h1>
+
+<h1>include &lt;libecap/common/log.h></h1>
+
+<h1>include <iosfwd></h1>
+
+<p>using libecap::ilNormal;
+using libecap::ilCritical;
+using libecap::flXaction;
+using libecap::flApplication;
+using libecap::mslLarge;</p>
+
+<p>// TODO: rename to Log</p>
+
+<p>// libecap::host::openDebug/closeDebug calls wrapper for safety and convenience
+class Debugger {</p>
+
+<pre><code>public:
+    explicit Debugger(const libecap::LogVerbosity lv); // opens
+    ~Debugger(); // closes
+
+    // logs a message if host enabled debugging at the specified level
+    template &lt;class T&gt;
+    const Debugger &amp;operator &lt;&lt;(const T &amp;msg) const {
+        if (debug)
+            *debug &lt;&lt; msg;
+        return *this;
+    }
+
+private:
+    /* prohibited and not implemented */
+    Debugger(const Debugger&amp;);
+    Debugger &amp;operator=(const Debugger&amp;);
+
+    std::ostream *debug; // host-provided debug ostream or nil
+</code></pre>
+
+<p>};</p>
+
+<h1>endif</h1>
+
+<p>ALLEND
+cat > Debugger.cc &lt;&lt;ALLEND
+/<em> eCAP ClamAV Adapter   <a href="http://www.e-cap.org/">http://www.e-cap.org/</a>
+ * Copyright &copy; 2011 The Measurement Factory.
+ * Distributed under GPL v2 without any warranty.  </em>/</p>
+
+<h1>include &ldquo;bbkanba.h&rdquo;</h1>
+
+<h1>include &ldquo;Debugger.h&rdquo;</h1>
+
+<h1>include &lt;libecap/common/registry.h></h1>
+
+<h1>include &lt;libecap/host/host.h></h1>
+
+<h1>include <iostream></h1>
+
+<p>// TODO: support automated prefixing of log messages</p>
+
+<p>Debugger::Debugger(const libecap::LogVerbosity lv):</p>
+
+<pre><code>debug(libecap::MyHost().openDebug(lv)) {
+</code></pre>
+
+<p>}</p>
+
+<p>Debugger::~Debugger() {</p>
+
+<pre><code>if (debug)
+    libecap::MyHost().closeDebug(debug);
+</code></pre>
+
+<p>}
+ALLEND
+cd ..
+sed -i -e &rsquo;s/AC_INIT.<em>/AC_INIT(eCAP bbkanba Adapter, 0.0.1, leolovenet@gmail.com, eCAP_bbkanba_Adapter)/&lsquo; configure.in
+sed -i -e &rsquo;s/AC_CONFIG_SRCDIR.</em>/AC_CONFIG_SRCDIR([src\/bbkanba.h])/&rsquo; configure.in
+touch  ./NEWS
+touch  ./AUTHORS
+touch  ./ChangeLog
+touch ./COPYING
+autoreconf -ivf
+./configure PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+make
+make install
+```</p>
+
+<p>如果上面运行<code>make</code>命令没有报错的话,说明你的编译环境,例子程序的框架修改没有问题. 下面我们就可以具体的编写插件代码了.<br/>
+上面引入两个debug的文件(源自eCAP ClamAV Adapter插件),便于查看插件程序的执行过程,Debug信息会输出到squid的日志文件. 现在写自己的ecap插件,只需要编辑<code>adapter_bbkanba.cc</code>文件,之后运行<code>./configure &amp;&amp; make &amp;&amp; make install</code>. 默认情况下的安装路径为<code>/usr/local/lib</code>.<br/>
+写完插件,编译成功,并安装到相应目录下后,要让squid加载我们的插件,还需要修改squid的配置文件<code>squid.conf</code>,添加下面的内容:</p>
+
+<pre>
+ecap_enable on
+adaptation_send_client_ip on
+loadable_modules /usr/local/lib/ecap_adapter_bbkanba.so
+ecap_service bbkanbam reqmod_precache 0  ecap://bbkanba.com/bbkanba
+adaptation_service_set reqFilter bbkanbam
+adaptation_access reqFilter allow all
+</pre>
+
+
+<p>每个配置选项squid的官网都有详细的解释,这里我就不多说了.大概意思就是让squid开启ecap插件,然后加载插件.并开启用户ip的功能,这样squid就会把用户的请求包与用户的ip送到ecaq插件来处理.<br/>
+注意,要想使上面的配置生效,需要在编译安装squid的时候,开启<code>--enable-ecap</code>选项.</p>
+
+<p>现在运行<code>squid -NCXd 2</code>命令,调试squid是否加载了我们的插件.在经过一大串的输出后,应该会看到</p>
+
+<pre>LoadableModules.cc(14) LoadModule: Loaded Squid module from '/usr/local/lib/ecap_adapter_bbkanba.so'</pre>
+
+
+<p>说明我们的模块加载成功了,但是紧跟着的是错误信息:</p>
+
+<pre>ERROR: failed to start essential eCAP service: ecap://bbkanba.com/bbkanba:
+Modifying Adapter: configuration error: victim value is not set
+</pre>
+
+
+<p>导致squid启动不起来,为什么呢?让我们先来看看<code>adapter_bbkanba.cc</code>源文件.</p>
+
+<p>ecap插件的源文件命名空间采用的是<code>namespace Adapter</code>. 主要有两个类<code>class Service: public libecap::adapter::Service</code>与<code>class Xaction: public libecap::adapter::Xaction</code>,即 Service 类与 Xaction 类.<br/>
+Service类代表的是一个ecap插件服务,上面我们在squid.conf配置文件里用ecap_service指令加载到squid程序里的,就是一个ecap服务.所以,继承自<code>libecap::adapter::Service</code>的Service类的主要功能可以看做是squid与ecap插件链接的一个沟通桥梁,把我们的插件与squid紧密结合在了一起.可以在ecap_service指令后,加入我们想要传送给插件的配置选项参数.<br/>
+默认的例子程序adapter_modifying.cc,就需要采用victim和replacement参数,才可以加载成功.因为我们的程序源文件来源于adapter_modifying.cc,因此在默认的情况下,要想让<code>ecap_adapter_bbkanba.so</code> 工作需要修改上面的ecap_service指令的值为下面才可以.</p>
+
+<pre>ecap_service bbkanbam reqmod_precache 0  ecap://bbkanba.com/bbkanba victim="test" replacement="bbkanba.com"</pre>
+
+
+<p>现在再次运行<code>squid -NCXd 2</code>命令,可以看到,squid不会再报错了.<br/>
+在我们假设的案例中,不需要在配置文件中向ecap插件传入配置选项,因为待会我们会修改源文件去掉检查是否有victim选项的代码.</p>
+
+<p>在我们开始真正的编写插件代码之前,我们先引入一些需要的头文件,运行下面的命令.</p>
+
+<p><code>bash
+sed -i -e '/.*bbkanba.h.*/ a\#include "Debugger.h"\n#include &lt;algorithm&gt;' adapter_bbkanba.cc
+</code></p>
+
+<p>自己手工处理一下Service类,使我们的开发框架变的干净整洁:<br/>
+删除<code>void setVictim(const std::string &amp;value);</code><br/>
+删除<code>void Adapter::Service::configure(const libecap::Options &amp;cfg)</code>方法内的所有代码,使其变为空函数.<br/>
+删除<code>void Adapter::Service::reconfigure(const libecap::Options &amp;cfg)</code>方法内的所有代码,使其变为空函数.<br/>
+删除<code>void setOne(const libecap::Name &amp;name, const libecap::Area &amp;valArea);</code>方法;<br/>
+删除<code>Cfgtor</code>类;</p>
+
+<p>上面解释了Server类,现在解释一下Xaction类.Xaction类为真正干活的地方,所有插件的业务逻辑全部需要在这个类里完成.<br/>
+squid为每一个请求创建一个Server类对象,每一个Server类对象负责创建一个Xaction对象,Xaction对象负责处理业务逻辑.<br/>
+在Xaction类的<code>virtual void start();</code> 方法里开始业务逻辑的处理.</p>
+
+<p>为了便于处理url的信息以及利用http请求查询api获取用户ip是否验证通过的结果,这里我利用<a target="_blank" href="http://www.boost.org/">boost</a>库和<a target="_blank" href="http://cpp-netlib.org/">cpp-netlib</a>库.首先让我们安装这两个库的最新版本.</p>
+
+<p>``` bash</p>
+
+<h3>install boost</h3>
+
+<p>yum -y install icu libicu libicu-devel python python-devel
+wget <a href="http://sourceforge.net/projects/boost/files/boost/1.53.0/boost_1_53_0.tar.gz/download">http://sourceforge.net/projects/boost/files/boost/1.53.0/boost_1_53_0.tar.gz/download</a>
+tar -zxf boost_1_53_0.tar.gz
+cd  boost_1_53_0
+./bootstrap.sh &mdash;prefix=/usr/local/boost_1_53_0
+./b2 install
+ln -s /usr/local/boost_1_53_0/lib/libboost_* /usr/local/lib/
+ln -s /usr/local/boost_1_53_0/include/boost /usr/local/include/boost
+echo &ldquo;/usr/local/lib&rdquo; > /etc/ld.so.conf.d/usrlocallib.conf
+ldconfig</p>
+
+<h3>install cpp-netlib-0.9.4</h3>
+
+<p>wget <a href="http://dl.atrpms.net/el6-x86_64/atrpms/stable/atrpms-repo-6-6.el6.x86_64.rpm">http://dl.atrpms.net/el6-x86_64/atrpms/stable/atrpms-repo-6-6.el6.x86_64.rpm</a>
+rpm -Uvh atrpms-repo*rpm
+yum -y &mdash;enablerepo=atrpms-testing install cmake
+wget <a href="https://github.com/downloads/cpp-netlib/cpp-netlib/cpp-netlib-0.9.4.zip">https://github.com/downloads/cpp-netlib/cpp-netlib/cpp-netlib-0.9.4.zip</a>
+unzip cpp-netlib-0.9.4.zip
+cd cpp-netlib-0.9.4
+sed -i -e &lsquo;/if (Boost_FOUND)/ a\set (CMAKE_CXX_FLAGS &ldquo;-lrt -fPIC&rdquo;)&rsquo; CMakeLists.txt
+mkdir cpp-netlib-build
+cd cpp-netlib-build
+cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ ..
+make -j4</p>
+
+<p>cp libs/network/src/<em>.a /usr/local/lib/
+cd ..
+cp -r boost/</em> /usr/local/include/boost/
+ldconfig
+```</p>
+
+<p><strong>吐槽题外话,不想看的跳过.</strong><br/>
+这篇文章写到这里,已经写了有几天了.虽然中途因为工作,生活,还有懒惰心一度中断,但是这些原因都不是原因,最根本的原因是,我还得吐槽一下这个库,我当初在找http方面的库时候看到了cpp-netlib,觉得它很好用,可就是太臃肿了,为了用它我还的不得已引入boost,一路摸索的在公司高配服务器上安装编译调试,不是很费劲最后成了.感觉也没有那么复杂.但是但是,为了写这篇文章,我又的重新的在我的aliyun的低配置服务器上重新编译,编译问题到还是可以慢慢解决.但是我受不了的是cpp-netlib的编译速度之慢之慢之慢之慢之慢之慢之慢之慢之慢&#8230;..,我编译它用了超过8个小时,对,超过8个小时,超过8个小时,虽然这充分地表明我的机器配置有多低,但是我还要吐槽,这么个简单的库为啥要编译这么费劲,个老子里&#8230;,好,发泄完毕,继续之前贴出我机器的配置,以供瞻仰:</p>
+
+<pre>
+#其实也没有那么糟糕了.还能用.
+Intel(R) Xeon(R) CPU   E5645  @ 2.40GHz
+Memory: 512M
+Disk: 40G
+</pre>
+
+
+<p>以下为在我的机器上编译cpp-netlib遇到的问题:</p>
+
+<pre>
+问题一:g++: Internal error: Killed (program cc1plus)
+解决: 经过多方查证,此错误的原因是,悲崔的内存不够导致的.怎么解决,只能通过增加swap分区办法了.
+具体操作看这里.<a target="_blank" href="http://www.thegeekstuff.com/2010/08/how-to-add-swap-space/">how-to-add-swap-space</a>
+</pre>
+
+
+
+
+<pre>
+问题二,编译插件成功,但是运行squid -NCXd 2命令后报错如下:
+FATAL: dying from an unhandled exception: file not found
+terminate called after throwing an instance of 'TextException'
+  what():  file not found
+Aborted
+解决: 插件在编译连接的问题,重新安装boost库解决.
+</pre>
+
+
+<p><strong>吐槽完毕,继续正文</strong></p>
+
+<p>讲一下ecap插件开发的大概逻辑,然后贴出上面举出的案例的代码,这篇文章就这么落幕吧.<br/>
+squid的通过继承自<code>libecap::adapter::Service</code>类的子类,实现与ecap的通信,每过来一个请求就实例化一个Server类对象,然后Server对象通过自己的<code>virtual libecap::adapter::Xaction *makeXaction(libecap::host::Xaction *hostx);</code>方法,实例话一个继承自<code>libecap::adapter::Xaction</code>类的对象,利用该对象实现业务逻辑,具体的话,可以查看ecap的样板例子代码.<br/>
+说一下ecap插件开发中用到的数据结构类型.主要用到的以下几种:<br/>
+1. <code>libecap::Area</code> 类型,为灵活调整大小的空间,可以用来保存http请求头中的值.<br/>
+2. <code>libecap::Name</code> 类型,为全局唯一ID以及对应的字符串,可以用来保存http请求头中的头字符串.<br/>
+3. <code>libecap::Message</code> 类型,为squid转发过来的每个用户http请求的封装,其中包含用户请求的url,http头,和可能附带的其他数据(请求的话,post可能带有的数据,回应的话,就是回应的body信息了).<br/>
+4. <code>libecap::host::Xaction</code> 类型,每个用户请求的封装,包含<code>libecap::Message</code>.<br/>
+ok,主要用到的就这么多.要到达我们上面列出的案例要求,其实很简单,这里只在<code>void Adapter::Xaction::start()</code>里实现就可以了.<br/>
+这里我们假设,用户的认证登陆页面在本机的9090端口,任何未经过认证的,或者认证超时的用户,全部默认跳转到<a href="http://127.0.0.1:9090;  ">http://127.0.0.1:9090;  </a>
+查询用户是否可以访问网络的api接口是,<a href="http://127.0.0.1:9090/check.php?uip=x.x.x.x.  ">http://127.0.0.1:9090/check.php?uip=x.x.x.x.  </a>
+查询结果如果为0,则表示用户没有经过认证,为1表示已经过期,为2表示正常放行.</p>
+
+<p>下面为全部的代码,没有经过测试,不保证正确哦.</p>
+
+<p>``` cpp</p>
+
+<h1>include &ldquo;bbkanba.h&rdquo;</h1>
+
+<h1>include &ldquo;Debugger.h&rdquo;</h1>
+
+<h1>include <iostream></h1>
+
+<h1>include <algorithm></h1>
+
+<h1>include &lt;libecap/common/registry.h></h1>
+
+<h1>include &lt;libecap/common/errors.h></h1>
+
+<h1>include &lt;libecap/common/message.h></h1>
+
+<h1>include &lt;libecap/common/header.h></h1>
+
+<h1>include &lt;libecap/common/names.h></h1>
+
+<h1>include &lt;libecap/common/named_values.h></h1>
+
+<h1>include &lt;libecap/host/host.h></h1>
+
+<h1>include &lt;libecap/adapter/service.h></h1>
+
+<h1>include &lt;libecap/adapter/xaction.h></h1>
+
+<h1>include &lt;libecap/host/xaction.h></h1>
+
+<h1>include &lt;boost/network/uri.hpp></h1>
+
+<h1>include &lt;boost/network/uri/uri_io.hpp></h1>
+
+<h1>include &lt;boost/network/protocol/http/client.hpp></h1>
+
+<p>using namespace boost::network;</p>
+
+<p>namespace Adapter { // not required, but adds clarity
+using   libecap::size_type;
+typedef libecap::RequestLine *CLRLP;</p>
+
+<p>class Service: public libecap::adapter::Service {</p>
+
+<pre><code>public:
+    // About
+    virtual std::string uri() const; // unique across all vendors
+    virtual std::string tag() const; // changes with version and config
+    virtual void describe(std::ostream &amp;os) const; // free-format info
+
+    // Configuration
+    virtual void configure(const libecap::Options &amp;cfg);
+    virtual void reconfigure(const libecap::Options &amp;cfg);
+
+    // Lifecycle
+    virtual void start(); // expect makeXaction() calls
+    virtual void stop(); // no more makeXaction() calls until start()
+    virtual void retire(); // no more makeXaction() calls
+
+    // Scope (XXX: this may be changed to look at the whole header)
+    virtual bool wantsUrl(const char *url) const;
+
+    // Work
+    virtual libecap::adapter::Xaction *makeXaction(libecap::host::Xaction *hostx);
+</code></pre>
+
+<p>};</p>
+
+<p>class Xaction: public libecap::adapter::Xaction {</p>
+
+<pre><code>public:
+    Xaction(libecap::shared_ptr&lt;Service&gt; s, libecap::host::Xaction *x);
+    virtual ~Xaction();
+
+    // meta-information for the host transaction
+    virtual const libecap::Area option(const libecap::Name &amp;name) const;
+    virtual void visitEachOption(libecap::NamedValueVisitor &amp;visitor) const;
+
+    // lifecycle
+    virtual void start();
+    virtual void stop();
+
+    // adapted body transmission control
+    virtual void abDiscard();
+    virtual void abMake();
+    virtual void abMakeMore();
+    virtual void abStopMaking();
+
+    // adapted body content extraction and consumption
+    virtual libecap::Area abContent(size_type offset, size_type size);
+    virtual void abContentShift(size_type size);
+
+    // virgin body state notification
+    virtual void noteVbContentDone(bool atEnd);
+    virtual void noteVbContentAvailable();
+
+    // libecap::Callable API, via libecap::host::Xaction
+    virtual bool callable() const;
+
+protected:
+    void stopVb(); // stops receiving vb (if we are receiving it)
+
+    void getUri(libecap::shared_ptr&lt;libecap::Message&gt; &amp;);
+    void goToUrl( std::string orgUrl,std::string host,std::string state);
+    void debugAction(const std::string &amp;action,const bool &amp;showOrgUrl=true);
+    libecap::host::Xaction *lastHostCall(); // clears hostx
+
+private:
+    CLRLP requestLine;
+    libecap::Area uri; // Request-URI from headers, for logging
+    libecap::shared_ptr&lt;const Service&gt; service; // configuration access
+    libecap::host::Xaction *hostx; // Host transaction rep
+
+    typedef enum { opUndecided, opOn, opComplete, opNever } OperationState;
+    typedef enum { localWebServer, normal } OprationAdaptedState;
+    OperationState receivingVb;
+    OperationState sendingAb;
+    OprationAdaptedState adaptedGotoAction;
+</code></pre>
+
+<p>};</p>
+
+<p>static const std::string CfgErrorPrefix =</p>
+
+<pre><code>"eBBkanba Adapter: configuration error: ";
+</code></pre>
+
+<p>} // namespace Adapter</p>
+
+<p>std::string Adapter::Service::uri() const {</p>
+
+<pre><code>return "ecap://bbkanba.com/bbkanba";
+</code></pre>
+
+<p>}</p>
+
+<p>std::string Adapter::Service::tag() const {</p>
+
+<pre><code>return PACKAGE_VERSION;
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Service::describe(std::ostream &amp;os) const {</p>
+
+<pre><code>os &lt;&lt; "A eBBkanba adapter from " &lt;&lt; PACKAGE_NAME &lt;&lt; " v" &lt;&lt; PACKAGE_VERSION;
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Service::configure(const libecap::Options &amp;cfg) {
+}</p>
+
+<p>void Adapter::Service::reconfigure(const libecap::Options &amp;cfg) {
+}
+void Adapter::Service::start() {</p>
+
+<pre><code>libecap::adapter::Service::start();
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Service::stop() {</p>
+
+<pre><code>libecap::adapter::Service::stop();
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Service::retire() {</p>
+
+<pre><code>libecap::adapter::Service::stop();
+</code></pre>
+
+<p>}</p>
+
+<p>bool Adapter::Service::wantsUrl(const char *url) const {</p>
+
+<pre><code>return true; // no-op is applied to all messages
+</code></pre>
+
+<p>}</p>
+
+<p>libecap::adapter::Xaction <em>Adapter::Service::makeXaction(libecap::host::Xaction </em>hostx) {</p>
+
+<pre><code>return new Adapter::Xaction(std::tr1::static_pointer_cast&lt;Service&gt;(self),hostx);
+</code></pre>
+
+<p>}</p>
+
+<p>Adapter::Xaction::Xaction(libecap::shared_ptr<Service> aService,libecap::host::Xaction *x):</p>
+
+<pre><code>service(aService),
+hostx(x),
+receivingVb(opUndecided),
+sendingAb(opUndecided),
+adaptedGotoAction(normal){
+</code></pre>
+
+<p>}</p>
+
+<p>Adapter::Xaction::~Xaction() {</p>
+
+<pre><code>if (libecap::host::Xaction *x = hostx) {
+    hostx = 0;
+    requestLine = 0;
+    x-&gt;adaptationAborted();
+}
+</code></pre>
+
+<p>}</p>
+
+<p>const libecap::Area Adapter::Xaction::option(const libecap::Name &amp;) const {</p>
+
+<pre><code>return libecap::Area(); // this transaction has no meta-information
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::visitEachOption(libecap::NamedValueVisitor &amp;) const {</p>
+
+<pre><code>// this transaction has no meta-information to pass to the visitor
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::start() {</p>
+
+<pre><code>Must(hostx);
+
+//static int scannerCount = 0;
+//++scannerCount;
+//Debugger(ilNormal|flApplication) &lt;&lt; "eBBkanba: " &lt;&lt; "Initializing eBBkanba engine #" &lt;&lt; scannerCount &lt;&lt; ".";
+
+//查看请求是否包含http头以外的数据
+if (hostx-&gt;virgin().body()) {
+    receivingVb = opOn;
+    hostx-&gt;vbMake(); // ask host to supply virgin body
+} else {
+    // we are not interested in vb if there is not one
+    receivingVb = opNever;
+}
+
+//获取用户ip
+libecap::Header::Value clientIP = hostx-&gt;option(libecap::metaClientIp);
+
+/* adapt message header ,copy一份http请求的纯原始副本,然后下面可能会修改内容*/
+libecap::shared_ptr&lt;libecap::Message&gt; adapted = hostx-&gt;virgin().clone();
+Must(adapted != 0);
+// delete ContentLength header because we may change the length
+// unknown length may have performance implications for the host
+//获取用户请求的url
+getUri(adapted);
+
+if (uri.size &gt; 0) {
+    //adapted-&gt;header().removeAny(libecap::headerContentLength);
+    uri::uri url_path(uri.toString());
+    std::string url_path_tolower = url_path.host();
+    std::transform(url_path_tolower.begin(), url_path_tolower.end(),url_path_tolower.begin(), ::tolower);
+    if (url_path_tolower != "127.0.0.1") {
+        http::client::response response = http::client().get(http::request("http://127.0.0.1:9090/check.php?uip="+clientIP.toString()));
+        std::string check = static_cast&lt;std::string&gt;(body(response));
+        if ( check == "0" ){
+            //则表示用户没有经过认证
+            goToUrl(uri.toString(),"http://127.0.0.1:9090","0");
+        }
+        if( check == "1" ){
+            //表示已经过期
+            goToUrl(uri.toString(),"http://127.0.0.1:9090","1");
+        }
+    }
+}
+
+// 最后返回我们修改过的用户请求
+if (!adapted-&gt;body()) {
+    sendingAb = opNever; // there is nothing to send
+    lastHostCall()-&gt;useAdapted(adapted);
+} else {
+    hostx-&gt;useAdapted(adapted);
+}
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::stop() {</p>
+
+<pre><code>hostx = 0;
+requestLine = 0;
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::abDiscard()
+{</p>
+
+<pre><code>Must(sendingAb == opUndecided); // have not started yet
+sendingAb = opNever;
+// we do not need more vb if the host is not interested in ab
+stopVb();
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::abMake()
+{</p>
+
+<pre><code>Must(sendingAb == opUndecided); // have not yet started or decided not to send
+Must(hostx-&gt;virgin().body()); // that is our only source of ab content
+
+// we are or were receiving vb
+Must(receivingVb == opOn || receivingVb == opComplete);
+
+sendingAb = opOn;
+hostx-&gt;noteAbContentAvailable();
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::abMakeMore()
+{</p>
+
+<pre><code>Must(receivingVb == opOn); // a precondition for receiving more vb
+hostx-&gt;vbMakeMore();
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::abStopMaking()
+{</p>
+
+<pre><code>sendingAb = opComplete;
+// we do not need more vb if the host is not interested in more ab
+stopVb();
+</code></pre>
+
+<p>}</p>
+
+<p>libecap::Area Adapter::Xaction::abContent(size_type offset, size_type size) {</p>
+
+<pre><code>Must(sendingAb == opOn || sendingAb == opComplete);
+return hostx-&gt;vbContent(offset, size);
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::abContentShift(size_type size) {</p>
+
+<pre><code>Must(sendingAb == opOn || sendingAb == opComplete);
+hostx-&gt;vbContentShift(size);
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::noteVbContentDone(bool atEnd)
+{</p>
+
+<pre><code>Must(receivingVb == opOn);
+receivingVb = opComplete;
+if (sendingAb == opOn) {
+    hostx-&gt;noteAbContentDone(atEnd);
+    sendingAb = opComplete;
+}
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::noteVbContentAvailable()
+{</p>
+
+<pre><code>Must(receivingVb == opOn);
+if (sendingAb == opOn)
+    hostx-&gt;noteAbContentAvailable();
+</code></pre>
+
+<p>}</p>
+
+<p>bool Adapter::Xaction::callable() const {</p>
+
+<pre><code>return hostx != 0; // no point to call us if we are done
+</code></pre>
+
+<p>}</p>
+
+<p>// tells the host that we are not interested in [more] vb
+// if the host does not know that already
+void Adapter::Xaction::stopVb() {</p>
+
+<pre><code>if (receivingVb == opOn) {
+    hostx-&gt;vbStopMaking();
+    receivingVb = opComplete;
+} else {
+    // we already got the entire body or refused it earlier
+    Must(receivingVb != opUndecided);
+}
+</code></pre>
+
+<p>}
+//重新定位请求地址,到用户认证页面,并把用户请求url作为参数传入
+void Adapter::Xaction::goToUrl(std::string orgUrl,std::string new_host, std::string state)
+{</p>
+
+<pre><code>std::string new_url_path = new_host + "/?state=" + state + "&amp;orgUrl=" + orgUrl;
+const libecap::Header::Value new_url_path_r = libecap::Area::FromTempString(new_url_path);
+debugAction("new URL: " + new_url_path);
+requestLine-&gt;uri(new_url_path_r);
+</code></pre>
+
+<p>}
+void Adapter::Xaction::getUri(libecap::shared_ptr&lt;libecap::Message> &amp;adapted)
+{</p>
+
+<pre><code>if (!hostx)
+    return;
+if ( (requestLine = dynamic_cast&lt;CLRLP&gt;(&amp;adapted-&gt;firstLine())) )
+    uri = requestLine-&gt;uri();
+</code></pre>
+
+<p>}</p>
+
+<p>void Adapter::Xaction::debugAction(const std::string &amp;actDescript,const bool &amp;showOrgUrl)
+{</p>
+
+<pre><code>std::string descipt (actDescript);
+if(showOrgUrl)
+    descipt += " ( org URL: " + uri.toString() + " )";
+Debugger(ilNormal|flApplication) &lt;&lt; "eBBkanba: " &lt;&lt; descipt ;
+</code></pre>
+
+<p>}</p>
+
+<p>// this method is used to make the last call to hostx transaction
+// last call may delete adapter transaction if the host no longer needs it
+// TODO: replace with hostx-independent &ldquo;done&rdquo; method
+libecap::host::Xaction *Adapter::Xaction::lastHostCall() {</p>
+
+<pre><code>libecap::host::Xaction *x = hostx;
+Must(x);
+hostx = 0;
+requestLine = 0;
+return x;
+</code></pre>
+
+<p>}</p>
+
+<p>// create the adapter and register with libecap to reach the host application
+static const bool Registered = (libecap::RegisterService(new Adapter::Service), true);
+```
+可以下载我写的上面的例子文件<a href="/downloads/files/eCAP_bbkanba_Adapter-0.0.1.tar.gz">eCAP_bbkanba_Adapter-0.0.1.tar.gz</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[squid-3.2.5 CentOS X86_64 Configure: Error: C Compiler Cannot Create Executables]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/28/squid-3-2-5-centos-x86_64-configure-error-c-compiler-cannot-create-executables/"/>
+    <updated>2013-01-28T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/28/squid-3-2-5-centos-x86_64-configure-error-c-compiler-cannot-create-executables</id>
+    <content type="html"><![CDATA[<p>squid-3.2.5 在CentOS X86_64位的环境下默认配置编译会遇到错误，如下:</p>
+
+<pre>
+checking whether the C compiler works... no
+configure: error: in `/opt/packages/goodlePackages/squid/squid_src/squid-3.2.5':
+configure: error: C compiler cannot create executables
+</pre>
+
+
+<p>x86_64解决办法如下:</p>
+
+<p><code>bash
+./configure CXXFLAGS="-g -O2"  CFLAGS="-O2 -march=x86-64" --prefix=/usr/local/squid
+make
+make install
+</code></p>
+
+<p>i686</p>
+
+<p><code>bash
+./configure -disable-64bit CFLAGS="-O3 -march=i686" --prefix=/usr/local/squid
+make
+make install
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Config Awstats on Window2003 or Linux With GeoIP/QQWry]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry/"/>
+    <updated>2013-01-19T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/19/awstats-window2003-iis-linux-nginx-lighttpd-geoip-qqwry</id>
+    <content type="html"><![CDATA[<p><img src="/downloads/images/awstats.png" title="awstats example" alt="awstats.png" /></p>
+
+<p>Awstats是一个日志分析工具(web log分析为强),很好很强大,不多解释,感兴趣的wiki一下。这是一个安装教程文章.</p>
+
+<p>首先是awstas在windows 2003下与iis6的配置过程,然后是在Linux下和Nginx一起的配置，紧跟着Linux下与Lighttpd一起配置的过程,总之,这个可能是目前市面上最仔细全面安装awstas的教程了.</p>
+
+<!--more-->
+
+
+<p>Awstas官方网站de下载地址<a href="http://awstats.sourceforge.net/#DOWNLOAD">点击这里</a>.<br/>
+目前为止最新版本是7.1 释放时间是 <strong>2012-12-20 18:32</strong></p>
+
+<p>本文将会安装awstas的插件与启用的功能如下列表:</p>
+
+<pre>
+GeoIP       显示IP属于那个国家
+GeoLiteCity 显示IP属于那个城市
+hostinfo    可以查询IP的Whois信息
+qqhostinfo  显示IP纯真版数据库de信息
+decodeutfkeys   解决"用以搜索的关键词"乱码
+timezone    解决windows平台下的日志时间差8小时问题
+day-by-day  可以根据日期(以天为单位)查看日志的js
+tooltips    显示一些详细的提示信息
+AllowToUpdateStatsFromBrowser 允许通过浏览器执行更新,显示最新的日志分析结果
+</pre>
+
+
+<h2>1. Install Awstats with IIS6 under windowns 2003</h2>
+
+<p>用Windows做服务器真心难用,所以安装配置起来最麻烦.<br/>
+在windows平台下载Zip版本的<a href="http://prdownloads.sourceforge.net/awstats/awstats-7.1.zip">7.1稳定发行包</a></p>
+
+<p>Awstas是用perl（一个夸平台脚本语言）写成的, 所以要在windows平台下工作的话,必须先安装搭建Perl语言环境. 在windows平台下, 我们需要安装ActivePerl的免费版本.<br/>
+ActivePerl官方网站de下载地址<a href="http://www.activestate.com/activeperl">点击这里</a>,截止今天,最新版本是 <strong>5.16.2.1602</strong> ,在官方下载页面根据自己的操作系统选择下载64位还是32位的安装包.</p>
+
+<p>安装过程直接点击下一步下一步就可以了.没有什么要特别要特别注意的,只是在选择安装路径的时候,如果不能默认的<code>c:\Perl</code>的话,就放到其他盘符里吧,类似<code>D:\Perl</code>,不要安装在乱七八糟的路径下,避免不必要的错误.验证安装是否完成的的办法,我认为最好的是注销一下当前用户,再登陆进来,然后点击<code>开始 &gt;&gt; 运行 &gt;&gt; cmd</code>,然后输入命令<code>perl -v</code>,看看反应,如果能正常打印perl的版本号的话,就说明安装的没有问题,反之,就不用再往下看了,因为必须解决这个问题才可以往下进行.</p>
+
+<p>一般安装包会自动整合Perl的功能到IIS6中去,但如果你发现它没有做到的话,也不用着急,手动添加一下就好了,很容易,检查方法,打开 <code>"Internet 信息服务(IIS)管理器" – "Web服务扩展" – 查看右面"web 服务器扩展"</code> 列表里有没有Perl的字样.如果没有的话,就点击<code>添加一个新的web服务扩展</code>,如图1-1,填写扩展名(当然你也可以自己随便定义扩展名,只要你喜欢),然后点击添加按钮,然后根据你的Perl安装路径填写,比如,<code>c:\Perl\bin\perl.exe "%s" %s</code>,这里我的Perl安装路径是默认的<code>c:\Perl</code>, 如果你的不同,请做相应修改,点击确定完成. 这样你就可以通过浏览器查看perl在iis上的执行结果了,这是进行下面步骤的基础.</p>
+
+<p>图1-1
+<img src="/downloads/images/awstats.1-1.png" alt="awstats.1-1.png" /></p>
+
+<p>因为IIS6的默认日志格式很奇特,所以想要用awstas分析的话,需要修改一下默认的日志的格式.具体步骤,打开 &ldquo;Internet 信息服务(IIS)管理器&rdquo; ,在网站列表中找到你想要分析日志的网站,右击选择属性,在网站标签下,确保 &ldquo;启用日志记录&rdquo; 被勾选着,然后点击右边的属性按钮,确保日志计划是 &ldquo;每天&rdquo;, 勾选 &ldquo;文件命名和创建使用当地时间&rdquo;, 并记住 &ldquo;日志文件路径&rdquo; 待会我们会进到这个目录里(如图1-2).</p>
+
+<p>图1-2<br/>
+<img src="/downloads/images/awstats.1-2.png" alt="awstats.1-2.png" /></p>
+
+<p>然后点击高级标签(如图1-3).关键时刻来临了,兴奋起来吧!这里你真的不能出错,一定要再三检查你勾选的选项,不然很容易出错,还不容易发现.</p>
+
+<p>图1-3
+<img src="/downloads/images/awstats.1-3.png" alt="awstats.1-3.png" /></p>
+
+<p>请确保有且仅有以下几项是选中状态,不能多也不能少.</p>
+
+<pre>
+date
+time
+c-ip
+cs-username
+cs-method
+cs-uri-stem
+sc-status
+sc-bytes
+cs-version
+cs(User-Agent)
+cs(Referer)
+</pre>
+
+
+<p>然后点击确定,保存配置,再然后关掉网站,打开我的电脑,进入到上面说的 &ldquo;日志文件路径&rdquo; 中去,删除所有现有的日志,重新开始网站.</p>
+
+<p>下面建立两个目录(当然你也可以建立在其他盘符,不过要记得修改以下所有步骤的路径):</p>
+
+<pre>
+#用于存放awstats的程序文件
+C:\LogAnalyse\awstats
+#用于存放awstats程序分析log之后的结果数据文件
+C:\LogAnalyse\awstats_data_dir
+</pre>
+
+
+<p><span style="color: #d14;">右击awstats_data_dir目录选择属性,安全,添加Everyone的完全控制权限,不然无法从浏览器端更新.</span></p>
+
+<p>将下载下来的zip包解压,并把<code>wwwroot</code>目录下的所有内容放到<code>C:\LogAnalyse\awstats</code>下.<br/>
+进入到<code>C:\LogAnalyse\awstats\cgi-bin</code>目录下,新建一个叫<code>awstats.logWin.conf</code>的文件(必须叫这个名字,没得商量,待会要用的),然后输入下面的内容,注意修改<code>SiteDomain&lt;code&gt;与</code>LogFile</code>选项值.<br/>
+如果你想知道具体每个选项的意思<a href="http://awstats.sourceforge.net/docs/awstats_config.html">点击这里查看官网说明</a></p>
+
+<p>``` bash</p>
+
+<h1>AWSTATS CONFIGURE FILE</h1>
+
+<h1>需要分析的日志路径,注意替成 C:/WINDOWS/system32/LogFiles/W3SVC952692957  为图1-2中你的网站日志路径</h1>
+
+<p>LogFile=&ldquo;C:/WINDOWS/system32/LogFiles/W3SVC952692957/ex%YY-0%MM-0%DD-0.log&rdquo;
+LogType=W</p>
+
+<h1>这个很重要,因为IIS6的日志不标准,木有办法啦</h1>
+
+<p>LogFormat=&ldquo;date time cs-method cs-uri-stem cs-username c-ip cs-version cs(User-Agent) cs(Referer) sc-status sc-bytes&rdquo;
+LogSeparator=&ldquo; &rdquo;</p>
+
+<h1>就是说明一下你给那个站点做的分析,分析结果页面左上角显示</h1>
+
+<p>SiteDomain=&ldquo;blog.bbkanba.com&rdquo;
+HostAliases=&ldquo;localhost 127.0.0.1&rdquo;
+DNSLookup=0</p>
+
+<h1>看上面,不解释</h1>
+
+<p>DirData=&ldquo;C:/LogAnalyse/awstats_data_dir/&rdquo;
+DirCgi=&ldquo;/cgi-bin&rdquo;
+DirIcons=&ldquo;/icon&rdquo;
+AllowToUpdateStatsFromBrowser=1
+AllowFullYearView=2</p>
+
+<h1>同一时间只能有一个update运行</h1>
+
+<p>EnableLockForUpdate=1
+DNSStaticCacheFile=&ldquo;dnscache.txt&rdquo;
+DNSLastUpdateCacheFile=&ldquo;dnscachelastupdate.txt&rdquo;
+SkipDNSLookupFor=&ldquo;&rdquo;
+AllowAccessFromWebToAuthenticatedUsersOnly=0
+AllowAccessFromWebToFollowingAuthenticatedUsers=&ldquo;&rdquo;
+AllowAccessFromWebToFollowingIPAddresses=&ldquo;&rdquo;
+CreateDirDataIfNotExists=0
+BuildHistoryFormat=text
+BuildReportFormat=html
+SaveDatabaseFilesWithPermissionsForEveryone=0
+PurgeLogFile=0
+ArchiveLogRecords=0
+KeepBackupOfHistoricFiles=0
+DefaultFile=&ldquo;index.php index.html&rdquo;</p>
+
+<h1>这里可以指定那些地址不纳入分析结果,比如私网地址的访客</h1>
+
+<p>SkipHosts=&ldquo;&rdquo;
+SkipUserAgents=&ldquo;&rdquo;
+SkipFiles=&ldquo;&rdquo;
+SkipReferrersBlackList=&ldquo;&rdquo;
+OnlyHosts=&ldquo;&rdquo;
+OnlyUserAgents=&ldquo;&rdquo;
+OnlyUsers=&ldquo;&rdquo;
+OnlyFiles=&ldquo;&rdquo;
+NotPageList=&ldquo;css js class gif jpg jpeg png bmp ico rss xml swf&rdquo;
+ValidHTTPCodes=&ldquo;200 304&rdquo;
+ValidSMTPCodes=&ldquo;1 250&rdquo;
+AuthenticatedUsersNotCaseSensitive=0
+URLNotCaseSensitive=0
+URLWithAnchor=0
+URLQuerySeparators=&ldquo;?;&rdquo;
+URLWithQuery=0
+URLWithQueryWithOnlyFollowingParameters=&ldquo;&rdquo;
+URLWithQueryWithoutFollowingParameters=&ldquo;&rdquo;
+URLReferrerWithQuery=0
+WarningMessages=1
+ErrorMessages=&ldquo;&rdquo;
+DebugMessages=0
+NbOfLinesForCorruptedLog=50
+WrapperScript=&ldquo;&rdquo;
+DecodeUA=0
+MiscTrackerUrl=&ldquo;/js/awstats_misc_tracker.js&rdquo;
+LevelForBrowsersDetection=2
+LevelForOSDetection=2
+LevelForRefererAnalyze=2
+LevelForRobotsDetection=2
+LevelForSearchEnginesDetection=2
+LevelForKeywordsDetection=2
+LevelForFileTypesDetection=2
+LevelForWormsDetection=0
+UseFramesWhenCGI=1
+DetailedReportsOnNewWindows=1</p>
+
+<h1>分析结果页面的缓存时间,默认不缓存,这样你就可以手工通过浏览器更新,时时查看最新数据了</h1>
+
+<p>Expires=0
+MaxRowsInHTMLOutput=1000</p>
+
+<h1>Lang默认是auto,根据浏览器设置现实页面语言,这里强制为汉语了</h1>
+
+<p>Lang=&ldquo;cn&rdquo;
+DirLang=&ldquo;./lang&rdquo;
+ShowMenu=1                <br/>
+ShowSummary=UVPHB
+ShowMonthStats=UVPHB
+ShowDaysOfMonthStats=VPHB
+ShowDaysOfWeekStats=PHB
+ShowHoursStats=PHB
+ShowDomainsStats=PHB
+ShowHostsStats=PHBL
+ShowAuthenticatedUsers=0
+ShowRobotsStats=HBL
+ShowWormsStats=0
+ShowEMailSenders=0
+ShowEMailReceivers=0
+ShowSessionsStats=1
+ShowPagesStats=PBEX
+ShowFileTypesStats=HB
+ShowFileSizesStats=0  <br/>
+ShowDownloadsStats=HB <br/>
+ShowOSStats=1
+ShowBrowsersStats=1
+ShowScreenSizeStats=0
+ShowOriginStats=PH
+ShowKeyphrasesStats=1
+ShowKeywordsStats=1
+ShowMiscStats=a
+ShowHTTPErrorsStats=1
+ShowSMTPErrorsStats=0
+ShowClusterStats=0
+AddDataArrayMonthStats=1
+AddDataArrayShowDaysOfMonthStats=1
+AddDataArrayShowDaysOfWeekStats=1
+AddDataArrayShowHoursStats=1
+IncludeInternalLinksInOriginSection=0
+MaxNbOfDomain = 10
+MinHitDomain  = 1
+MaxNbOfHostsShown = 10
+MinHitHost    = 1
+MaxNbOfLoginShown = 10
+MinHitLogin   = 1
+MaxNbOfRobotShown = 10
+MinHitRobot   = 1
+MaxNbOfDownloadsShown = 10
+MinHitDownloads = 1
+MaxNbOfPageShown = 10
+MinHitFile    = 1
+MaxNbOfOsShown = 10
+MinHitOs      = 1
+MaxNbOfBrowsersShown = 10
+MinHitBrowser = 1
+MaxNbOfScreenSizesShown = 5
+MinHitScreenSize = 1
+MaxNbOfWindowSizesShown = 5
+MinHitWindowSize = 1
+MaxNbOfRefererShown = 10
+MinHitRefer   = 1
+MaxNbOfKeyphrasesShown = 10
+MinHitKeyphrase = 1
+MaxNbOfKeywordsShown = 10
+MinHitKeyword = 1
+MaxNbOfEMailsShown = 20
+MinHitEMail   = 1
+FirstDayOfWeek=1
+ShowFlagLinks=&ldquo;&rdquo;
+ShowLinksOnUrl=1
+UseHTTPSLinkForUrl=&ldquo;&rdquo;
+MaxLengthOfShownURL=64
+HTMLHeadSection=&ldquo;&rdquo;
+HTMLEndSection=&ldquo;&rdquo;
+MetaRobot=0
+Logo=&ldquo;awstats_logo6.png&rdquo;
+LogoLink=&ldquo;<a href="http://www.awstats.org">http://www.awstats.org</a>&rdquo;
+BarWidth   = 260
+BarHeight  = 90
+StyleSheet=&ldquo;&rdquo;
+color_Background=&ldquo;FFFFFF&rdquo; <br/>
+color_TableBGTitle=&ldquo;CCCCDD&rdquo;
+color_TableTitle=&ldquo;000000&rdquo; <br/>
+color_TableBG=&ldquo;CCCCDD&rdquo;    <br/>
+color_TableRowTitle=&ldquo;FFFFFF&rdquo;  <br/>
+color_TableBGRowTitle=&ldquo;ECECEC"<br/>
+color_TableBorder="ECECEC"<br/>
+color_text="000000&rdquo;   <br/>
+color_textpercent=&ldquo;606060"<br/>
+color_titletext="000000&rdquo;
+color_weekend=&ldquo;EAEAEA&rdquo;
+color_link=&ldquo;0011BB&rdquo;
+color_hover=&ldquo;605040&rdquo;
+color_u=&ldquo;FFAA66&rdquo;
+color_v=&ldquo;F4F090&rdquo;
+color_p=&ldquo;4477DD&rdquo;
+color_h=&ldquo;66DDEE&rdquo;
+color_k=&ldquo;2EA495&rdquo;
+color_s=&ldquo;8888DD&rdquo;
+color_e=&ldquo;CEC2E8&rdquo;
+color_x=&ldquo;C1B2E2&rdquo;
+ExtraTrackedRowsLimit=500</p>
+
+<h1>以下是启用的插件们</h1>
+
+<p>HTMLHeadSection=&ldquo;&lt;script language=javascript src=&lsquo;<a href="http://leolovenet.com/js/day-by-day-head.js">http://leolovenet.com/js/day-by-day-head.js</a>&rsquo;&gt;&lt;/script&gt;&rdquo;
+HTMLEndSection=&ldquo;&lt;script language=javascript src=&lsquo;<a href="http://leolovenet.com/js/day-by-day-end.js">http://leolovenet.com/js/day-by-day-end.js</a>&rsquo;&gt;&lt;/script&gt;&rdquo;
+LoadPlugin=&ldquo;geoip GEOIP_STANDARD C:/LogAnalyse/awstats/cgi-bin/plugins/GeoIP.dat&rdquo;
+LoadPlugin=&ldquo;geoip_city_maxmind GEOIP_STANDARD C:/LogAnalyse/awstats/cgi-bin/plugins/GeoLiteCity.dat&rdquo;
+LoadPlugin=&ldquo;hostinfo&rdquo;
+LoadPlugin=&ldquo;qqhostinfo&rdquo;
+LoadPlugin=&ldquo;decodeutfkeys&rdquo;
+LoadPlugin=&ldquo;timezone +8&rdquo;
+LoadPlugin=&ldquo;tooltips&rdquo;
+```</p>
+
+<p>点击开始-运行-cmd,输入以下命令,安装所需要的软件包.</p>
+
+<pre>
+ ppm install Geo::IP::PurePerl
+ ppm install Geography::Countries
+ ppm install IP::Country 
+ ppm install Geo-IPfree 
+ ppm install Net-Xwhois
+</pre>
+
+
+<p>下载<a href="http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">GeoIP.dat</a>和<a href="http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz">GeoLiteCity.dat</a>,解压缩以后,放入<code>C:\LogAnalyse\awstats\cgi-bin\plugins</code>目录.
+下载<a href="/downloads/code/qqhostinfo.pm">qqhostinfo.pm</a>和<a href="/downloads/code/qqwry.pl">qqwry.pl</a>和<a href="http://www.cz88.net/">QQWry.Dat</a>到<code>C:\LogAnalyse\awstats\cgi-bin\plugins</code>目录下.</p>
+
+<p><span style="color: #d14;">然后选中这5个文件,右击选择属性,安全,添加Everyone的读取权限(如图1-4)</span></p>
+
+<p>图1-4</p>
+
+<p><img src="/downloads/images/awstats.1-4.png" alt="awstats.1-4.png" /></p>
+
+<p>下载<a href="/downloads/code/day-by-day-head.js">day-by-day-head.js</a>和<a href="/downloads/code/day-by-day-end.js">day-by-day-end.js</a>到<code>C:\LogAnalyse\awstats\js</code>目录下.</p>
+
+<p>在C:\LogAnalyse\awstats_data_dir目录下新建一个<code>crontab.bat</code>文件.输入下面的内容</p>
+
+<pre>
+perl %cd%/../awstats/cgi-bin/awstats.pl -update -config=logWin  -lang=cn  -databasebreak=day
+</pre>
+
+
+<p>解释一下,这个bat文件是要设立计划任务时用的,比如每隔30分钟自动更新下分析数据.</p>
+
+<ul>
+<li>%cd%/../awstats/cgi-bin/awstats.pl文件是awstats执行分析的主程序perl脚本(%cd%当前目录)</li>
+<li>-update 表示更新</li>
+<li>-config=logWin 知道为什么上面的文件为什么必须叫awstats.logWin.conf了吧, awstats.pl会掐头去尾留中间的找配置文件,如果你上面的文件不叫awstats.logWin.conf,而是awstats.bbkanba.conf的话,这里也需要改成-config=bbkanba</li>
+<li>-lang=cn 告诉awstats.pl生成中文页面,你喜欢其他语言可以去C:/LogAnalyse/awstats/cgi-bin/lang目录下瞅瞅,看看这个参数的值可以是什么.</li>
+<li>-databasebreak=day 这个重要哦, awstas默认是以月为单位分析展示数据的,而这里的我们安装了day-by-day插件, 就要求它以天为单位展示.</li>
+</ul>
+
+
+<p>保存好以后,点击开始-运行-cmd,直接用鼠标将<code>crontab.bat</code>文件拖放到黑窗口里,然后回车,你会看到类似图1-5的效果,说明成功配置好了,反之,根据错误提示自己排查吧.原因无非权限呀,路径呀,依赖的perl库啊之类的.</p>
+
+<p>图1-5</p>
+
+<p><img src="/downloads/images/awstats.1-5.png" alt="awstats.1-5.png" /></p>
+
+<p>然后在控制面板,计划任务,添加计划任务,达到如图1-6的样子就可以了,不然就是你配错了.</p>
+
+<p>图1-6<br/>
+<img src="/downloads/images/awstats.1-6.png" alt="awstats.1-6.png" /></p>
+
+<p>到此,我们已经配置好了awstas的工作环境,下面新建立一个网站来展示数据吧.</p>
+
+<p>打开 &ldquo;Internet 信息服务(IIS)管理器&rdquo; –> &ldquo;网站&rdquo; 右击 –> &ldquo;新建网站&rdquo; –> 新建网站向导,下一步 –> 描述 &ldquo;log.bbkanba.com&rdquo;,下一步 –> 全部未分配,80,主机头:log.bbkanba.com –> 主目录路径C:\LogAnalyse\awstats –> 最后一定要勾上 &ldquo;执行(如ISAPI 应用程序或 CGI)&rdquo; –> 下一步完成.</p>
+
+<p>还需要一个perl脚本重定向,创建到C:\LogAnalyse\awstats\index.pl下面,这样每次打开<code>http://log.bbkanba.com</code>就可以看到最新的统计数据了(还的改一下网站的设置，添加index.pl到默认内容文档里,网站属性-文档-默认内容文档).</p>
+
+<p>``` perl</p>
+
+<h1>!/usr/bin/perl</h1>
+
+<p>use POSIX qw(strftime);
+print strftime &ldquo;Location: <a href="http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n">http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n</a>&rdquo; ,localtime;
+```</p>
+
+<p>congratulation you are finished! celebrate吧.
+windows的到这里打完,收工,我去煮个泡面,待会继续Linux下的.</p>
+
+<h2>2. Install Awstats with Lighttpd under Linux(CentOS)</h2>
+
+<p>到了，我最爱的Linux服务器环境安装就变的容易多了.<br/>
+首先通过yum安装perl的依赖包,然后下载安装awstats的rpm安装包,然后安装所需要的插件,创建配置文件,创建计划任务,就ok了.全部命令如下.<br/>
+配置文件同上面window2003下的基本一样，只是变更了一下路径.这里我们分析<code>/var/log/lighttpd/access.log</code>这个日志文件.配置文件的意思看上面.</p>
+
+<p>``` bash</p>
+
+<h1>需要从<a href="http://packages.sw.be/rpmforge-release/">http://packages.sw.be/rpmforge-release/</a> 选择自己平台的rpm包安装,这里我的系统是CentOS6 x86_64,你要根据自己的平台选择,下面是wiki地址</h1>
+
+<h2><a href="http://wiki.centos.org/AdditionalResources/Repositories/RPMForge">http://wiki.centos.org/AdditionalResources/Repositories/RPMForge</a></h2>
+
+<p>wget <a href="http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm">http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm</a>
+rpm -Uvh rpmforge-release*rpm</p>
+
+<p>yum -y install perl  perl-CPAN perl-Compress-Raw-Zlib  perl-Compress-Zlib  perl-GSSAPI  perl-HTML-Parser  perl-HTML-Tagset  perl-IO-Compress-Base perl-IO-Compress-Zlib  perl-URI  perl-libwww-perl gzip perl-Geo-IP perl-Net-XWhois perl-FCGI perl-FCGI-ProcManager</p>
+
+<p>wget <a href="http://prdownloads.sourceforge.net/awstats/awstats-7.1-1.noarch.rpm">http://prdownloads.sourceforge.net/awstats/awstats-7.1-1.noarch.rpm</a>
+rpm -ivh awstats-7.1-1.noarch.rpm
+rm -rf awstats-7.1-1.noarch.rpm</p>
+
+<p>cd  /usr/local/awstats/wwwroot/cgi-bin/plugins/
+wget <a href="http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz">http://www.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz</a>
+wget <a href="http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz">http://www.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz</a>
+gunzip GeoIP.dat.gz GeoLiteCity.dat.gz</p>
+
+<p>wget <a href="http://leolovenet.com/downloads/code/qqhostinfo.pm">http://leolovenet.com/downloads/code/qqhostinfo.pm</a>
+wget <a href="http://leolovenet.com/downloads/code/qqwry.pl">http://leolovenet.com/downloads/code/qqwry.pl</a>
+wget <a href="http://leolovenet.com/downloads/code/QQWry.Dat">http://leolovenet.com/downloads/code/QQWry.Dat</a>
+cd /usr/local/awstats/wwwroot/js/
+wget <a href="http://leolovenet.com/downloads/code/day-by-day-head.js">http://leolovenet.com/downloads/code/day-by-day-head.js</a>
+wget <a href="http://leolovenet.com/downloads/code/day-by-day-end.js">http://leolovenet.com/downloads/code/day-by-day-end.js</a>
+mkdir -p /usr/local/awstats/awstats_data_dir
+chmod -R 777 /usr/local/awstats/awstats_data_dir</p>
+
+<p>cat > /etc/awstats/awstats.log.conf &lt;&lt;ALLENDEND</p>
+
+<h1>AWSTATS CONFIGURE FILE</h1>
+
+<p>LogFile=&ldquo;/var/log/lighttpd/access.log&rdquo;
+LogType=W
+LogFormat=1
+LogSeparator=&ldquo; &rdquo;
+SiteDomain=&ldquo;blog.bbkanba.com&rdquo;
+HostAliases=&ldquo;localhost 127.0.0.1&rdquo;
+DNSLookup=0
+DirData=&ldquo;/usr/local/awstats/awstats_data_dir&rdquo;
+DirCgi=&ldquo;/cgi-bin&rdquo;
+DirIcons=&ldquo;/icon&rdquo;
+AllowToUpdateStatsFromBrowser=1
+AllowFullYearView=2
+EnableLockForUpdate=1
+DNSStaticCacheFile=&ldquo;dnscache.txt&rdquo;
+DNSLastUpdateCacheFile=&ldquo;dnscachelastupdate.txt&rdquo;
+SkipDNSLookupFor=&ldquo;&rdquo;
+AllowAccessFromWebToAuthenticatedUsersOnly=0
+AllowAccessFromWebToFollowingAuthenticatedUsers=&ldquo;&rdquo;
+AllowAccessFromWebToFollowingIPAddresses=&ldquo;&rdquo;
+CreateDirDataIfNotExists=0
+BuildHistoryFormat=text
+BuildReportFormat=html
+SaveDatabaseFilesWithPermissionsForEveryone=0
+PurgeLogFile=0
+ArchiveLogRecords=0
+KeepBackupOfHistoricFiles=0
+DefaultFile=&ldquo;index.php index.html&rdquo;
+SkipHosts=&ldquo;&rdquo;
+SkipUserAgents=&ldquo;&rdquo;
+SkipFiles=&ldquo;&rdquo;
+SkipReferrersBlackList=&ldquo;&rdquo;
+OnlyHosts=&ldquo;&rdquo;
+OnlyUserAgents=&ldquo;&rdquo;
+OnlyUsers=&ldquo;&rdquo;
+OnlyFiles=&ldquo;&rdquo;
+NotPageList=&ldquo;css js class gif jpg jpeg png bmp ico rss xml swf&rdquo;
+ValidHTTPCodes=&ldquo;200 304&rdquo;
+ValidSMTPCodes=&ldquo;1 250&rdquo;
+AuthenticatedUsersNotCaseSensitive=0
+URLNotCaseSensitive=0
+URLWithAnchor=0
+URLQuerySeparators=&ldquo;?;&rdquo;
+URLWithQuery=0
+URLWithQueryWithOnlyFollowingParameters=&ldquo;&rdquo;
+URLWithQueryWithoutFollowingParameters=&ldquo;&rdquo;
+URLReferrerWithQuery=0
+WarningMessages=1
+ErrorMessages=&ldquo;&rdquo;
+DebugMessages=0
+NbOfLinesForCorruptedLog=50
+WrapperScript=&ldquo;&rdquo;
+DecodeUA=0
+MiscTrackerUrl=&ldquo;/js/awstats_misc_tracker.js&rdquo;
+LevelForBrowsersDetection=2
+LevelForOSDetection=2
+LevelForRefererAnalyze=2
+LevelForRobotsDetection=2
+LevelForSearchEnginesDetection=2
+LevelForKeywordsDetection=2
+LevelForFileTypesDetection=2
+LevelForWormsDetection=0
+UseFramesWhenCGI=1
+DetailedReportsOnNewWindows=1
+Expires=0
+MaxRowsInHTMLOutput=1000
+Lang=&ldquo;cn&rdquo;
+DirLang=&ldquo;./lang&rdquo;
+ShowMenu=1                <br/>
+ShowSummary=UVPHB
+ShowMonthStats=UVPHB
+ShowDaysOfMonthStats=VPHB
+ShowDaysOfWeekStats=PHB
+ShowHoursStats=PHB
+ShowDomainsStats=PHB
+ShowHostsStats=PHBL
+ShowAuthenticatedUsers=0
+ShowRobotsStats=HBL
+ShowWormsStats=0
+ShowEMailSenders=0
+ShowEMailReceivers=0
+ShowSessionsStats=1
+ShowPagesStats=PBEX
+ShowFileTypesStats=HB
+ShowFileSizesStats=0  <br/>
+ShowDownloadsStats=HB <br/>
+ShowOSStats=1
+ShowBrowsersStats=1
+ShowScreenSizeStats=0
+ShowOriginStats=PH
+ShowKeyphrasesStats=1
+ShowKeywordsStats=1
+ShowMiscStats=a
+ShowHTTPErrorsStats=1
+ShowSMTPErrorsStats=0
+ShowClusterStats=0
+AddDataArrayMonthStats=1
+AddDataArrayShowDaysOfMonthStats=1
+AddDataArrayShowDaysOfWeekStats=1
+AddDataArrayShowHoursStats=1
+IncludeInternalLinksInOriginSection=0
+MaxNbOfDomain = 10
+MinHitDomain  = 1
+MaxNbOfHostsShown = 10
+MinHitHost    = 1
+MaxNbOfLoginShown = 10
+MinHitLogin   = 1
+MaxNbOfRobotShown = 10
+MinHitRobot   = 1
+MaxNbOfDownloadsShown = 10
+MinHitDownloads = 1
+MaxNbOfPageShown = 10
+MinHitFile    = 1
+MaxNbOfOsShown = 10
+MinHitOs      = 1
+MaxNbOfBrowsersShown = 10
+MinHitBrowser = 1
+MaxNbOfScreenSizesShown = 5
+MinHitScreenSize = 1
+MaxNbOfWindowSizesShown = 5
+MinHitWindowSize = 1
+MaxNbOfRefererShown = 10
+MinHitRefer   = 1
+MaxNbOfKeyphrasesShown = 10
+MinHitKeyphrase = 1
+MaxNbOfKeywordsShown = 10
+MinHitKeyword = 1
+MaxNbOfEMailsShown = 20
+MinHitEMail   = 1
+FirstDayOfWeek=1
+ShowFlagLinks=&ldquo;&rdquo;
+ShowLinksOnUrl=1
+UseHTTPSLinkForUrl=&ldquo;&rdquo;
+MaxLengthOfShownURL=64
+HTMLHeadSection=&ldquo;&rdquo;
+HTMLEndSection=&ldquo;&rdquo;
+MetaRobot=0
+Logo=&ldquo;awstats_logo6.png&rdquo;
+LogoLink=&ldquo;<a href="http://www.awstats.org">http://www.awstats.org</a>&rdquo;
+BarWidth   = 260
+BarHeight  = 90
+StyleSheet=&ldquo;&rdquo;
+color_Background=&ldquo;FFFFFF&rdquo;
+color_TableBGTitle=&ldquo;CCCCDD&rdquo;
+color_TableTitle=&ldquo;000000&rdquo;
+color_TableBG=&ldquo;CCCCDD&rdquo;
+color_TableRowTitle=&ldquo;FFFFFF&rdquo;
+color_TableBGRowTitle=&ldquo;ECECEC&rdquo;
+color_TableBorder=&ldquo;ECECEC&rdquo;
+color_text=&ldquo;000000&rdquo;
+color_textpercent=&ldquo;606060&rdquo;
+color_titletext=&ldquo;000000&rdquo;
+color_weekend=&ldquo;EAEAEA&rdquo;
+color_link=&ldquo;0011BB&rdquo;
+color_hover=&ldquo;605040&rdquo;
+color_u=&ldquo;FFAA66&rdquo;
+color_v=&ldquo;F4F090&rdquo;
+color_p=&ldquo;4477DD&rdquo;
+color_h=&ldquo;66DDEE&rdquo;
+color_k=&ldquo;2EA495&rdquo;
+color_s=&ldquo;8888DD&rdquo;
+color_e=&ldquo;CEC2E8&rdquo;
+color_x=&ldquo;C1B2E2&rdquo;
+ExtraTrackedRowsLimit=500</p>
+
+<p>HTMLHeadSection=&ldquo;<script language=javascript src='http://leolovenet.com/js/day-by-day-head.js'></script>&rdquo;
+HTMLEndSection=&ldquo;<script language=javascript src='http://leolovenet.com/js/day-by-day-end.js'></script>&rdquo;
+LoadPlugin=&ldquo;geoip GEOIP_STANDARD /usr/local/awstats/wwwroot/cgi-bin/plugins/GeoIP.dat&rdquo;
+LoadPlugin=&ldquo;geoip_city_maxmind GEOIP_STANDARD /usr/local/awstats/wwwroot/cgi-bin/plugins/GeoLiteCity.dat&rdquo;
+LoadPlugin=&ldquo;hostinfo&rdquo;
+LoadPlugin=&ldquo;qqhostinfo&rdquo;
+LoadPlugin=&ldquo;decodeutfkeys&rdquo;
+LoadPlugin=&ldquo;tooltips&rdquo;
+ALLENDEND</p>
+
+<p>cat > /usr/local/awstats/wwwroot/index.pl  &lt;&lt;ALLENDEND</p>
+
+<h1>!/usr/bin/perl</h1>
+
+<p>use POSIX qw(strftime);
+print strftime &ldquo;Location: <a href="http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n">http://log.bbkanba.com/cgi-bin/awstats.pl?config=log&amp;databasebreak=day&amp;day=%d&amp;month=%m&amp;year=%Y\n\n</a>&rdquo; ,localtime;
+ALLENDEND</p>
+
+<p>cat > /etc/cron.hourly/00awstats &lt;&lt;ALLENDEND</p>
+
+<h1>!/bin/bash</h1>
+
+<h1>path to cgi-bin</h1>
+
+<p>AWS=/usr/local/awstats/wwwroot/cgi-bin/awstats.pl</p>
+
+<h1>append your domain</h1>
+
+<p>DOMAINS=&ldquo;log&rdquo;</p>
+
+<h1>loop through all domains</h1>
+
+<p>for d in \${DOMAINS}
+do
+   \${AWS} -update -config=\${d}  -lang=cn  -databasebreak=day
+done
+ALLENDEND
+chmod +x /etc/cron.hourly/00awstats
+/etc/cron.hourly/00awstats
+```</p>
+
+<p>linux平台下的web日志时间一般没有问题，所以没有添加<code>LoadPlugin="timezone +8"</code></p>
+
+<p>执行完上面的内容你应该可以看到与 图1-5 类似的结果,就说明安装awstats成功了。<br/>
+下面添加一个虚拟站点给lighttpd,好让我们可以通过浏览器查看统计结果,全部命令如下</p>
+
+<p>``` bash
+sed -e &rsquo;s/.<em>mod_ssi.</em>/&ldquo;mod_ssi&rdquo;,/&lsquo; /etc/lighttpd/lighttpd.conf > /tmp/lighttpd.conf
+mv /tmp/lighttpd.conf /etc/lighttpd/lighttpd.conf
+cat >> /etc/lighttpd/lighttpd.conf &lt;<ALLALLEND
+\$HTTP["host"] =~ "log.bbkanba.com" {
+index-file.names   = ( "index.pl","index.php", "index.html","index.htm" )
+server.port = 80
+cgi.assign = (
+".pl" => &ldquo;/usr/bin/perl&rdquo;,
+&ldquo;.cgi&rdquo; => &ldquo;/usr/bin/perl&rdquo;
+)
+server.document-root = &ldquo;/usr/local/awstats/wwwroot/&rdquo;
+accesslog.filename = &ldquo;/var/log/lighttpd/log.access.log&rdquo;
+}
+ALLALLEND</p>
+
+<p>/etc/init.d/lighttpd restart
+```
+ok,到此结束.</p>
+
+<h2>3. Install Awstats with Nginx under Linux(CentOS)</h2>
+
+<p>awstats与Nginx合作还是有点复杂的,不像Lighttpd支持perl扩展那么容易,这里我们要让nginx支持perl扩展是通过一个perl脚本实现的。</p>
+
+<p>不过,<strong>7.1</strong>版本的awstats的<a href="http://awstats.sourceforge.net/docs/awstats_changelog.txt">ChangLog</a>里说明了Add example of nginx setup.<br/>
+我还没有试过官方的办法,好像是通过一个php的脚本,可以在最新发行版本包里的tools/nginx目录看看.</p>
+
+<p>下面我讲的是通过 <a href="/downloads/code/fastcgi-wrapper.pl">fastcgi-wrapper.pl</a> 实现的.</p>
+
+<p><code>bash
+wget http://leolovenet.com/downloads/code/fastcgi-wrapper.pl
+mv  fastcgi-wrapper.pl /usr/local/bin/
+chmod +x fastcgi-wrapper.pl
+mkdir -p /var/run/nginx/
+/usr/local/bin/fastcgi-wrapper.pl &amp;
+ps aux|grep  fcgi-wrapper.pl
+</code></p>
+
+<p>awstats的安装与上面Lighttpd篇里的一样,添加一个虚拟站点给nginx,好让我们可以通过浏览器查看统计结果的命令如下,这里假设nginx安装在了<code>/usr/local/nginx</code>目录下,并且虚拟站点的配置文件在<code>/usr/local/nginx/conf/vhost</code>下.</p>
+
+<p>``` bash
+mkdir -p /var/run/nginx/
+mkdir -p /usr/local/nginx/conf/vhost</p>
+
+<p>cat >  /usr/local/nginx/conf/vhost/awstats.conf&lt;&lt;ALLALLEND
+log_format  awstat  &lsquo;\$remote_addr &ndash; \$remote_user [\$time_local] \$request &rsquo;</p>
+
+<pre><code>         '\$status \$body_bytes_sent \$http_referer '
+         '\$http_user_agent \$http_x_forwarded_for';
+</code></pre>
+
+<p>server</p>
+
+<pre><code> {
+      listen       80;
+      server_name log.bbkanba.com;
+      index index.pl index.html index.htm index.php default.html default.htm default.php;
+      root  /usr/local/awstats/wwwroot/;
+
+  location ~ .*\.(pl|cgi)?\$
+     {
+            gzip off;
+            fastcgi_pass   unix:/var/run/nginx/perl_cgi-dispatch.sock;
+            root /usr/local/awstats/wwwroot;
+            fastcgi_index  index.cgi;
+            fastcgi_param  GATEWAY_INTERFACE  CGI/1.1;
+            fastcgi_param  SERVER_SOFTWARE    nginx;
+            fastcgi_param  QUERY_STRING       \$query_string;
+            fastcgi_param  REQUEST_METHOD     \$request_method;
+            fastcgi_param  CONTENT_TYPE       \$content_type;
+            fastcgi_param  CONTENT_LENGTH     \$content_length;
+            fastcgi_param  SCRIPT_FILENAME    \$document_root\$fastcgi_script_name;
+            fastcgi_param  SCRIPT_NAME        \$fastcgi_script_name;
+            fastcgi_param  REQUEST_URI        \$request_uri;
+            fastcgi_param  DOCUMENT_URI       \$document_uri;
+            fastcgi_param  DOCUMENT_ROOT      \$document_root;
+            fastcgi_param  SERVER_PROTOCOL    \$server_protocol;
+            fastcgi_param  REMOTE_ADDR        \$remote_addr;
+            fastcgi_param  REMOTE_PORT        \$remote_port;
+            fastcgi_param  SERVER_ADDR        \$server_addr;
+            fastcgi_param  SERVER_PORT        \$server_port;
+            fastcgi_param  SERVER_NAME        \$server_name;
+            fastcgi_read_timeout   60;
+      }
+
+      location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)\$
+           {
+                expires      30d;
+           }
+
+      location ~ .*\.(js|css)?\$
+           {
+                expires      12h;
+           }
+
+      access_log  /var/log/awstat.log  awstat;
+</code></pre>
+
+<p>}</p>
+
+<p>ALLALLEND</p>
+
+<p>chmod +x /etc/cron.hourly/00awstats
+/etc/init.d/nginx reload
+```</p>
+
+<p>ok,到此结束.</p>
+]]></content>
+  </entry>
+  
+</feed>

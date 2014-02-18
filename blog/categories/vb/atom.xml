@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: VB | 末日前几天]]></title>
+  <link href="http://leolovenet.com/blog/categories/vb/atom.xml" rel="self"/>
+  <link href="http://leolovenet.com/"/>
+  <updated>2014-02-18T17:51:56+08:00</updated>
+  <id>http://leolovenet.com/</id>
+  <author>
+    <name><![CDATA[leolovenet]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Windows Office Excel Vba Script 一例]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/21/my-windows-office-excel-vba-script/"/>
+    <updated>2013-01-21T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/21/my-windows-office-excel-vba-script</id>
+    <content type="html"><![CDATA[<p>上周学习vba的总结.</p>
+
+<p>``` vbnet</p>
+
+<p>Sub getData()</p>
+
+<pre><code>  '单引号开始的是注视行
+  '声明变量
+Dim RowNumMax As Integer, RowNumMax2 As Integer
+Dim ASht As Worksheet, BSht As Worksheet
+Dim Site
+
+'根据表格名字获得表格,并赋值个变量
+Set ASht = Sheets("Sheet1")
+Set BSht = Sheets("Sheet2")
+'锁定屏幕更新
+Application.ScreenUpdating = False
+On Error Resume Next
+
+'检查表格数据
+'定位数据的函数有两个Range 或者 Cells
+'Range是表示法是Range("E2")
+'Cells的表示法是坐标类似Cells(1,1)
+
+If ASht.Range("E2") = "" Then
+MsgBox "E2列中没有网站数据"
+ASht.Activate
+ASht.Cells.Select
+End
+End If
+
+ASht.Select
+RowNumMax = ASht.[E65536].End(xlUp).Row   'E列最下面一行的行数，中间有空格也行
+
+BSht.Select
+RowNumMax2 = BSht.[A65536].End(xlUp).Row
+BSht.Range("A2:A" &amp; RowNumMax2).ClearFormats
+
+'清除格式
+ASht.Select
+ASht.Cells.Select
+Selection.ClearFormats
+'快捷设置选中单元格de属性
+With Selection.Interior
+    .Pattern = xlNone
+    .TintAndShade = 0
+    .PatternTintAndShade = 0
+End With
+
+  'for循环
+For x = 2 To RowNumMax + 1
+    Site = ASht.Range("E" &amp; x)
+    '不等于操作符 &amp;lt;&amp;gt;
+    If Site &amp;lt;&amp;gt; "" Then
+     'MsgBox Site
+        'Unique
+       For a = 2 To RowNumMax + 1
+           If a &amp;lt;&amp;gt; x Then
+                If Site = ASht.Range("E" &amp; a) Then
+                    MsgBox "E" &amp; a &amp; "跟E" &amp; x &amp; "重复，整理被迫中断"
+                End
+            End If
+           End If
+       Next a
+
+     For xx = 2 To RowNumMax2 + 1
+         'MsgBox BSht.Range("A" &amp; xx)
+         'If xx &amp;gt; 3 Then
+         'Exit For
+         'End If
+         If Trim(Site) = Trim(BSht.Range("A" &amp; xx)) Then
+           BSht.Range("A" &amp; xx).Interior.ColorIndex = 15
+          'MsgBox "A" &amp; xx
+          '字符串处理函数Trim去除字符串开头结尾的空格符号,跟php的一样
+          '换行符常量,vbLf
+          '利用Replace函数删除换行符              
+           ASht.Range("F" &amp; x) = Replace(Trim(BSht.Range("H" &amp; xx)), vbLf, "")
+           'ASht.Range("G" &amp; x) = Trim(BSht.Range("K" &amp; xx))
+           ASht.Range("H" &amp; x) = Replace(Trim(BSht.Range("C" &amp; xx)), vbLf, "")
+           ASht.Range("J" &amp; x) = Replace(Trim(BSht.Range("B" &amp; xx)), vbLf, "")
+           ASht.Range("K" &amp; x) = Replace(Trim(BSht.Range("F" &amp; xx)), vbLf, "")
+           'MsgBox BSht.Range("F" &amp; xx).Formula =
+           'BSht.Range("D" &amp; xx).MergeArea.Cells(1, 1) 读取合并单元格的值
+           ASht.Range("L" &amp; x) = Replace(Trim(BSht.Range("D" &amp; xx).MergeArea.Cells(1, 1)), vbLf, "")               
+         End If
+
+     Next xx
+
+    Else 
+
+     ASht.Range("F" &amp; x) = ""
+     ASht.Range("H" &amp; x) = ""
+     ASht.Range("J" &amp; x) = ""
+     ASht.Range("K" &amp; x) = ""
+     ASht.Range("L" &amp; x) = ""
+
+    End If
+    'If x &amp;gt; 3 Then
+    'Exit For
+    'End If
+Next x
+
+ASht.Range("F2:G53").ClearContents
+'ASht.Range("G2:G5555").ClearContents
+
+Application.ScreenUpdating = True
+</code></pre>
+
+<p>End Sub
+```</p>
+]]></content>
+  </entry>
+  
+</feed>

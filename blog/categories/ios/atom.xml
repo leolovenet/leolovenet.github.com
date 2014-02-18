@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: IOS | 末日前几天]]></title>
+  <link href="http://leolovenet.com/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://leolovenet.com/"/>
+  <updated>2014-02-18T17:51:56+08:00</updated>
+  <id>http://leolovenet.com/</id>
+  <author>
+    <name><![CDATA[leolovenet]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode编译的app程序打包为ipa文件]]></title>
+    <link href="http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/"/>
+    <updated>2013-02-22T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa</id>
+    <content type="html"><![CDATA[<p>正确的方法是利用Xcode,The right way is –>”Xcode menu” –> Project –> Archive –> “Xcode menu Window” –> “Organizer” –> ” Organizer – Archives” –> Distribute –>”Save for Enterpirs of Ad-Hoc Deployment” –> next –> ***.ipa –> done.</p>
+
+<!-- more -->
+
+
+<p><del datetime="2013-03-09T14:05:58+00:00">新年回来以后的第一篇文章。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">项目需要将测试版本的app发到外地客户的iphone上测试效果,这时就需要客户手机的UDID，将他的手机UDID添加到开发团队里，创建新的签名，使用新的签名编译程序导出ipa文件，将ipa文件传输给远在外地的客户,让客户通过itunes安装上。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">这样相比开发,测试,上传到app store里,等待apple审核通过,客户在安装测试,要省不知多少时间（当然客户的手机如果越狱了那就没有必要这么麻烦了）. 下面我就具体说一下上面的操作过程,主要是将xcode编译的app变为ipa文件的过程.</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">1、登陆<a href="https://developer.apple.com/ios/manage/overview/index.action" target="_blank">iOS Provisioning Portal</a>，登入新的手机UDID,创建新的签名文件.</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">2、xcode打开Organizer(⌘+shift+2), Devices标签下,左边Provisioning Profiles标签下，点击下面的Refresh,将新创建的签名下载下来。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">3、在项目的targets下指定用新的签名.</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">4、编译好的app，右击在Finder下显示.(如果显示不了,打开Finder,⌘+shift+G,输入~/Library/Developer/Xcode/DerivedData,找到XXX-<strong><em>**/Build/Products/</em></strong>/XXX.app).</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">5、打开iTunes,切换置App标签，将XXX.app鼠标拖放置iTunes的App标签内.</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">6、在iTunes的XXX.app上,右击,选择&#8221;Show in finder&#8221;。现在你就有了你的ipa文件了。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">因为这个ipa已经是用最新的签名编译好了的，所以，它可以直接在客户的机器上安装。</del></p>
+
+<p><del datetime="2013-03-09T14:14:19+00:00">传输给客户后，让客户双击ipa文件，默认自动导入到客户的iTunes的app标签下，让客户使用数据线链接自己的iphone，然后在itunes里选中iphone，切换到iphone的app标签下，找到XXX,此时在右边会有一个安装的按钮，点击，然后点击下面的应用，之后点击同步就可以了。</del></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode 快捷键收集整理]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/28/xcode-keyboard-shortcuts/"/>
+    <updated>2013-01-28T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/28/xcode-keyboard-shortcuts</id>
+    <content type="html"><![CDATA[<p>最近工作比较忙,没有什么时间学习ios,用xcode的时间就更少了,所以以前记得那些快捷键现在都有些生疏,今天又学习了几个,想到整理一下,以后遇到更多的再慢慢添加,慢慢完善.<br/>
+以下是感觉经常用到的很有用的一些:</p>
+
+<pre>
+鼠标三击     选中当前行
+⌘+/  当前行添加注视符//
+⌘+shift+1  打开welecome to Xcode窗口
+⌘+shift+2  打开Organizer窗口
+选中方法后按control+option+⌘+/  迅速在Organizer-Documentation中查看帮助信息
+⌘+~ 再主窗口与Documentation之间切换我经常用到的
+option+鼠标左击 迅速查看简短帮助信息
+⌘+鼠标左击 定位到方法或属性声明的位置
+⌘+0  隐藏、显示Utilities区域
+⌘+option+0 现实、隐藏Navigator区域
+
+⌘+]  代码向右缩进
+⌘+[  代码向左缩进
+option+⌘+[ 向上移动行
+option+⌘+] 向下移动行
+
+Ctrl+a 去行首
+Ctrl+k 删除到行尾
+Ctrl+a+k+k  删除当前行
+
+鼠标双指再触摸板来回滑动可以来回切换编辑的文件或者
+Ctrl+⌘+Left/Right  在文件编辑器中前进或者后退 
+Ctrl+⌘+Up/Down  在.h与.m文件之间切换
+⌘+\  添加、删除断点
+
+⌘+R 编译运行
+</pre>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode打包app命令-PackageApplication]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/10/xcode-packageapplication-command/"/>
+    <updated>2013-01-10T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/10/xcode-packageapplication-command</id>
+    <content type="html"><![CDATA[<p>xcode提供有这样一个perl脚本工具,可以打包一个app为ipa文件，为上传app store做准备. 路径是</p>
+
+<pre>
+`xcode-select -print-path`/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication
+</pre>
+
+
+<p>添加<code>-help</code>参数查看<strong>PackageApplication</strong>用法帮助，或者添加<code>-man</code>参数查看完整的帮助信息。</p>
+
+<pre>
+`xcode-select -print-path`/Platforms/iPhoneOS.platform/Developer/usr/bin/PackageApplication -help
+Usage:
+    PackageApplication [-s signature] application [-o output_directory]
+    [-verbose] [-plugin plugin] || -man || -help
+
+    Options:
+
+        -s   certificate name to resign application before packaging
+        -o              specify output filename
+        -plugin         specify an optional plugin
+        -help           brief help message
+        -man            full documentation
+        -v[erbose]      provide details during operation
+</pre>
+
+
+<p><a href="http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/">More Useful</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[翻译]WRITE OBJECTIVE-C CODE — BLOCKS]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/10/write-objective-c-code-blocks/"/>
+    <updated>2013-01-10T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/10/write-objective-c-code-blocks</id>
+    <content type="html"><![CDATA[<p>一直对<strong>Blocks</strong>理解不是很深.特用白话翻译一小篇文章, 可能会使自己记得更清楚.</p>
+
+<p>下文翻译自Apple Document <a href="https://developer.apple.com/library/mac/#referencelibrary/GettingStarted/RoadMapOSX/">Start Developing iOS Apps Today</a>中<a href="https://developer.apple.com/library/mac/#referencelibrary/GettingStarted/RoadMapOSX/books/WriteObjective-CCode/WriteObjective-CCode/WriteObjective-CCode.html" target="_blank">Write Objective-C Code</a>那篇<strong>Blocks</strong>.</p>
+
+<!--more-->
+
+
+<p><strong>Blocks</strong>,说白了就是可以在任何时候被多次执行封装好了的一段代码功能. 本质上是方便的匿名函数, 可以作为参数传递给一个方法或函数, 或者作为结果返回. <strong>Blocks</strong> 自己也可以有参数列表的定义和一个可以被检查出来的或者明确的返回类型声明.</p>
+
+<p>我们能用Blocks干什么呢？ 它可以指派到一个变量上, 或者说把一个Blocks赋值给一个变量, 这样就可以把这个变量当成函数一样来用了.</p>
+
+<blockquote><p>Blocks are objects that encapsulate a unit of work—that is, a segment of code—that can be executed at any time. They are essentially portable and anonymous functions that one can pass in as parameters of methods and functions or that can be returned from methods and functions. Blocks themselves have a typed parameter list and may have an inferred or a declared return type. You can also assign a block to a variable and then call it just as you would a function.</p></blockquote>
+
+<p>那么Blocks怎么书写呢? <strong>Blocks</strong> 的语法标示符是（<strong>^</strong>）打头,下图具体格式展示了把一个 block 赋值个一个变量.</p>
+
+<blockquote><p>A caret (^) is used as a syntactic marker for blocks. There are other, familiar syntactic conventions for parameters, return values, and body of the block (that is, the executed code). The following figure explicates the syntax, specifically when assigning a block to a variable.</p></blockquote>
+
+<p><img src="/downloads/images/blocks_2x-1024x377.png" title="object-c block syntax" alt="blocks_2x-1024x377.png" /></p>
+
+<p>上面首先声明了一个变量<code>multiplier</code>,然后又实现了一个有一个<code>int</code>型参数和返回值是<code>int</code>型的 <strong>Block</strong>, 并把它赋值给了<code>myBlock</code>.<br/>
+现在就可以把<code>myBlock</code>当做一个函数来调用了, 例如这样：</p>
+
+<blockquote><p>You can then call the block variable as if it were a function:</p></blockquote>
+
+<pre>
+int result = myBlock(4); // 返回结果是 28
+</pre>
+
+
+<p>说完了格式, 该说作用域了. block跟调用它的主体共享作用域的. 也就是说, 如果你实现了一个方法, 并且在该方法里定义了一个 <strong>block</strong>, 那么在这个 <strong>block</strong> 内部就可以直接访问这个方法的局域变量和参数, 就像该函数访问全局变量一样. 但是, 这种访问的变量是只读的. 什么？我要在block里修改这个变量怎么办？那就需要这个变量在声明的时候以 <code>__block</code> 修饰符(<strong>双下划线</strong>)开头,这样这个变量就可以在block里被修改了. 还值得一说的是, 即使一个方法或者函数内的block被当做返回值返回, 然后此方法或者函数内的局部作用域被销毁, 此方法或者函数内部被block引用的本地变量仍然被当做block对象的一部分被保留, 直到block不再引用它们.</p>
+
+<blockquote><p>A block shares data in the local lexical scope. This characteristic of blocks is useful because if you implement a method and that method defines a block, the block has access to the local variables and parameters of the method (including stack variables) as well as to functions and global variables, including instance variables. This access is read-only, but if a variable is declared with the __block modifier, its value can be changed within the block. Even after the method or function enclosing a block has returned and its local scope has been destroyed, the local variables persist as part of the block object as long as there is a reference to the block.</p></blockquote>
+
+<p>跟<strong>blocks</strong>被作为一个方法或函数的参数使用一样, blocks也可以作为这个方法或函数的 &ldquo;回调函数&rdquo;, 当我们在调用这个方法或函数的时候, 它们执行自己的代码, 而为了请求额外的信息或为了特殊的目的, 在合适的时间调用 <strong>blocks</strong>, 从而实现 &ldquo;回调函数&rdquo; 的功能. 相对于其他函数调用规则,block和调用主体共享作用域.</p>
+
+<blockquote><p>As method or function parameters, blocks can serve as a callback. When invoked, the method or function performs some work and, at the appropriate moments, calls back to the invoking code—via the block—to request additional information or to obtain program-specific behavior from it. Blocks enable the caller to provide the callback code at the point of invocation. Instead of packaging the required data in a “context” structure, blocks capture data from the same lexical scope as the host method or function. Because the block code does not have to be implemented in a separate method or function, your implementation code can be simpler and easier to understand.</p></blockquote>
+
+<p>Objective-C 框架里有很多带 block 参数的方法.比如, Foundation框架里的<code>NSNotificationCenter</code>类就声明了下面的这样的一个带 block 参数的方法:</p>
+
+<blockquote><p>Objective-C frameworks have many methods with block parameters. For example, the NSNotificationCenter class of the Foundation framework declares the following method, which has a block parameter:</p></blockquote>
+
+<p><code>obj-c
+- (id)addObserverForName:(NSString *)name object:(id)obj queue:(NSOperationQueue *)queue usingBlock:(void (^)(NSNotification *note))block
+</code></p>
+
+<p>这个方法添加了一个监控器到通知中心.当一个符合指定名字的通知到达时, block 就负责处理. 像下面的代码一样:</p>
+
+<blockquote><p>This method adds an observer to the notification center (notifications are discussed in Streamline Your App with Design Patterns). When a notification of the specified name is posted, the block is invoked to handle the notification.</p></blockquote>
+
+<p>``` obj-c
+opQ = [[NSOperationQueue alloc] init];</p>
+
+<pre><code>[[NSNotificationCenter defaultCenter] addObserverForName:@"CustomOperationCompleted"
+         object:nil queue:opQ
+    usingBlock:^(NSNotification *notif) {
+    // 处理通知消息的代码放到这里
+}];
+</code></pre>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[查看app里被Xcode优化了的png图片]]></title>
+    <link href="http://leolovenet.com/blog/2013/01/10/Viewing-iOS-Optimized-PNGs/"/>
+    <updated>2013-01-10T00:00:00+08:00</updated>
+    <id>http://leolovenet.com/blog/2013/01/10/Viewing-iOS-Optimized-PNGs</id>
+    <content type="html"><![CDATA[<p>问题:当我们构建自己的ios app时，Xcode会优化压缩我们的程序里的png图片，如果想再次查看正常图片的话，需要反压缩，怎么做呢？<br/>
+答案：用Xcode自带的工具。</p>
+
+<p><strong>Q: When I build my iOS application, Xcode optimizes the PNG files within my application’s bundle, meaning that Preview can’t display them. How can I view these optimized files?</strong></p>
+
+<p>A: This optimization is done by the <strong>pngcrush</strong> tool, which you can find inside Xcode. The <strong>pngcrush</strong> tool supports a command line option, <code>-revert-iphone-optimizations</code>, that undoes the optimizations done during the Xcode build process. So, to view an optimized PNG file, you should first undo the optimization and then open it with Preview.</p>
+
+<p>Listing 1 shows how you can use the <strong>pngcrush</strong> tool to convert an iOS-optimized PNG file (<code>Local.png</code>) to a standard PNG file (<code>Local-standard.png</code>).</p>
+
+<p><strong>Listing 1:</strong> Undoing iOS PNG optimization</p>
+
+<p><code>bash
+$ /Applications/Xcode.app/Contents/Developer\
+/Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush \
+-revert-iphone-optimizations -q Local.png Local-standard.png
+</code></p>
+
+<p>If you have Xcode installed in a non-standard place, you can locate the tool using <strong>xcode-select</strong>, as shown in Listing 2.</p>
+
+<p><strong>Listing 2:</strong> Using <strong>xcode-select</strong> to locate pngcrush</p>
+
+<p><code>bash
+$ "`xcode-select -print-path`"\
+/Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush \
+-revert-iphone-optimizations -q Local.png Local-standard.png
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

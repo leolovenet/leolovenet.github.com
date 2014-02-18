@@ -1,0 +1,1560 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>关于开发Squid的ecap动态库插件的指导 - 末日前几天</title>
+  <meta name="author" content="leolovenet">
+
+  
+  <meta name="description" content="关于开发Squid的ecap动态库插件的指导-About the development Squid ecap dynamic libraries plug guidance" />
+  
+  <meta name="keywords" content="C++, Linux, Squid, Web, ecap, libraries" />
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://leolovenet.com/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="末日前几天" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37154253-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">末日前几天</a></h1>
+  
+    <h2>the days before the doomsday</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:leolovenet.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">关于开发Squid的ecap动态库插件的指导</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-10T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><blockquote><p>&ldquo;Squid cache&#8221;（简称为Squid）是一个流行的自由软件（GNU通用公共许可证）的代理服务器和Web缓存服务器. Squid 有广泛的用途,从作为网页服务器的前置cache服务器缓存相关请求来提高Web服务器的速度,到为一组人共享网络资源而缓存万维网,域名系统和其他网络搜索,到通过过滤流量帮助网络安全,到局域网通过代理上网. Squid主要设计用于在Unix一类系统运行.</p></blockquote>
+
+<p>上面是摘自开源中国(oscine.net)对squid的中文介绍. squid的功能的确很强大,甚至有些需要深入挖掘一下,今天这篇文章主要讲述一下这几天研究成果. squid做透明代理或者网关的情况下,过滤用户请求内容,或者过滤用户请求的回应内容的技术.可以把 squid 当做一个理论上的“防火墙”来使用,避免用户浏览非法网站或下载带有病毒的文件(结合开源杀毒软件功能),甚至替换掉那些烦人的广告.当然,它还可以在服务器的返回结果中植入自己的广告代码,或者统计代码.最灵活的是可以控制操作用户请求的HTTP头内容,过滤不必要的HTTP头信息,或者添加自定义HTTP头信息.</p>
+
+<p>总之,<strong>我们可以利用squid分析,捕捉,拦截,替换,或者修改请求回应信息.</strong></p>
+
+<p>Squid拥有强大的<a target="_blank" href="http://www.squid-cache.org/Doc/config/acl/">ACL(访问控制)</a>配置指令,可以实现一些通用的访问控制,但是如果想要更加灵活的控制,应该怎么办? 在官网wiki中(<a target="_blank" href="http://wiki.squid-cache.org/SquidFaq/ContentAdaptation">Content Adaptation</a>)给出了答案.</p>
+
+<!--more-->
+
+
+<p>wiki给出了<a href="http://wiki.squid-cache.org/SquidFaq/ContentAdaptation#Summary">5种技术方案</a></p>
+
+<div class="squid">
+<style>
+.squid table
+{
+    margin: 0.5em 0;
+    border-collapse: collapse;
+}
+
+.squid table td
+{
+    padding: 0.25em;
+    border: 1px solid #ADB9CC;
+}
+
+.squid td p {
+    margin: 0;
+    padding: 0;
+}
+</style>
+<table><tbody><tr>  <td colspan="1" rowspan="2" style="text-align: center"><p class="line862"> <strong>Mechanism</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Request</strong> </p></td>
+  <td colspan="2" style="text-align: center"><p class="line891"><strong>Response</strong> </p></td>
+</tr>
+<tr>  <td style="text-align: center"><span class="anchor" id="line-101"></span><p class="line891"><strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Header</strong> </p></td>
+  <td style="text-align: center"><p class="line862"> <strong>Body</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-102"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-103"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> </p></td>
+  <td><p class="line862">  </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-104"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-105"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td><p class="line862">  </p></td>
+  <td style="text-align: center"><p class="line862">del </p></td>
+  <td><p class="line862">  </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-106"></span><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+  <td style="text-align: center"><p class="line862">yes </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>而这几种方案又各有优缺点,最好的排序方式是:</p>
+
+<div class="squid"><table><tbody><tr>  <td><p class="line862"> <strong>Evaluation Criteria</strong> </p></td>
+  <td><p class="line862"> <strong>Mechanisms in rough order from &#8220;best&#8221; to &#8220;worst&#8221;</strong> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-111"></span><p class="line862"> Squid independence </p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-112"></span><p class="line862"> Processing speed </p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a> or <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a> or <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a> or <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-113"></span><p class="line862"> Development effort (header adaptation)</p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-114"></span><p class="line862"> Development effort (content adaptation)</p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-115"></span><p class="line862"> Versatility </p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a>, <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a> </p></td>
+</tr>
+<tr>  <td><span class="anchor" id="line-116"></span><p class="line862"> Maintenance overheads </p></td>
+  <td><p class="line862"> <a href="/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
+</tr>
+</tbody></table></div>
+
+
+<p>我先简单介绍一下ICAP(<a href="http://tools.ietf.org/html/rfc3507">Internet Content Adaptation Protocol</a>)协议, ICAP是工作在web缓存代理服务器和真正的服务器之间的一个服务,通常来讲用户的HTTP请求送到代理缓存服务器之后,由代理缓存服务器判断是否可以命中缓存,或者把用户的请求转向真正的web服务,代理用户请求,并响应用户,记录缓存,待用户下次请求时,直接响应用户请求,省去向真正服务器的请求过程,加快响应速度,节约带宽成本.<br/>
+而加入了ICAP的代理缓存服务器的工作逻辑是:</p>
+
+<pre>
+1.用户的HTTP请求送到代理缓存服务器.
+2.代理缓存服务器将用户的请求消息发往ICAP服务器.
+3.ICAP服务器接受到用户请求消息进行处理(可以分析,捕捉,拦截,替换,或者修改),回应代理缓存服务器.
+4.代理缓存服务器使用处理过的请求头,进行余下的处理流程,或者直接返回用户,或者查看是否命中缓存,或者转发给真正的内容提供服务器.
+5.真正的内容提供服务器接受到请求以后回应代理缓存服务器相应的内容.
+6.代理缓存服务器将接受到的回应内容发往ICAP服务器.
+7.ICAP服务器接受到真正的服务器回应消息进行处理(可以分析,捕捉,拦截,替换,或者修改),回应代理缓存服务器.
+8.代理缓存服务器将内容回应给用户.
+</pre>
+
+
+<p>从上面的处理过程可以看出icap协议的强大之处.<br/>
+上面的icap服务器类似http的web服务器一样,监听一个端口,等待代理缓存服务器的请求,并响应请求.而ecap可以看做是一个嵌入式的icap服务. ecap不必提供监听端口,而是以动态库的形式加载到了squid程序里面,通过api实现icap的逻辑处理,相当于squid的一个插件一样的工作.</p>
+
+<p>经过尝试,我感觉目前最方便稳定的方式是开发squid的共享动态库ecap插件,实现自己的目的.<br/>
+当然你可以修改squid的源代码,但是那样做需要首先研究透彻squid的工作机理,而且需要谨慎的修改,原作者也不建议这样,因为可能会导致squid不稳定.<br/>
+当然还可以搭建icap服务,但是经过一轮的尝试和摸索一下,发现icap服务软件并没有像apache、nginx、和lighttpd这些成熟稳定的代码可以用,所以放弃,但是不乏一些小巧灵活的python架构的软件,可以使用,进行业务测试倒是可以,真正用于生产环境还是有点不足.<br/>
+比如：<br/>
+pyicap(<a target="_blank" href="https://github.com/netom/pyicap">A lightweight python framework for writing ICAP services</a>),简单方便,生产环境不太适合.<br/>
+bitz-server(<a target="_blank" href="https://github.com/uditha-atukorala/bitz-server">An ICAP server implementation in C++ and Python</a>),不太稳定.</p>
+
+<p>关于ICAP服务器的部署说明,请自行参考上面的wiki说明.<br/>
+今天主要讲一下ecap的开发,部署,服务器环境为CentOS release 6.4 (Final) x86_64.<br/>
+到<a href="http://www.e-cap.org/Downloads">http://www.e-cap.org/Downloads</a>下载安装最新版本的ecap库,编译安装.并同时下载最新版本的开发例子包<a href="http://www.measurement-factory.com/tmp/ecap/ecap_adapter_sample-0.2.0.tar.gz">ecap_adapter_sample-0.2.0.tar.gz</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>yum -y install automake autoconf libtool
+</span><span class='line'>mkdir -p /opt/packages
+</span><span class='line'><span class="nb">cd</span> /opt/packages
+</span><span class='line'>wget http://www.measurement-factory.com/tmp/ecap/ecap_adapter_sample-0.2.0.tar.gz
+</span><span class='line'>wget http://www.measurement-factory.com/tmp/ecap/libecap-0.2.0.tar.gz
+</span><span class='line'>tar -zxf libecap-0.2.0.tar.gz
+</span><span class='line'><span class="nb">cd </span>libecap-0.2.0
+</span><span class='line'>./configure
+</span><span class='line'>make
+</span><span class='line'>make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>编译安装squid,并在configure要加入<code>–enable-ecap</code>,开启ecap支持,如果你还想squid同时支持icap的话,还需要加入<code>–enable-icap-client</code>开关,然后配置,编译安装.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://www.squid-cache.org/Versions/v3/3.3/squid-3.3.3.tar.bz2
+</span><span class='line'>tar -xf squid-3.3.3.tar.bz2
+</span><span class='line'><span class="nb">cd </span>squid-3.3.3
+</span><span class='line'>./configure --enable-http-violations --enable-ltdl-convenience --enable-icap-client --enable-ecap --prefix<span class="o">=</span>/usr/local/squid <span class="nv">PKG_CONFIG_PATH</span><span class="o">=</span>/usr/local/lib/pkgconfig
+</span><span class='line'>make
+</span><span class='line'>make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面讲一下ecap的具体开发步骤,举个案例,现在我们想实现用户第一次访问网络时跳转到一个用户认证页面,认证通过以后才可以继续浏览网络.<br/>
+实现原理大概是:</p>
+
+<pre>
+1.用户的请求送到squid,squid把用户请求http头交给ecap插件处理.
+2.squid判断用户请求的url是否为我们的认证登陆页面.是,则放行不处理,否,则进行下面的逻辑.
+2.ecap插件获取用户的ip地址,然后利用一个api接口去查询这个ip是否是否已经验证过,是,则放行通过,不处理,否,则进行下面的逻辑.
+3.如果查询结果是这个ip还没有进行用户密码验证或者用户密码验证已经过期,则修改用户的http请求头,跳转到一个新的url地址,即我们的认证登陆页面,附带上用户的原始请求url.
+4.用户在认证登陆页面输入账号密码登陆成功以后,数据库更新信息,然后跳转到用户原来的请求地址,继续浏览网络.
+</pre>
+
+
+<p>上面的功能有点类似radius,这里我们拿squid实现,还有就是用户每个请求都需要验证,所以上面的解决办法效率可能会有点低,但是这里只是举例讲解一下ecap这个插件的功能应用.上面的功能实现最好不要在生产环境下部属.</p>
+
+<p>下面让我们,解压开发例子包ecap_adapter_sample-0.2.0.tar.gz.</p>
+
+<pre>
+.
+├── acinclude.m4    //m4宏文件不需要手工修改
+├── aclocal.m4         //m4宏文件不需要手工修改
+├── bootstrap.sh     //脚本文件,自动运行autotool工具命令,不需要手工修改
+├── cfgaux           //此目录下的所有文件都不需要手动修改
+│   ├── ax_cxx_check_lib.m4
+│   ├── config.guess
+│   ├── config.sub
+│   ├── depcomp
+│   ├── install-sh
+│   ├── ltmain.sh
+│   ├── missing
+│   ├── xstd_common.ac
+│   └── xstd_cpp_checks.ac
+├── change.log
+├── configure       //生成的 configure 脚本
+├── configure.in    //configure 脚本的生成源文件,需要手工编辑一下.
+├── CREDITS       
+├── LICENSE
+├── Makefile.am     //Makefile.in脚本的生成源文件,此项目不需要手工修改.
+├── Makefile.in       //生成的 Makefile.in脚本
+├── NOTICE
+├── README
+└── src
+    ├── adapter_minimal.cc     //c++源文件,例子程序一
+    ├── adapter_modifying.cc   //c++源文件,例子程序二
+    ├── adapter_passthru.cc    //c++源文件,例子程序三
+    ├── autoconf.h            //不需要修改,运行./configure之后,由autoconf.h.in生成的文件
+    ├── autoconf.h.in         //不需要修改
+    ├── Makefile.am  //Makefile.in脚本的生成源文件,需要手工编辑一下.
+    ├── Makefile.in  //生成的 Makefile.in脚本
+    └── sample.h    //例子的头文件
+</pre>
+
+
+<p>如果你之前没有使用autotool工具的经验,这里有<a href="/downloads/files/autotools.pdf">一篇短文介绍</a>,很快速的了解一下autotool工具. (autotool通常来说是autoconf, automake, autolib, 但是还有很多辅助的工具,包括 autoheader, aclocal, autoscan,运行这些命令之后,你就可以 <code>./configure &amp;&amp; make &amp;&amp; make install</code> ).<br/>
+写ecap插件很简单,例子包给出了3个例子插件.基本上一个插件只有一个源文件就可以搞定.所以写和部署起来还是蛮方便的.<br/>
+这里我们在原有的例子程序框架下修改一下. 然后写出我们自己的插件来.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>tar -zxf ecap_adapter_sample-0.2.0.tar.gz
+</span><span class='line'>mv ecap_adapter_sample-0.2.0 ecap_adapter_bbkanba
+</span><span class='line'><span class="nb">cd </span>ecap_adapter_bbkanba/src
+</span><span class='line'>cp adapter_modifying.cc adapter_bbkanba.cc
+</span><span class='line'>sed -i -e <span class="s1">&#39;s/sample.h/bbkanba.h/&#39;</span> adapter_bbkanba.cc
+</span><span class='line'>sed -i -e <span class="s1">&#39;/.*\/config.h.*/d&#39;</span> adapter_bbkanba.cc
+</span><span class='line'>sed -i -e <span class="s1">&#39;s/.*ecap:\/\/.*/return &quot;ecap:\/\/bbkanba.com\/bbkanba&quot;;/&#39;</span> adapter_bbkanba.cc
+</span><span class='line'>cat &gt; Makefile.am <span class="s">&lt;&lt;ALLEND</span>
+</span><span class='line'><span class="s">EXTRA_DIST = \</span>
+</span><span class='line'><span class="s">    adapter_bbkanba.cc   </span>
+</span><span class='line'><span class="s">     </span>
+</span><span class='line'><span class="s">lib_LTLIBRARIES = \</span>
+</span><span class='line'><span class="s">    ecap_adapter_bbkanba.la</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">noinst_HEADERS = \</span>
+</span><span class='line'><span class="s">    bbkanba.h \</span>
+</span><span class='line'><span class="s">    Debugger.h \</span>
+</span><span class='line'><span class="s">    \</span>
+</span><span class='line'><span class="s">    autoconf.h </span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">ecap_adapter_bbkanba_la_SOURCES = adapter_bbkanba.cc \</span>
+</span><span class='line'><span class="s">                                 Debugger.cc </span>
+</span><span class='line'><span class="s">             </span>
+</span><span class='line'><span class="s">ecap_adapter_bbkanba_la_CPPFLAGS = \$(LIBECAP_CFLAGS) </span>
+</span><span class='line'><span class="s">ecap_adapter_bbkanba_la_LDFLAGS = -module -avoid-version \$(libecap_LIBS)</span>
+</span><span class='line'><span class="s">ecap_adapter_bbkanba_la_LIBADD= \$(LIBECAP_LIBS)  -lboost_system -lcppnetlib-uri</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">DISTCLEANFILES = \</span>
+</span><span class='line'><span class="s">        autoconf.h</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">AM_CPPFLAGS = -I\$(top_srcdir)/src</span>
+</span><span class='line'><span class="s">ALLEND</span>
+</span><span class='line'>mv sample.h  bbkanba.h
+</span><span class='line'>cat &gt; Debugger.h <span class="s">&lt;&lt;ALLEND</span>
+</span><span class='line'><span class="s">/* eCAP ClamAV Adapter  http://www.e-cap.org/</span>
+</span><span class='line'><span class="s"> * Copyright (C) 2011 The Measurement Factory.</span>
+</span><span class='line'><span class="s"> * Distributed under GPL v2 without any warranty.  */</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">#ifndef ECAP_MBAIDU_ADAPTER_DEBUGGER_H</span>
+</span><span class='line'><span class="s">#define ECAP_MBAIDU_ADAPTER_DEBUGGER_H</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">#include &lt;libecap/common/log.h&gt;</span>
+</span><span class='line'><span class="s">#include &lt;iosfwd&gt;</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">using libecap::ilNormal;</span>
+</span><span class='line'><span class="s">using libecap::ilCritical;</span>
+</span><span class='line'><span class="s">using libecap::flXaction;</span>
+</span><span class='line'><span class="s">using libecap::flApplication;</span>
+</span><span class='line'><span class="s">using libecap::mslLarge;</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">// TODO: rename to Log</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">// libecap::host::openDebug/closeDebug calls wrapper for safety and convenience</span>
+</span><span class='line'><span class="s">class Debugger {</span>
+</span><span class='line'><span class="s">    public:</span>
+</span><span class='line'><span class="s">        explicit Debugger(const libecap::LogVerbosity lv); // opens</span>
+</span><span class='line'><span class="s">        ~Debugger(); // closes</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">        // logs a message if host enabled debugging at the specified level</span>
+</span><span class='line'><span class="s">        template &lt;class T&gt;</span>
+</span><span class='line'><span class="s">        const Debugger &amp;operator &lt;&lt;(const T &amp;msg) const {</span>
+</span><span class='line'><span class="s">            if (debug)</span>
+</span><span class='line'><span class="s">                *debug &lt;&lt; msg;</span>
+</span><span class='line'><span class="s">            return *this;</span>
+</span><span class='line'><span class="s">        }</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">    private:</span>
+</span><span class='line'><span class="s">        /* prohibited and not implemented */</span>
+</span><span class='line'><span class="s">        Debugger(const Debugger&amp;);</span>
+</span><span class='line'><span class="s">        Debugger &amp;operator=(const Debugger&amp;);</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">        std::ostream *debug; // host-provided debug ostream or nil</span>
+</span><span class='line'><span class="s">};</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">#endif</span>
+</span><span class='line'><span class="s">ALLEND</span>
+</span><span class='line'>cat &gt; Debugger.cc <span class="s">&lt;&lt;ALLEND</span>
+</span><span class='line'><span class="s">/* eCAP ClamAV Adapter   http://www.e-cap.org/</span>
+</span><span class='line'><span class="s"> * Copyright (C) 2011 The Measurement Factory.</span>
+</span><span class='line'><span class="s"> * Distributed under GPL v2 without any warranty.  */</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">#include &quot;bbkanba.h&quot;</span>
+</span><span class='line'><span class="s">#include &quot;Debugger.h&quot;</span>
+</span><span class='line'><span class="s">#include &lt;libecap/common/registry.h&gt;</span>
+</span><span class='line'><span class="s">#include &lt;libecap/host/host.h&gt;</span>
+</span><span class='line'><span class="s">#include &lt;iostream&gt;</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">// TODO: support automated prefixing of log messages</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">Debugger::Debugger(const libecap::LogVerbosity lv):</span>
+</span><span class='line'><span class="s">    debug(libecap::MyHost().openDebug(lv)) {</span>
+</span><span class='line'><span class="s">}</span>
+</span><span class='line'><span class="s"> </span>
+</span><span class='line'><span class="s">Debugger::~Debugger() {</span>
+</span><span class='line'><span class="s">    if (debug)</span>
+</span><span class='line'><span class="s">        libecap::MyHost().closeDebug(debug);</span>
+</span><span class='line'><span class="s">}</span>
+</span><span class='line'><span class="s">ALLEND</span>
+</span><span class='line'><span class="nb">cd</span> ..
+</span><span class='line'>sed -i -e <span class="s1">&#39;s/AC_INIT.*/AC_INIT(eCAP bbkanba Adapter, 0.0.1, leolovenet@gmail.com, eCAP_bbkanba_Adapter)/&#39;</span> configure.in
+</span><span class='line'>sed -i -e <span class="s1">&#39;s/AC_CONFIG_SRCDIR.*/AC_CONFIG_SRCDIR([src\/bbkanba.h])/&#39;</span> configure.in
+</span><span class='line'>touch  ./NEWS
+</span><span class='line'>touch  ./AUTHORS
+</span><span class='line'>touch  ./ChangeLog
+</span><span class='line'>touch ./COPYING
+</span><span class='line'>autoreconf -ivf
+</span><span class='line'>./configure <span class="nv">PKG_CONFIG_PATH</span><span class="o">=</span>/usr/local/lib/pkgconfig
+</span><span class='line'>make
+</span><span class='line'>make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果上面运行<code>make</code>命令没有报错的话,说明你的编译环境,例子程序的框架修改没有问题. 下面我们就可以具体的编写插件代码了.<br/>
+上面引入两个debug的文件(源自eCAP ClamAV Adapter插件),便于查看插件程序的执行过程,Debug信息会输出到squid的日志文件. 现在写自己的ecap插件,只需要编辑<code>adapter_bbkanba.cc</code>文件,之后运行<code>./configure &amp;&amp; make &amp;&amp; make install</code>. 默认情况下的安装路径为<code>/usr/local/lib</code>.<br/>
+写完插件,编译成功,并安装到相应目录下后,要让squid加载我们的插件,还需要修改squid的配置文件<code>squid.conf</code>,添加下面的内容:</p>
+
+<pre>
+ecap_enable on
+adaptation_send_client_ip on
+loadable_modules /usr/local/lib/ecap_adapter_bbkanba.so
+ecap_service bbkanbam reqmod_precache 0  ecap://bbkanba.com/bbkanba
+adaptation_service_set reqFilter bbkanbam
+adaptation_access reqFilter allow all
+</pre>
+
+
+<p>每个配置选项squid的官网都有详细的解释,这里我就不多说了.大概意思就是让squid开启ecap插件,然后加载插件.并开启用户ip的功能,这样squid就会把用户的请求包与用户的ip送到ecaq插件来处理.<br/>
+注意,要想使上面的配置生效,需要在编译安装squid的时候,开启<code>--enable-ecap</code>选项.</p>
+
+<p>现在运行<code>squid -NCXd 2</code>命令,调试squid是否加载了我们的插件.在经过一大串的输出后,应该会看到</p>
+
+<pre>LoadableModules.cc(14) LoadModule: Loaded Squid module from '/usr/local/lib/ecap_adapter_bbkanba.so'</pre>
+
+
+<p>说明我们的模块加载成功了,但是紧跟着的是错误信息:</p>
+
+<pre>ERROR: failed to start essential eCAP service: ecap://bbkanba.com/bbkanba:
+Modifying Adapter: configuration error: victim value is not set
+</pre>
+
+
+<p>导致squid启动不起来,为什么呢?让我们先来看看<code>adapter_bbkanba.cc</code>源文件.</p>
+
+<p>ecap插件的源文件命名空间采用的是<code>namespace Adapter</code>. 主要有两个类<code>class Service: public libecap::adapter::Service</code>与<code>class Xaction: public libecap::adapter::Xaction</code>,即 Service 类与 Xaction 类.<br/>
+Service类代表的是一个ecap插件服务,上面我们在squid.conf配置文件里用ecap_service指令加载到squid程序里的,就是一个ecap服务.所以,继承自<code>libecap::adapter::Service</code>的Service类的主要功能可以看做是squid与ecap插件链接的一个沟通桥梁,把我们的插件与squid紧密结合在了一起.可以在ecap_service指令后,加入我们想要传送给插件的配置选项参数.<br/>
+默认的例子程序adapter_modifying.cc,就需要采用victim和replacement参数,才可以加载成功.因为我们的程序源文件来源于adapter_modifying.cc,因此在默认的情况下,要想让<code>ecap_adapter_bbkanba.so</code> 工作需要修改上面的ecap_service指令的值为下面才可以.</p>
+
+<pre>ecap_service bbkanbam reqmod_precache 0  ecap://bbkanba.com/bbkanba victim="test" replacement="bbkanba.com"</pre>
+
+
+<p>现在再次运行<code>squid -NCXd 2</code>命令,可以看到,squid不会再报错了.<br/>
+在我们假设的案例中,不需要在配置文件中向ecap插件传入配置选项,因为待会我们会修改源文件去掉检查是否有victim选项的代码.</p>
+
+<p>在我们开始真正的编写插件代码之前,我们先引入一些需要的头文件,运行下面的命令.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sed -i -e <span class="s1">&#39;/.*bbkanba.h.*/ a\#include &quot;Debugger.h&quot;\n#include &lt;algorithm&gt;&#39;</span> adapter_bbkanba.cc
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自己手工处理一下Service类,使我们的开发框架变的干净整洁:<br/>
+删除<code>void setVictim(const std::string &amp;value);</code><br/>
+删除<code>void Adapter::Service::configure(const libecap::Options &amp;cfg)</code>方法内的所有代码,使其变为空函数.<br/>
+删除<code>void Adapter::Service::reconfigure(const libecap::Options &amp;cfg)</code>方法内的所有代码,使其变为空函数.<br/>
+删除<code>void setOne(const libecap::Name &amp;name, const libecap::Area &amp;valArea);</code>方法;<br/>
+删除<code>Cfgtor</code>类;</p>
+
+<p>上面解释了Server类,现在解释一下Xaction类.Xaction类为真正干活的地方,所有插件的业务逻辑全部需要在这个类里完成.<br/>
+squid为每一个请求创建一个Server类对象,每一个Server类对象负责创建一个Xaction对象,Xaction对象负责处理业务逻辑.<br/>
+在Xaction类的<code>virtual void start();</code> 方法里开始业务逻辑的处理.</p>
+
+<p>为了便于处理url的信息以及利用http请求查询api获取用户ip是否验证通过的结果,这里我利用<a target="_blank" href="http://www.boost.org/">boost</a>库和<a target="_blank" href="http://cpp-netlib.org/">cpp-netlib</a>库.首先让我们安装这两个库的最新版本.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">###install boost####</span>
+</span><span class='line'>yum -y install icu libicu libicu-devel python python-devel
+</span><span class='line'>wget http://sourceforge.net/projects/boost/files/boost/1.53.0/boost_1_53_0.tar.gz/download
+</span><span class='line'>tar -zxf boost_1_53_0.tar.gz
+</span><span class='line'><span class="nb">cd  </span>boost_1_53_0
+</span><span class='line'>./bootstrap.sh --prefix<span class="o">=</span>/usr/local/boost_1_53_0
+</span><span class='line'>./b2 install
+</span><span class='line'>ln -s /usr/local/boost_1_53_0/lib/libboost_* /usr/local/lib/
+</span><span class='line'>ln -s /usr/local/boost_1_53_0/include/boost /usr/local/include/boost
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;/usr/local/lib&quot;</span> &gt; /etc/ld.so.conf.d/usrlocallib.conf
+</span><span class='line'>ldconfig
+</span><span class='line'><span class="c">###install cpp-netlib-0.9.4####</span>
+</span><span class='line'>wget http://dl.atrpms.net/el6-x86_64/atrpms/stable/atrpms-repo-6-6.el6.x86_64.rpm
+</span><span class='line'>rpm -Uvh atrpms-repo*rpm
+</span><span class='line'>yum -y --enablerepo<span class="o">=</span>atrpms-testing install cmake
+</span><span class='line'>wget https://github.com/downloads/cpp-netlib/cpp-netlib/cpp-netlib-0.9.4.zip
+</span><span class='line'>unzip cpp-netlib-0.9.4.zip
+</span><span class='line'><span class="nb">cd </span>cpp-netlib-0.9.4
+</span><span class='line'>sed -i -e <span class="s1">&#39;/if (Boost_FOUND)/ a\set (CMAKE_CXX_FLAGS &quot;-lrt -fPIC&quot;)&#39;</span> CMakeLists.txt
+</span><span class='line'>mkdir cpp-netlib-build
+</span><span class='line'><span class="nb">cd </span>cpp-netlib-build
+</span><span class='line'>cmake -DCMAKE_C_COMPILER<span class="o">=</span>gcc -DCMAKE_CXX_COMPILER<span class="o">=</span>g++ ..
+</span><span class='line'>make -j4
+</span><span class='line'>
+</span><span class='line'>cp libs/network/src/*.a /usr/local/lib/
+</span><span class='line'><span class="nb">cd</span> ..
+</span><span class='line'>cp -r boost/* /usr/local/include/boost/
+</span><span class='line'>ldconfig
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>吐槽题外话,不想看的跳过.</strong><br/>
+这篇文章写到这里,已经写了有几天了.虽然中途因为工作,生活,还有懒惰心一度中断,但是这些原因都不是原因,最根本的原因是,我还得吐槽一下这个库,我当初在找http方面的库时候看到了cpp-netlib,觉得它很好用,可就是太臃肿了,为了用它我还的不得已引入boost,一路摸索的在公司高配服务器上安装编译调试,不是很费劲最后成了.感觉也没有那么复杂.但是但是,为了写这篇文章,我又的重新的在我的aliyun的低配置服务器上重新编译,编译问题到还是可以慢慢解决.但是我受不了的是cpp-netlib的编译速度之慢之慢之慢之慢之慢之慢之慢之慢之慢&#8230;..,我编译它用了超过8个小时,对,超过8个小时,超过8个小时,虽然这充分地表明我的机器配置有多低,但是我还要吐槽,这么个简单的库为啥要编译这么费劲,个老子里&#8230;,好,发泄完毕,继续之前贴出我机器的配置,以供瞻仰:</p>
+
+<pre>
+#其实也没有那么糟糕了.还能用.
+Intel(R) Xeon(R) CPU   E5645  @ 2.40GHz
+Memory: 512M
+Disk: 40G
+</pre>
+
+
+<p>以下为在我的机器上编译cpp-netlib遇到的问题:</p>
+
+<pre>
+问题一:g++: Internal error: Killed (program cc1plus)
+解决: 经过多方查证,此错误的原因是,悲崔的内存不够导致的.怎么解决,只能通过增加swap分区办法了.
+具体操作看这里.<a target="_blank" href="http://www.thegeekstuff.com/2010/08/how-to-add-swap-space/">how-to-add-swap-space</a>
+</pre>
+
+
+
+
+<pre>
+问题二,编译插件成功,但是运行squid -NCXd 2命令后报错如下:
+FATAL: dying from an unhandled exception: file not found
+terminate called after throwing an instance of 'TextException'
+  what():  file not found
+Aborted
+解决: 插件在编译连接的问题,重新安装boost库解决.
+</pre>
+
+
+<p><strong>吐槽完毕,继续正文</strong></p>
+
+<p>讲一下ecap插件开发的大概逻辑,然后贴出上面举出的案例的代码,这篇文章就这么落幕吧.<br/>
+squid的通过继承自<code>libecap::adapter::Service</code>类的子类,实现与ecap的通信,每过来一个请求就实例化一个Server类对象,然后Server对象通过自己的<code>virtual libecap::adapter::Xaction *makeXaction(libecap::host::Xaction *hostx);</code>方法,实例话一个继承自<code>libecap::adapter::Xaction</code>类的对象,利用该对象实现业务逻辑,具体的话,可以查看ecap的样板例子代码.<br/>
+说一下ecap插件开发中用到的数据结构类型.主要用到的以下几种:<br/>
+1. <code>libecap::Area</code> 类型,为灵活调整大小的空间,可以用来保存http请求头中的值.<br/>
+2. <code>libecap::Name</code> 类型,为全局唯一ID以及对应的字符串,可以用来保存http请求头中的头字符串.<br/>
+3. <code>libecap::Message</code> 类型,为squid转发过来的每个用户http请求的封装,其中包含用户请求的url,http头,和可能附带的其他数据(请求的话,post可能带有的数据,回应的话,就是回应的body信息了).<br/>
+4. <code>libecap::host::Xaction</code> 类型,每个用户请求的封装,包含<code>libecap::Message</code>.<br/>
+ok,主要用到的就这么多.要到达我们上面列出的案例要求,其实很简单,这里只在<code>void Adapter::Xaction::start()</code>里实现就可以了.<br/>
+这里我们假设,用户的认证登陆页面在本机的9090端口,任何未经过认证的,或者认证超时的用户,全部默认跳转到<a href="http://127.0.0.1:9090;  ">http://127.0.0.1:9090;  </a>
+查询用户是否可以访问网络的api接口是,<a href="http://127.0.0.1:9090/check.php?uip=x.x.x.x.  ">http://127.0.0.1:9090/check.php?uip=x.x.x.x.  </a>
+查询结果如果为0,则表示用户没有经过认证,为1表示已经过期,为2表示正常放行.</p>
+
+<p>下面为全部的代码,没有经过测试,不保证正确哦.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+<span class='line-number'>223</span>
+<span class='line-number'>224</span>
+<span class='line-number'>225</span>
+<span class='line-number'>226</span>
+<span class='line-number'>227</span>
+<span class='line-number'>228</span>
+<span class='line-number'>229</span>
+<span class='line-number'>230</span>
+<span class='line-number'>231</span>
+<span class='line-number'>232</span>
+<span class='line-number'>233</span>
+<span class='line-number'>234</span>
+<span class='line-number'>235</span>
+<span class='line-number'>236</span>
+<span class='line-number'>237</span>
+<span class='line-number'>238</span>
+<span class='line-number'>239</span>
+<span class='line-number'>240</span>
+<span class='line-number'>241</span>
+<span class='line-number'>242</span>
+<span class='line-number'>243</span>
+<span class='line-number'>244</span>
+<span class='line-number'>245</span>
+<span class='line-number'>246</span>
+<span class='line-number'>247</span>
+<span class='line-number'>248</span>
+<span class='line-number'>249</span>
+<span class='line-number'>250</span>
+<span class='line-number'>251</span>
+<span class='line-number'>252</span>
+<span class='line-number'>253</span>
+<span class='line-number'>254</span>
+<span class='line-number'>255</span>
+<span class='line-number'>256</span>
+<span class='line-number'>257</span>
+<span class='line-number'>258</span>
+<span class='line-number'>259</span>
+<span class='line-number'>260</span>
+<span class='line-number'>261</span>
+<span class='line-number'>262</span>
+<span class='line-number'>263</span>
+<span class='line-number'>264</span>
+<span class='line-number'>265</span>
+<span class='line-number'>266</span>
+<span class='line-number'>267</span>
+<span class='line-number'>268</span>
+<span class='line-number'>269</span>
+<span class='line-number'>270</span>
+<span class='line-number'>271</span>
+<span class='line-number'>272</span>
+<span class='line-number'>273</span>
+<span class='line-number'>274</span>
+<span class='line-number'>275</span>
+<span class='line-number'>276</span>
+<span class='line-number'>277</span>
+<span class='line-number'>278</span>
+<span class='line-number'>279</span>
+<span class='line-number'>280</span>
+<span class='line-number'>281</span>
+<span class='line-number'>282</span>
+<span class='line-number'>283</span>
+<span class='line-number'>284</span>
+<span class='line-number'>285</span>
+<span class='line-number'>286</span>
+<span class='line-number'>287</span>
+<span class='line-number'>288</span>
+<span class='line-number'>289</span>
+<span class='line-number'>290</span>
+<span class='line-number'>291</span>
+<span class='line-number'>292</span>
+<span class='line-number'>293</span>
+<span class='line-number'>294</span>
+<span class='line-number'>295</span>
+<span class='line-number'>296</span>
+<span class='line-number'>297</span>
+<span class='line-number'>298</span>
+<span class='line-number'>299</span>
+<span class='line-number'>300</span>
+<span class='line-number'>301</span>
+<span class='line-number'>302</span>
+<span class='line-number'>303</span>
+<span class='line-number'>304</span>
+<span class='line-number'>305</span>
+<span class='line-number'>306</span>
+<span class='line-number'>307</span>
+<span class='line-number'>308</span>
+<span class='line-number'>309</span>
+<span class='line-number'>310</span>
+<span class='line-number'>311</span>
+<span class='line-number'>312</span>
+<span class='line-number'>313</span>
+<span class='line-number'>314</span>
+<span class='line-number'>315</span>
+<span class='line-number'>316</span>
+<span class='line-number'>317</span>
+<span class='line-number'>318</span>
+<span class='line-number'>319</span>
+<span class='line-number'>320</span>
+<span class='line-number'>321</span>
+<span class='line-number'>322</span>
+<span class='line-number'>323</span>
+<span class='line-number'>324</span>
+<span class='line-number'>325</span>
+<span class='line-number'>326</span>
+<span class='line-number'>327</span>
+<span class='line-number'>328</span>
+<span class='line-number'>329</span>
+<span class='line-number'>330</span>
+<span class='line-number'>331</span>
+<span class='line-number'>332</span>
+<span class='line-number'>333</span>
+<span class='line-number'>334</span>
+<span class='line-number'>335</span>
+</pre></td><td class='code'><pre><code class='cpp'><span class='line'><span class="cp">#include &quot;bbkanba.h&quot;</span>
+</span><span class='line'><span class="cp">#include &quot;Debugger.h&quot;</span>
+</span><span class='line'><span class="cp">#include &lt;iostream&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;algorithm&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/common/registry.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/common/errors.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/common/message.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/common/header.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/common/names.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/common/named_values.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/host/host.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/adapter/service.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/adapter/xaction.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;libecap/host/xaction.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;boost/network/uri.hpp&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;boost/network/uri/uri_io.hpp&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;boost/network/protocol/http/client.hpp&gt;</span>
+</span><span class='line'><span class="k">using</span> <span class="k">namespace</span> <span class="n">boost</span><span class="o">::</span><span class="n">network</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="n">Adapter</span> <span class="p">{</span> <span class="c1">// not required, but adds clarity</span>
+</span><span class='line'><span class="k">using</span>   <span class="n">libecap</span><span class="o">::</span><span class="n">size_type</span><span class="p">;</span>
+</span><span class='line'><span class="k">typedef</span> <span class="n">libecap</span><span class="o">::</span><span class="n">RequestLine</span> <span class="o">*</span><span class="n">CLRLP</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Service</span><span class="o">:</span> <span class="k">public</span> <span class="n">libecap</span><span class="o">::</span><span class="n">adapter</span><span class="o">::</span><span class="n">Service</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="c1">// About</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">uri</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span> <span class="c1">// unique across all vendors</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">tag</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span> <span class="c1">// changes with version and config</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">describe</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span> <span class="o">&amp;</span><span class="n">os</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span> <span class="c1">// free-format info</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Configuration</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">configure</span><span class="p">(</span><span class="k">const</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Options</span> <span class="o">&amp;</span><span class="n">cfg</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">reconfigure</span><span class="p">(</span><span class="k">const</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Options</span> <span class="o">&amp;</span><span class="n">cfg</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Lifecycle</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">start</span><span class="p">();</span> <span class="c1">// expect makeXaction() calls</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">stop</span><span class="p">();</span> <span class="c1">// no more makeXaction() calls until start()</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">retire</span><span class="p">();</span> <span class="c1">// no more makeXaction() calls</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Scope (XXX: this may be changed to look at the whole header)</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">bool</span> <span class="n">wantsUrl</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">url</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Work</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="n">libecap</span><span class="o">::</span><span class="n">adapter</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">makeXaction</span><span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">host</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">hostx</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">Xaction</span><span class="o">:</span> <span class="k">public</span> <span class="n">libecap</span><span class="o">::</span><span class="n">adapter</span><span class="o">::</span><span class="n">Xaction</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">Xaction</span><span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Service</span><span class="o">&gt;</span> <span class="n">s</span><span class="p">,</span> <span class="n">libecap</span><span class="o">::</span><span class="n">host</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">x</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="o">~</span><span class="n">Xaction</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// meta-information for the host transaction</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="k">const</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Area</span> <span class="n">option</span><span class="p">(</span><span class="k">const</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Name</span> <span class="o">&amp;</span><span class="n">name</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">visitEachOption</span><span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">NamedValueVisitor</span> <span class="o">&amp;</span><span class="n">visitor</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// lifecycle</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">start</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">stop</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// adapted body transmission control</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">abDiscard</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">abMake</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">abMakeMore</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">abStopMaking</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// adapted body content extraction and consumption</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Area</span> <span class="n">abContent</span><span class="p">(</span><span class="n">size_type</span> <span class="n">offset</span><span class="p">,</span> <span class="n">size_type</span> <span class="n">size</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">abContentShift</span><span class="p">(</span><span class="n">size_type</span> <span class="n">size</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// virgin body state notification</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">noteVbContentDone</span><span class="p">(</span><span class="kt">bool</span> <span class="n">atEnd</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">void</span> <span class="n">noteVbContentAvailable</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// libecap::Callable API, via libecap::host::Xaction</span>
+</span><span class='line'>        <span class="k">virtual</span> <span class="kt">bool</span> <span class="n">callable</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span><span class="o">:</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="n">stopVb</span><span class="p">();</span> <span class="c1">// stops receiving vb (if we are receiving it)</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">void</span> <span class="n">getUri</span><span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">libecap</span><span class="o">::</span><span class="n">Message</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="n">goToUrl</span><span class="p">(</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">orgUrl</span><span class="p">,</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">host</span><span class="p">,</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">state</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">void</span> <span class="n">debugAction</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">action</span><span class="p">,</span><span class="k">const</span> <span class="kt">bool</span> <span class="o">&amp;</span><span class="n">showOrgUrl</span><span class="o">=</span><span class="kc">true</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">libecap</span><span class="o">::</span><span class="n">host</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">lastHostCall</span><span class="p">();</span> <span class="c1">// clears hostx</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span><span class="o">:</span>
+</span><span class='line'>        <span class="n">CLRLP</span> <span class="n">requestLine</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">libecap</span><span class="o">::</span><span class="n">Area</span> <span class="n">uri</span><span class="p">;</span> <span class="c1">// Request-URI from headers, for logging</span>
+</span><span class='line'>        <span class="n">libecap</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Service</span><span class="o">&gt;</span> <span class="n">service</span><span class="p">;</span> <span class="c1">// configuration access</span>
+</span><span class='line'>        <span class="n">libecap</span><span class="o">::</span><span class="n">host</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">hostx</span><span class="p">;</span> <span class="c1">// Host transaction rep</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span> <span class="n">opUndecided</span><span class="p">,</span> <span class="n">opOn</span><span class="p">,</span> <span class="n">opComplete</span><span class="p">,</span> <span class="n">opNever</span> <span class="p">}</span> <span class="n">OperationState</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span> <span class="n">localWebServer</span><span class="p">,</span> <span class="n">normal</span> <span class="p">}</span> <span class="n">OprationAdaptedState</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">OperationState</span> <span class="n">receivingVb</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">OperationState</span> <span class="n">sendingAb</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">OprationAdaptedState</span> <span class="n">adaptedGotoAction</span><span class="p">;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">CfgErrorPrefix</span> <span class="o">=</span>
+</span><span class='line'>    <span class="s">&quot;eBBkanba Adapter: configuration error: &quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span> <span class="c1">// namespace Adapter</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">uri</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="s">&quot;ecap://bbkanba.com/bbkanba&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">tag</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">PACKAGE_VERSION</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">describe</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span> <span class="o">&amp;</span><span class="n">os</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">os</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;A eBBkanba adapter from &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">PACKAGE_NAME</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; v&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">PACKAGE_VERSION</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">configure</span><span class="p">(</span><span class="k">const</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Options</span> <span class="o">&amp;</span><span class="n">cfg</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">reconfigure</span><span class="p">(</span><span class="k">const</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Options</span> <span class="o">&amp;</span><span class="n">cfg</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">libecap</span><span class="o">::</span><span class="n">adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">start</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">stop</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">libecap</span><span class="o">::</span><span class="n">adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">stop</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">retire</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">libecap</span><span class="o">::</span><span class="n">adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">stop</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">bool</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">wantsUrl</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">url</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span> <span class="c1">// no-op is applied to all messages</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">libecap</span><span class="o">::</span><span class="n">adapter</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="o">::</span><span class="n">makeXaction</span><span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">host</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">hostx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">tr1</span><span class="o">::</span><span class="n">static_pointer_cast</span><span class="o">&lt;</span><span class="n">Service</span><span class="o">&gt;</span><span class="p">(</span><span class="n">self</span><span class="p">),</span><span class="n">hostx</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">Xaction</span><span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">Service</span><span class="o">&gt;</span> <span class="n">aService</span><span class="p">,</span><span class="n">libecap</span><span class="o">::</span><span class="n">host</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="o">:</span>
+</span><span class='line'>    <span class="n">service</span><span class="p">(</span><span class="n">aService</span><span class="p">),</span>
+</span><span class='line'>    <span class="n">hostx</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+</span><span class='line'>    <span class="n">receivingVb</span><span class="p">(</span><span class="n">opUndecided</span><span class="p">),</span>
+</span><span class='line'>    <span class="n">sendingAb</span><span class="p">(</span><span class="n">opUndecided</span><span class="p">),</span>
+</span><span class='line'>    <span class="n">adaptedGotoAction</span><span class="p">(</span><span class="n">normal</span><span class="p">){</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::~</span><span class="n">Xaction</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">host</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">x</span> <span class="o">=</span> <span class="n">hostx</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">hostx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">requestLine</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">x</span><span class="o">-&gt;</span><span class="n">adaptationAborted</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">const</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Area</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">option</span><span class="p">(</span><span class="k">const</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Name</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Area</span><span class="p">();</span> <span class="c1">// this transaction has no meta-information</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">visitEachOption</span><span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">NamedValueVisitor</span> <span class="o">&amp;</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c1">// this transaction has no meta-information to pass to the visitor</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">start</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">hostx</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//static int scannerCount = 0;</span>
+</span><span class='line'>    <span class="c1">//++scannerCount;</span>
+</span><span class='line'>    <span class="c1">//Debugger(ilNormal|flApplication) &lt;&lt; &quot;eBBkanba: &quot; &lt;&lt; &quot;Initializing eBBkanba engine #&quot; &lt;&lt; scannerCount &lt;&lt; &quot;.&quot;;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//查看请求是否包含http头以外的数据</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">hostx</span><span class="o">-&gt;</span><span class="n">virgin</span><span class="p">().</span><span class="n">body</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">receivingVb</span> <span class="o">=</span> <span class="n">opOn</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">vbMake</span><span class="p">();</span> <span class="c1">// ask host to supply virgin body</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// we are not interested in vb if there is not one</span>
+</span><span class='line'>        <span class="n">receivingVb</span> <span class="o">=</span> <span class="n">opNever</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//获取用户ip</span>
+</span><span class='line'>    <span class="n">libecap</span><span class="o">::</span><span class="n">Header</span><span class="o">::</span><span class="n">Value</span> <span class="n">clientIP</span> <span class="o">=</span> <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">option</span><span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">metaClientIp</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/* adapt message header ,copy一份http请求的纯原始副本,然后下面可能会修改内容*/</span>
+</span><span class='line'>    <span class="n">libecap</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">libecap</span><span class="o">::</span><span class="n">Message</span><span class="o">&gt;</span> <span class="n">adapted</span> <span class="o">=</span> <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">virgin</span><span class="p">().</span><span class="n">clone</span><span class="p">();</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">adapted</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// delete ContentLength header because we may change the length</span>
+</span><span class='line'>    <span class="c1">// unknown length may have performance implications for the host</span>
+</span><span class='line'>    <span class="c1">//获取用户请求的url</span>
+</span><span class='line'>    <span class="n">getUri</span><span class="p">(</span><span class="n">adapted</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//adapted-&gt;header().removeAny(libecap::headerContentLength);</span>
+</span><span class='line'>        <span class="n">uri</span><span class="o">::</span><span class="n">uri</span> <span class="n">url_path</span><span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="n">toString</span><span class="p">());</span>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">url_path_tolower</span> <span class="o">=</span> <span class="n">url_path</span><span class="p">.</span><span class="n">host</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">std</span><span class="o">::</span><span class="n">transform</span><span class="p">(</span><span class="n">url_path_tolower</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">url_path_tolower</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span><span class="n">url_path_tolower</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="o">::</span><span class="n">tolower</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">url_path_tolower</span> <span class="o">!=</span> <span class="s">&quot;127.0.0.1&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">http</span><span class="o">::</span><span class="n">client</span><span class="o">::</span><span class="n">response</span> <span class="n">response</span> <span class="o">=</span> <span class="n">http</span><span class="o">::</span><span class="n">client</span><span class="p">().</span><span class="n">get</span><span class="p">(</span><span class="n">http</span><span class="o">::</span><span class="n">request</span><span class="p">(</span><span class="s">&quot;http://127.0.0.1:9090/check.php?uip=&quot;</span><span class="o">+</span><span class="n">clientIP</span><span class="p">.</span><span class="n">toString</span><span class="p">()));</span>
+</span><span class='line'>            <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">check</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="n">body</span><span class="p">(</span><span class="n">response</span><span class="p">));</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span> <span class="n">check</span> <span class="o">==</span> <span class="s">&quot;0&quot;</span> <span class="p">){</span>
+</span><span class='line'>                <span class="c1">//则表示用户没有经过认证</span>
+</span><span class='line'>                <span class="n">goToUrl</span><span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="n">toString</span><span class="p">(),</span><span class="s">&quot;http://127.0.0.1:9090&quot;</span><span class="p">,</span><span class="s">&quot;0&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span> <span class="n">check</span> <span class="o">==</span> <span class="s">&quot;1&quot;</span> <span class="p">){</span>
+</span><span class='line'>                <span class="c1">//表示已经过期</span>
+</span><span class='line'>                <span class="n">goToUrl</span><span class="p">(</span><span class="n">uri</span><span class="p">.</span><span class="n">toString</span><span class="p">(),</span><span class="s">&quot;http://127.0.0.1:9090&quot;</span><span class="p">,</span><span class="s">&quot;1&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// 最后返回我们修改过的用户请求</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">adapted</span><span class="o">-&gt;</span><span class="n">body</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">sendingAb</span> <span class="o">=</span> <span class="n">opNever</span><span class="p">;</span> <span class="c1">// there is nothing to send</span>
+</span><span class='line'>        <span class="n">lastHostCall</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">useAdapted</span><span class="p">(</span><span class="n">adapted</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">useAdapted</span><span class="p">(</span><span class="n">adapted</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">stop</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">hostx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">requestLine</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">abDiscard</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">sendingAb</span> <span class="o">==</span> <span class="n">opUndecided</span><span class="p">);</span> <span class="c1">// have not started yet</span>
+</span><span class='line'>    <span class="n">sendingAb</span> <span class="o">=</span> <span class="n">opNever</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// we do not need more vb if the host is not interested in ab</span>
+</span><span class='line'>    <span class="n">stopVb</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">abMake</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">sendingAb</span> <span class="o">==</span> <span class="n">opUndecided</span><span class="p">);</span> <span class="c1">// have not yet started or decided not to send</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">hostx</span><span class="o">-&gt;</span><span class="n">virgin</span><span class="p">().</span><span class="n">body</span><span class="p">());</span> <span class="c1">// that is our only source of ab content</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// we are or were receiving vb</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">receivingVb</span> <span class="o">==</span> <span class="n">opOn</span> <span class="o">||</span> <span class="n">receivingVb</span> <span class="o">==</span> <span class="n">opComplete</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">sendingAb</span> <span class="o">=</span> <span class="n">opOn</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">noteAbContentAvailable</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">abMakeMore</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">receivingVb</span> <span class="o">==</span> <span class="n">opOn</span><span class="p">);</span> <span class="c1">// a precondition for receiving more vb</span>
+</span><span class='line'>    <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">vbMakeMore</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">abStopMaking</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">sendingAb</span> <span class="o">=</span> <span class="n">opComplete</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">// we do not need more vb if the host is not interested in more ab</span>
+</span><span class='line'>    <span class="n">stopVb</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">libecap</span><span class="o">::</span><span class="n">Area</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">abContent</span><span class="p">(</span><span class="n">size_type</span> <span class="n">offset</span><span class="p">,</span> <span class="n">size_type</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">sendingAb</span> <span class="o">==</span> <span class="n">opOn</span> <span class="o">||</span> <span class="n">sendingAb</span> <span class="o">==</span> <span class="n">opComplete</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">vbContent</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">abContentShift</span><span class="p">(</span><span class="n">size_type</span> <span class="n">size</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">sendingAb</span> <span class="o">==</span> <span class="n">opOn</span> <span class="o">||</span> <span class="n">sendingAb</span> <span class="o">==</span> <span class="n">opComplete</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">vbContentShift</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">noteVbContentDone</span><span class="p">(</span><span class="kt">bool</span> <span class="n">atEnd</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">receivingVb</span> <span class="o">==</span> <span class="n">opOn</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">receivingVb</span> <span class="o">=</span> <span class="n">opComplete</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">sendingAb</span> <span class="o">==</span> <span class="n">opOn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">noteAbContentDone</span><span class="p">(</span><span class="n">atEnd</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">sendingAb</span> <span class="o">=</span> <span class="n">opComplete</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">noteVbContentAvailable</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">receivingVb</span> <span class="o">==</span> <span class="n">opOn</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">sendingAb</span> <span class="o">==</span> <span class="n">opOn</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">noteAbContentAvailable</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">bool</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">callable</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">hostx</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// no point to call us if we are done</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// tells the host that we are not interested in [more] vb</span>
+</span><span class='line'><span class="c1">// if the host does not know that already</span>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">stopVb</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">receivingVb</span> <span class="o">==</span> <span class="n">opOn</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">hostx</span><span class="o">-&gt;</span><span class="n">vbStopMaking</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">receivingVb</span> <span class="o">=</span> <span class="n">opComplete</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// we already got the entire body or refused it earlier</span>
+</span><span class='line'>        <span class="n">Must</span><span class="p">(</span><span class="n">receivingVb</span> <span class="o">!=</span> <span class="n">opUndecided</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">//重新定位请求地址,到用户认证页面,并把用户请求url作为参数传入</span>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">goToUrl</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">orgUrl</span><span class="p">,</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">new_host</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">state</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">new_url_path</span> <span class="o">=</span> <span class="n">new_host</span> <span class="o">+</span> <span class="s">&quot;/?state=&quot;</span> <span class="o">+</span> <span class="n">state</span> <span class="o">+</span> <span class="s">&quot;&amp;orgUrl=&quot;</span> <span class="o">+</span> <span class="n">orgUrl</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">const</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Header</span><span class="o">::</span><span class="n">Value</span> <span class="n">new_url_path_r</span> <span class="o">=</span> <span class="n">libecap</span><span class="o">::</span><span class="n">Area</span><span class="o">::</span><span class="n">FromTempString</span><span class="p">(</span><span class="n">new_url_path</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">debugAction</span><span class="p">(</span><span class="s">&quot;new URL: &quot;</span> <span class="o">+</span> <span class="n">new_url_path</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">requestLine</span><span class="o">-&gt;</span><span class="n">uri</span><span class="p">(</span><span class="n">new_url_path_r</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">getUri</span><span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">libecap</span><span class="o">::</span><span class="n">Message</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">adapted</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">hostx</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">requestLine</span> <span class="o">=</span> <span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="n">CLRLP</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">adapted</span><span class="o">-&gt;</span><span class="n">firstLine</span><span class="p">()))</span> <span class="p">)</span>
+</span><span class='line'>        <span class="n">uri</span> <span class="o">=</span> <span class="n">requestLine</span><span class="o">-&gt;</span><span class="n">uri</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">debugAction</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">actDescript</span><span class="p">,</span><span class="k">const</span> <span class="kt">bool</span> <span class="o">&amp;</span><span class="n">showOrgUrl</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">descipt</span> <span class="p">(</span><span class="n">actDescript</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">showOrgUrl</span><span class="p">)</span>
+</span><span class='line'>        <span class="n">descipt</span> <span class="o">+=</span> <span class="s">&quot; ( org URL: &quot;</span> <span class="o">+</span> <span class="n">uri</span><span class="p">.</span><span class="n">toString</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot; )&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">Debugger</span><span class="p">(</span><span class="n">ilNormal</span><span class="o">|</span><span class="n">flApplication</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;eBBkanba: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">descipt</span> <span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// this method is used to make the last call to hostx transaction</span>
+</span><span class='line'><span class="c1">// last call may delete adapter transaction if the host no longer needs it</span>
+</span><span class='line'><span class="c1">// TODO: replace with hostx-independent &quot;done&quot; method</span>
+</span><span class='line'><span class="n">libecap</span><span class="o">::</span><span class="n">host</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">Adapter</span><span class="o">::</span><span class="n">Xaction</span><span class="o">::</span><span class="n">lastHostCall</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">libecap</span><span class="o">::</span><span class="n">host</span><span class="o">::</span><span class="n">Xaction</span> <span class="o">*</span><span class="n">x</span> <span class="o">=</span> <span class="n">hostx</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">Must</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">hostx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">requestLine</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">x</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// create the adapter and register with libecap to reach the host application</span>
+</span><span class='line'><span class="k">static</span> <span class="k">const</span> <span class="kt">bool</span> <span class="n">Registered</span> <span class="o">=</span> <span class="p">(</span><span class="n">libecap</span><span class="o">::</span><span class="n">RegisterService</span><span class="p">(</span><span class="k">new</span> <span class="n">Adapter</span><span class="o">::</span><span class="n">Service</span><span class="p">),</span> <span class="kc">true</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以下载我写的上面的例子文件<a href="/downloads/files/eCAP_bbkanba_Adapter-0.0.1.tar.gz">eCAP_bbkanba_Adapter-0.0.1.tar.gz</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">leolovenet</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-10T00:00:00+08:00" pubdate data-updated="true"></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-plus-plus/'>C++</a>, <a class='category' href='/blog/categories/linux/'>Linux</a>, <a class='category' href='/blog/categories/squid/'>Squid</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/22/xcode-package-application-to-ipa/" title="Previous Post: xcode编译的app程序打包为ipa文件">&laquo; xcode编译的app程序打包为ipa文件</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/06/24/made-a-TED-video-subtitle/" title="Next Post: [翻译]TED的一个四轴飞行器字幕">[翻译]TED的一个四轴飞行器字幕 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/02/13/hi-octopress/">Hi Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/11/enhanced-ping-command-function-with-ruby/">用Ruby增强ping命令</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/07/my-sharing-notes/">我的Evernote笔记</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">[翻译]TED的一个四轴飞行器字幕</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/leolovenet">@leolovenet</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'leolovenet',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - leolovenet -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'leolovenet';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://leolovenet.com/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/';
+        var disqus_url = 'http://leolovenet.com/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
