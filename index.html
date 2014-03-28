@@ -84,6 +84,97 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/03/28/a-linux-server-hardware-detection-resource-script/">检测 Linux 服务器硬件资源的 Bash 脚本</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-28T13:21:53+08:00" pubdate data-updated="true">Mar 28<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近公司要做机房的机器整理,把空闲的机器撤下来.</p>
+
+<p>这样就需要列一个机器硬件配置的列表,就写了一个 bash 脚本来做检查,先for 循环自动 scp 到目标机器, 然后 for 循环自动 ssh 登录进所有的机器运行这个脚本.</p>
+
+<p>输出的格式位 markdown, 可以很容易转换成 html 的 table .或者改一下脚本的输出格式为cvs,  到(这个网站)[<a href="http://www.tablesgenerator.com/html_tables">http://www.tablesgenerator.com/html_tables</a>]生成表格.</p>
+
+<p>目前可以检查的资源有: 包含服务器的型号, U 数, Dell 序列号, 内存数, 最大内存数, 可以插的内存条数, 已经用的内存条数, 内存类型, 硬盘大小, CPU 信息.</p>
+
+<div><script src='https://gist.github.com/9825167.js'></script>
+<noscript><pre><code>#!/bin/bash
+
+ISINSTALLED_D=$(rpm -qa |grep dmidecode)
+
+if [ -z $ISINSTALLED_D ]; then
+    yum -y install dmidecode
+fi
+
+
+export PATH=$HOME/bin:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+NUM=$1
+NUM=${NUM:=0}
+ISSHOW_DES=$2
+ISSHOW_DES=${ISSHOW_DES:=0}
+
+U_NUM=$(dmidecode -t chassis |grep Height:|cut -d : -f 2)
+U_NUM=${U_NUM// /}
+PRODUCT=$(dmidecode -t system|grep Product|cut -d : -f 2|  sed -e &#39;s/^[ \t]*//&#39;)
+SERIAL=$(dmidecode -t system|grep Serial|cut -d : -f 2|  sed -e &#39;s/^[ \t]*//&#39;)
+HOSTNAME=$(hostname | cut -d . -f 1)
+MEM=$(free -o|cut -c 1-20|grep -vi &quot;swap&quot;|grep Mem|cut -d : -f 2|sed -e &#39;s/^[ \t]*//&#39;)
+MEM=$(echo &quot;$MEM 1000000&quot; | awk &#39;{printf &quot;%.1fGB&quot;, $1/$2}&#39;)
+MEM_MAX_CAPACITY=$(dmidecode -t memory|grep &quot;Maximum Capacity&quot;|cut -d : -f 2)
+MEM_MAX_CAPACITY=${MEM_MAX_CAPACITY// /}
+MEM_NUM_OF_DEV=$(dmidecode -t memory|grep &quot;Number Of Devices&quot;|cut -d : -f 2)
+MEM_NUM_OF_DEV=${MEM_NUM_OF_DEV// /}
+MEM_NUM_OF_DEV_USED=$(dmidecode -t memory|grep &quot;Speed: Unknown&quot;|wc -l)
+MEM_NUM_OF_DEV_USED=$(($MEM_NUM_OF_DEV - $MEM_NUM_OF_DEV_USED))
+MEM_TYPE=$(dmidecode -t memory|grep &quot;Type: &quot;|tail -1|cut -d : -f 2)
+MEM_TYPE=${MEM_TYPE// /}
+DISK_SIZE=$(fdisk  -l  2&gt;/dev/null | grep GB |cut -d , -f 1|cut -d : -f 2|sed -e &#39;s/ //g&#39;)
+DISK_SIZE=$(echo $DISK_SIZE|tr &#39; &#39; &#39;+&#39;)
+CPU=$(cat /proc/cpuinfo |grep CPU|head -1|cut -d : -f 2 | sed -e &#39;s/^[ \t]*//&#39;)
+CPU=${CPU// /}
+CPU=${CPU//@/ }
+CPU_NUM=$(cat /proc/cpuinfo |grep CPU|wc -l)
+CPU_INFO=&quot;$CPU * $CPU_NUM&quot;
+
+if [ &quot;${ISSHOW_DES}0&quot; != &quot;00&quot; ]; then
+    echo &quot;|ID|服务器名|服务器型号|U数|DELL序列号|内存数|最大内存|总内存槽数|已经内存槽数|内存类型|硬盘大小信息|CPU 信息汇总|&quot;
+    echo &quot;|--|------|--------|---|---------|-----|------|---------|----------|------|----------|----------|&quot;
+fi
+echo &quot;|$NUM|$HOSTNAME|$PRODUCT|$U_NUM|$SERIAL|$MEM|$MEM_MAX_CAPACITY|$MEM_NUM_OF_DEV|$MEM_NUM_OF_DEV_USED|$MEM_TYPE|$DISK_SIZE|$CPU_INFO|&quot;
+</code></pre></noscript></div>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/02/13/hi-octopress/">Hi Octopress</a></h1>
     
     
@@ -593,97 +684,6 @@ configure: error: C compiler cannot create executables
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/01/25/the-open-command/">Mac 下的 Open命令</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-25T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>mac下的应用程序是一个有结构的目录(想在Finder下查看程序目录内容,可以在程序目录上右击选择 &ldquo;Show Package Contents&rdquo; 像下图一样).</p>
-
-<p><img src="/downloads/images/open-command.png" title="open command example" alt="open-command.png" /></p>
-
-<p>安装程序也是简单的把这个目录copy到你想要的地方就可以，大部分是 ~/Application 或者 /Application 下.</p>
-
-<p>但想要在命令行下运行程序怎么办？你总不能在命令行下运行一个目录吧！</p>
-
-<p>这个时候发现了<code>/usr/bin/open</code>命令,就是干这个的.</p>
-
-<p>比如,我想在命令行下运行Firefox,运行下面的命令即可</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>open -a /Applications/Firefox.app
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>想在命令行下,用 Finder 打开此时的路径的话,运行下面的命令</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>open ./
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>想要用系统默认程序打开响应的文件,运行下面的命令</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>open Readme.md
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>open命令的其他参数:</p>
-
-<pre>
-/usr/bin/open --help
-open: unrecognized option `--help'
-Usage: open [-e] [-t] [-f] [-W] [-R] [-n] [-g] [-h] [-b &lt;bundle identifier>] [-a &lt;application>] [filenames] [--args arguments]
-Help: Open opens files from a shell.
-      By default, opens each file using the default application for that file.  
-      If the file is in the form of a URL, the file will be opened as a URL.
-Options: 
-      -a                Opens with the specified application.
-      -b                Opens with the specified application bundle identifier.
-      -e                Opens with TextEdit.
-      -t                Opens with default text editor.
-      -f                Reads input from standard input and opens with TextEdit.
-      -F  --fresh       Launches the app fresh, that is, without restoring windows. Saved persistent state is lost, excluding Untitled documents.
-      -R, --reveal      Selects in the Finder instead of opening.
-      -W, --wait-apps   Blocks until the used applications are closed (even if they were already running).
-          --args        All remaining arguments are passed in argv to the application's main() function instead of opened.
-      -n, --new         Open a new instance of the application even if one is already running.
-      -j, --hide        Launches the app hidden.
-      -g, --background  Does not bring the application to the foreground.
-      -h, --header      Searches header file locations for headers matching the given filenames, and opens them.
-</pre>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -699,6 +699,10 @@ Options:
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/28/a-linux-server-hardware-detection-resource-script/">检测 Linux 服务器硬件资源的 Bash 脚本</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/02/13/hi-octopress/">Hi Octopress</a>
       </li>
     
@@ -712,10 +716,6 @@ Options:
     
       <li class="post">
         <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">[翻译]TED的一个四轴飞行器字幕</a>
       </li>
     
   </ul>

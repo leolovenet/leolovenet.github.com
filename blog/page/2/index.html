@@ -84,6 +84,97 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/01/25/the-open-command/">Mac 下的 Open命令</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-25T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>mac下的应用程序是一个有结构的目录(想在Finder下查看程序目录内容,可以在程序目录上右击选择 &ldquo;Show Package Contents&rdquo; 像下图一样).</p>
+
+<p><img src="/downloads/images/open-command.png" title="open command example" alt="open-command.png" /></p>
+
+<p>安装程序也是简单的把这个目录copy到你想要的地方就可以，大部分是 ~/Application 或者 /Application 下.</p>
+
+<p>但想要在命令行下运行程序怎么办？你总不能在命令行下运行一个目录吧！</p>
+
+<p>这个时候发现了<code>/usr/bin/open</code>命令,就是干这个的.</p>
+
+<p>比如,我想在命令行下运行Firefox,运行下面的命令即可</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>open -a /Applications/Firefox.app
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>想在命令行下,用 Finder 打开此时的路径的话,运行下面的命令</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>open ./
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>想要用系统默认程序打开响应的文件,运行下面的命令</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>open Readme.md
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>open命令的其他参数:</p>
+
+<pre>
+/usr/bin/open --help
+open: unrecognized option `--help'
+Usage: open [-e] [-t] [-f] [-W] [-R] [-n] [-g] [-h] [-b &lt;bundle identifier>] [-a &lt;application>] [filenames] [--args arguments]
+Help: Open opens files from a shell.
+      By default, opens each file using the default application for that file.  
+      If the file is in the form of a URL, the file will be opened as a URL.
+Options: 
+      -a                Opens with the specified application.
+      -b                Opens with the specified application bundle identifier.
+      -e                Opens with TextEdit.
+      -t                Opens with default text editor.
+      -f                Reads input from standard input and opens with TextEdit.
+      -F  --fresh       Launches the app fresh, that is, without restoring windows. Saved persistent state is lost, excluding Untitled documents.
+      -R, --reveal      Selects in the Finder instead of opening.
+      -W, --wait-apps   Blocks until the used applications are closed (even if they were already running).
+          --args        All remaining arguments are passed in argv to the application's main() function instead of opened.
+      -n, --new         Open a new instance of the application even if one is already running.
+      -j, --hide        Launches the app hidden.
+      -g, --background  Does not bring the application to the foreground.
+      -h, --header      Searches header file locations for headers matching the given filenames, and opens them.
+</pre>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/01/21/my-windows-office-excel-vba-script/">Windows Office Excel Vba Script 一例</a></h1>
     
     
@@ -741,6 +832,10 @@ Ready Go.<br/>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/03/28/a-linux-server-hardware-detection-resource-script/">检测 Linux 服务器硬件资源的 Bash 脚本</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/02/13/hi-octopress/">Hi Octopress</a>
       </li>
     
@@ -754,10 +849,6 @@ Ready Go.<br/>
     
       <li class="post">
         <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/06/24/made-a-TED-video-subtitle/">[翻译]TED的一个四轴飞行器字幕</a>
       </li>
     
   </ul>
