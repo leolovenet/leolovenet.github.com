@@ -17,7 +17,7 @@ description: " A Linux server hardware detection resource script that contains t
 
 这样就需要列一个机器硬件配置的列表,就写了一个 bash 脚本来做检查,先for 循环自动 scp 到目标机器, 然后 for 循环自动 ssh 登录进所有的机器运行这个脚本.
 
-输出的格式位 markdown, 可以很容易转换成 html 的 table .或者改一下脚本的输出格式为cvs,  到(这个网站)[http://www.tablesgenerator.com/html_tables]生成表格. 
+输出的格式位 markdown, 可以很容易转换成 html 的 table .或者改一下脚本的输出格式为cvs, 到[这个网站](http://www.tablesgenerator.com/html_tables)生成表格. 
 
 目前可以检查的资源有: 包含服务器的型号, U 数, Dell 序列号, 内存数, 最大内存数, 可以插的内存条数, 已经用的内存条数, 内存类型, 硬盘大小, CPU 信息.
 
