@@ -4,7 +4,7 @@
   <title><![CDATA[末日前几天]]></title>
   <link href="http://leolovenet.com/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-03-28T14:02:18+08:00</updated>
+  <updated>2014-03-28T14:11:52+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -22,7 +22,7 @@
 
 <p>这样就需要列一个机器硬件配置的列表,就写了一个 bash 脚本来做检查,先for 循环自动 scp 到目标机器, 然后 for 循环自动 ssh 登录进所有的机器运行这个脚本.</p>
 
-<p>输出的格式位 markdown, 可以很容易转换成 html 的 table .或者改一下脚本的输出格式为cvs,  到(这个网站)[<a href="http://www.tablesgenerator.com/html_tables">http://www.tablesgenerator.com/html_tables</a>]生成表格.</p>
+<p>输出的格式位 markdown, 可以很容易转换成 html 的 table .或者改一下脚本的输出格式为cvs, 到<a href="http://www.tablesgenerator.com/html_tables">这个网站</a>生成表格.</p>
 
 <p>目前可以检查的资源有: 包含服务器的型号, U 数, Dell 序列号, 内存数, 最大内存数, 可以插的内存条数, 已经用的内存条数, 内存类型, 硬盘大小, CPU 信息.</p>
 
