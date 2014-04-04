@@ -4,7 +4,7 @@
   <title><![CDATA[末日前几天]]></title>
   <link href="http://leolovenet.com/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-03-28T14:11:52+08:00</updated>
+  <updated>2014-04-04T14:37:45+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -26,53 +26,91 @@
 
 <p>目前可以检查的资源有: 包含服务器的型号, U 数, Dell 序列号, 内存数, 最大内存数, 可以插的内存条数, 已经用的内存条数, 内存类型, 硬盘大小, CPU 信息.</p>
 
-<div><script src='https://gist.github.com/9825167.js'></script>
-<noscript><pre><code>#!/bin/bash
-
-ISINSTALLED_D=$(rpm -qa |grep dmidecode)
-
-if [ -z $ISINSTALLED_D ]; then
-    yum -y install dmidecode
-fi
-
-
-export PATH=$HOME/bin:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
-NUM=$1
-NUM=${NUM:=0}
-ISSHOW_DES=$2
-ISSHOW_DES=${ISSHOW_DES:=0}
-
-U_NUM=$(dmidecode -t chassis |grep Height:|cut -d : -f 2)
-U_NUM=${U_NUM// /}
-PRODUCT=$(dmidecode -t system|grep Product|cut -d : -f 2|  sed -e &#39;s/^[ \t]*//&#39;)
-SERIAL=$(dmidecode -t system|grep Serial|cut -d : -f 2|  sed -e &#39;s/^[ \t]*//&#39;)
-HOSTNAME=$(hostname | cut -d . -f 1)
-MEM=$(free -o|cut -c 1-20|grep -vi &quot;swap&quot;|grep Mem|cut -d : -f 2|sed -e &#39;s/^[ \t]*//&#39;)
-MEM=$(echo &quot;$MEM 1000000&quot; | awk &#39;{printf &quot;%.1fGB&quot;, $1/$2}&#39;)
-MEM_MAX_CAPACITY=$(dmidecode -t memory|grep &quot;Maximum Capacity&quot;|cut -d : -f 2)
-MEM_MAX_CAPACITY=${MEM_MAX_CAPACITY// /}
-MEM_NUM_OF_DEV=$(dmidecode -t memory|grep &quot;Number Of Devices&quot;|cut -d : -f 2)
-MEM_NUM_OF_DEV=${MEM_NUM_OF_DEV// /}
-MEM_NUM_OF_DEV_USED=$(dmidecode -t memory|grep &quot;Speed: Unknown&quot;|wc -l)
-MEM_NUM_OF_DEV_USED=$(($MEM_NUM_OF_DEV - $MEM_NUM_OF_DEV_USED))
-MEM_TYPE=$(dmidecode -t memory|grep &quot;Type: &quot;|tail -1|cut -d : -f 2)
-MEM_TYPE=${MEM_TYPE// /}
-DISK_SIZE=$(fdisk  -l  2&gt;/dev/null | grep GB |cut -d , -f 1|cut -d : -f 2|sed -e &#39;s/ //g&#39;)
-DISK_SIZE=$(echo $DISK_SIZE|tr &#39; &#39; &#39;+&#39;)
-CPU=$(cat /proc/cpuinfo |grep CPU|head -1|cut -d : -f 2 | sed -e &#39;s/^[ \t]*//&#39;)
-CPU=${CPU// /}
-CPU=${CPU//@/ }
-CPU_NUM=$(cat /proc/cpuinfo |grep CPU|wc -l)
-CPU_INFO=&quot;$CPU * $CPU_NUM&quot;
-
-if [ &quot;${ISSHOW_DES}0&quot; != &quot;00&quot; ]; then
-    echo &quot;|ID|服务器名|服务器型号|U数|DELL序列号|内存数|最大内存|总内存槽数|已经内存槽数|内存类型|硬盘大小信息|CPU 信息汇总|&quot;
-    echo &quot;|--|------|--------|---|---------|-----|------|---------|----------|------|----------|----------|&quot;
-fi
-echo &quot;|$NUM|$HOSTNAME|$PRODUCT|$U_NUM|$SERIAL|$MEM|$MEM_MAX_CAPACITY|$MEM_NUM_OF_DEV|$MEM_NUM_OF_DEV_USED|$MEM_TYPE|$DISK_SIZE|$CPU_INFO|&quot;
-</code></pre></noscript></div>
-
-
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">ISINSTALLED_D</span><span class="o">=</span><span class="k">$(</span>rpm -qa |grep dmidecode<span class="k">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> -z <span class="nv">$ISINSTALLED_D</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span>yum -y install dmidecode
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$HOME</span>/bin:/bin:/usr/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+</span><span class='line'><span class="nv">NUM</span><span class="o">=</span><span class="nv">$1</span>
+</span><span class='line'><span class="nv">NUM</span><span class="o">=</span><span class="k">${</span><span class="nv">NUM</span><span class="p">:=0</span><span class="k">}</span>
+</span><span class='line'><span class="nv">ISSHOW_DES</span><span class="o">=</span><span class="nv">$2</span>
+</span><span class='line'><span class="nv">ISSHOW_DES</span><span class="o">=</span><span class="k">${</span><span class="nv">ISSHOW_DES</span><span class="p">:=0</span><span class="k">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">U_NUM</span><span class="o">=</span><span class="k">$(</span>dmidecode -t chassis |grep Height:|cut -d : -f 2<span class="k">)</span>
+</span><span class='line'><span class="nv">U_NUM</span><span class="o">=</span><span class="k">${</span><span class="nv">U_NUM</span><span class="p">// /</span><span class="k">}</span>
+</span><span class='line'><span class="nv">PRODUCT</span><span class="o">=</span><span class="k">$(</span>dmidecode -t system|grep Product|cut -d : -f 2|  sed -e <span class="s1">&#39;s/^[ \t]*//&#39;</span><span class="k">)</span>
+</span><span class='line'><span class="nv">SERIAL</span><span class="o">=</span><span class="k">$(</span>dmidecode -t system|grep Serial|cut -d : -f 2|  sed -e <span class="s1">&#39;s/^[ \t]*//&#39;</span><span class="k">)</span>
+</span><span class='line'><span class="nv">HOSTNAME</span><span class="o">=</span><span class="k">$(</span>hostname | cut -d . -f 1<span class="k">)</span>
+</span><span class='line'><span class="nv">MEM</span><span class="o">=</span><span class="k">$(</span>free -o|cut -c 1-20|grep -vi <span class="s2">&quot;swap&quot;</span>|grep Mem|cut -d : -f 2|sed -e <span class="s1">&#39;s/^[ \t]*//&#39;</span><span class="k">)</span>
+</span><span class='line'><span class="nv">MEM</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&quot;$MEM 1000000&quot;</span> | awk <span class="s1">&#39;{printf &quot;%.1fGB&quot;, $1/$2}&#39;</span><span class="k">)</span>
+</span><span class='line'><span class="nv">MEM_MAX_CAPACITY</span><span class="o">=</span><span class="k">$(</span>dmidecode -t memory|grep <span class="s2">&quot;Maximum Capacity&quot;</span>|cut -d : -f 2<span class="k">)</span>
+</span><span class='line'><span class="nv">MEM_MAX_CAPACITY</span><span class="o">=</span><span class="k">${</span><span class="nv">MEM_MAX_CAPACITY</span><span class="p">// /</span><span class="k">}</span>
+</span><span class='line'><span class="nv">MEM_NUM_OF_DEV</span><span class="o">=</span><span class="k">$(</span>dmidecode -t memory|grep <span class="s2">&quot;Number Of Devices&quot;</span>|cut -d : -f 2<span class="k">)</span>
+</span><span class='line'><span class="nv">MEM_NUM_OF_DEV</span><span class="o">=</span><span class="k">${</span><span class="nv">MEM_NUM_OF_DEV</span><span class="p">// /</span><span class="k">}</span>
+</span><span class='line'><span class="nv">MEM_NUM_OF_DEV_USED</span><span class="o">=</span><span class="k">$(</span>dmidecode -t memory|grep <span class="s2">&quot;Speed: Unknown&quot;</span>|wc -l<span class="k">)</span>
+</span><span class='line'><span class="nv">MEM_NUM_OF_DEV_USED</span><span class="o">=</span><span class="k">$((</span><span class="nv">$MEM_NUM_OF_DEV</span> <span class="o">-</span> <span class="nv">$MEM_NUM_OF_DEV_USED</span><span class="k">))</span>
+</span><span class='line'><span class="nv">MEM_TYPE</span><span class="o">=</span><span class="k">$(</span>dmidecode -t memory|grep <span class="s2">&quot;Type: &quot;</span>|tail -1|cut -d : -f 2<span class="k">)</span>
+</span><span class='line'><span class="nv">MEM_TYPE</span><span class="o">=</span><span class="k">${</span><span class="nv">MEM_TYPE</span><span class="p">// /</span><span class="k">}</span>
+</span><span class='line'><span class="nv">DISK_SIZE</span><span class="o">=</span><span class="k">$(</span>fdisk  -l  2&gt;/dev/null | grep GB |cut -d , -f 1|cut -d : -f 2|sed -e <span class="s1">&#39;s/ //g&#39;</span><span class="k">)</span>
+</span><span class='line'><span class="nv">DISK_SIZE</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="nv">$DISK_SIZE</span>|tr <span class="s1">&#39; &#39;</span> <span class="s1">&#39;+&#39;</span><span class="k">)</span>
+</span><span class='line'><span class="nv">CPU</span><span class="o">=</span><span class="k">$(</span>cat /proc/cpuinfo |grep CPU|head -1|cut -d : -f 2 | sed -e <span class="s1">&#39;s/^[ \t]*//&#39;</span><span class="k">)</span>
+</span><span class='line'><span class="nv">CPU</span><span class="o">=</span><span class="k">${</span><span class="nv">CPU</span><span class="p">// /</span><span class="k">}</span>
+</span><span class='line'><span class="nv">CPU</span><span class="o">=</span><span class="k">${</span><span class="nv">CPU</span><span class="p">//@/ </span><span class="k">}</span>
+</span><span class='line'><span class="nv">CPU_NUM</span><span class="o">=</span><span class="k">$(</span>cat /proc/cpuinfo |grep CPU|wc -l<span class="k">)</span>
+</span><span class='line'><span class="nv">CPU_INFO</span><span class="o">=</span><span class="s2">&quot;$CPU * $CPU_NUM&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;${ISSHOW_DES}0&quot;</span> !<span class="o">=</span> <span class="s2">&quot;00&quot;</span> <span class="o">]</span>; <span class="k">then</span>
+</span><span class='line'><span class="k">  </span><span class="nb">echo</span> <span class="s2">&quot;|ID|服务器名|服务器型号|U数|DELL序列号|内存数|最大内存|总内存槽数|已经内存槽数|内存类型|硬盘大小信息|CPU 信息汇总|&quot;</span>
+</span><span class='line'>  <span class="nb">echo</span> <span class="s2">&quot;|--|------|--------|---|---------|-----|------|---------|----------|------|----------|----------|&quot;</span>
+</span><span class='line'><span class="k">fi</span>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;|$NUM|$HOSTNAME|$PRODUCT|$U_NUM|$SERIAL|$MEM|$MEM_MAX_CAPACITY|$MEM_NUM_OF_DEV|$MEM_NUM_OF_DEV_USED|$MEM_TYPE|$DISK_SIZE|$CPU_INFO|&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
 
 ]]></content>
   </entry>
