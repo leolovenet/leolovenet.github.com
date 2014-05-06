@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Xcode | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/xcode/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2014-04-04T15:23:18+08:00</updated>
+  <updated>2014-05-06T22:39:04+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -71,6 +71,9 @@ option+鼠标左击 迅速查看简短帮助信息
 ⌘+[  代码向左缩进
 option+⌘+[ 向上移动行
 option+⌘+] 向下移动行
+
+⌃+⌘+E Edit all in scope
+⌃I Re-indent code
 
 Ctrl+a 去行首
 Ctrl+k 删除到行尾
