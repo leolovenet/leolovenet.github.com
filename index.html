@@ -84,6 +84,211 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2014/05/28/git-and-proxy/">配置git使用proxy</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-05-28T09:50:17+08:00" pubdate data-updated="true">May 28<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Git 目前支持的三种协议  <code>git://</code> <code>ssh://</code>  <code>http://</code> 和 <code>https://</code>.</p>
+
+<p>其代理配置各不相同.<br/>
+  (1) core.gitproxy 用于 <code>git://</code> 协议<br/>
+  (2) http.proxy 用于 <code>http://</code> 协议<br/>
+  (3) <code>ssh://</code> 协议的代理需要配置 ssh 的 ProxyCommand 参数</p>
+
+<h2>(一) 针对GIT 协议(git://)配置代理</h2>
+
+<p>git 协议配置代理可以有两种方式,但是都是需要安装软件:  <code>socat</code><br/>
+(1) Debian/Ubuntu just <code>sudo apt-get install socat</code><br/>
+(2) CentOS use yum install  epel source  <code>yum -y install socat</code><br/>
+(3) Mac OS: <code>brew install socat</code></p>
+
+<h3>1. Git Through A HTTP Proxy</h3>
+
+<p>让 git 走 HTTP 代理需要创建 <code>gitproxy.sh</code> 脚本,然后赋予可执行权限: 参考的<a href="http://www.emilsit.net/blog/archives/how-to-use-the-git-protocol-through-a-http-connect-proxy/">这个文章</a></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'><span class="c"># Use socat to proxy git through an HTTP CONNECT firewall.</span>
+</span><span class='line'><span class="c"># Useful if you are trying to clone git:// from inside a company.</span>
+</span><span class='line'><span class="c"># Requires that the proxy allows CONNECT to port 9418.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Save this file as gitproxy somewhere in your path (e.g., ~/bin) and then run</span>
+</span><span class='line'><span class="c"># chmod +x gitproxy</span>
+</span><span class='line'><span class="c"># git config --global core.gitproxy gitproxy</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># More details at http://tinyurl.com/8xvpny</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Configuration. Common proxy ports are 3128, 8123, 8000.</span>
+</span><span class='line'><span class="nv">_proxy</span><span class="o">=</span>proxy.yourcompany.com
+</span><span class='line'><span class="nv">_proxyport</span><span class="o">=</span>3128
+</span><span class='line'>
+</span><span class='line'><span class="nb">exec </span>socat STDIO PROXY:<span class="nv">$_proxy</span>:<span class="nv">$1</span>:<span class="nv">$2</span>,proxyport<span class="o">=</span><span class="nv">$_proxyport</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后,配置 git 使用这个代理, 在 <code>~/.gitconfig</code> 文件里写入:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">[</span>core<span class="o">]</span>
+</span><span class='line'>    <span class="nv">gitproxy</span><span class="o">=</span>gitproxy.sh <span class="k">for </span>github.com
+</span><span class='line'>    <span class="c">#man git-config 查看 core.gitproxy 部分,关于 for * 的说明</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>2. Git Through A SOCKS Proxy (or SSH Tunnel)</h3>
+
+<p><a href="http://www.aireadfun.com/blog/2013/08/27/using-git-through-a-socks-proxy-or-ssh-tunnel/">参考的这篇文章</a></p>
+
+<p>第一步: 使用 ssh开启一个socks 代理.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>ssh -nNT -D 8119 remote.host
+</span><span class='line'><span class="c">#This command starts a SOCKS v4 proxy listening on localhost, port 8119.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第二步: 创建一个新的 <code>gitproxysocks.sh</code> 脚本,并赋予可执行权限.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Use socat to proxy git through a SOCKS proxy.</span>
+</span><span class='line'><span class="c"># Useful if you are trying to clone git:// from inside a company.</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># See http://tinyurl.com/8xvpny for Emil Sit&#39;s original HTTP proxy script.</span>
+</span><span class='line'><span class="c"># See http://tinyurl.com/45atuth for updated SOCKS version.## Configuration.</span>
+</span><span class='line'><span class="nv">_proxy</span><span class="o">=</span><span class="nv">localhost_proxyport</span><span class="o">=</span>8119
+</span><span class='line'>execsocat STDIO SOCKS4:<span class="nv">$_proxy</span>:<span class="nv">$1</span>:<span class="nv">$2</span>,socksport<span class="o">=</span><span class="nv">$_proxyport</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第三步: 配置 git 使用这个脚本,可以像上面那样写入到配置文件 <code>~/.gitconfig</code> 中,也可以配置 <code>GIT_PROXY_COMMAND</code> 环境变量, git 获取数据时会检查这个环境变量.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">GIT_PROXY_COMMAND</span><span class="o">=</span>gitproxysocks.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>(二) 针对HTTP 协议(<a href="http://">http://</a>)配置代理</h2>
+
+<p>配置 git 对 <code>http://</code> 协议开头的仓库使用 http 代理,可以直接编辑 <code>~/.gitconfig</code> 文件.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">[</span>http<span class="o">]</span>
+</span><span class='line'>    <span class="nv">proxy</span> <span class="o">=</span> http://proxy.yourcompany.com:8080
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者,可以通过下面的脚本直接设置 <code>http_proxy</code>, <code>https_proxy</code> 与 <code>all_proxy</code> 环境变量.<br/>
+把下面的脚本保存为 <code>http_proxy.sh</code> , 并在  <code>~/.bashrc</code> 或者 <code>~/.zshrc</code> 里加入 <code>source /path/to/http_proxy.sh</code>,这样在想使用 proxy 时,运行 <code>http_proxy_enable</code> 命令就可以了,取消时运行 <code>http_proxy_disable</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
+</span><span class='line'>http_proxy_enable<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nv">IP</span><span class="o">=</span><span class="s2">&quot;proxy.yourcompany.com:8080&quot;</span>
+</span><span class='line'>    <span class="nb">export </span><span class="nv">http_proxy</span><span class="o">=</span><span class="nv">$IP</span>
+</span><span class='line'>    <span class="nb">export </span><span class="nv">https_proxy</span><span class="o">=</span><span class="nv">$IP</span>
+</span><span class='line'>    <span class="nb">export </span><span class="nv">all_proxy</span><span class="o">=</span><span class="nv">$IP</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>http_proxy_disable<span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nb">unset </span>http_proxy
+</span><span class='line'>    <span class="nb">unset </span>https_proxy
+</span><span class='line'>    <span class="nb">unset </span>all_proxy
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>(三) 针对SSH 协议(ssh://)配置代理</h2>
+
+<p>使用 ssh 的好处就是在 clone 数据,或者提交数据到 github.com 时,不用在输入 github 的帐号密码.<br/>
+下面是 ssh 的设置,打开 <code>~/.ssh/config</code>
+输入 :</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Host github*
+</span><span class='line'>    User git
+</span><span class='line'>    Hostname github.com
+</span><span class='line'>    Port 22
+</span><span class='line'>    Proxycommand ssh root@proxy.yourcompany.com nc %h %p
+</span><span class='line'>    IdentityFile  ~/.ssh/id_rsa
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2014/03/28/a-linux-server-hardware-detection-resource-script/">检测 Linux 服务器硬件资源的 Bash 脚本</a></h1>
     
     
@@ -660,71 +865,6 @@ Ctrl+⌘+Up/Down  在.h与.m文件之间切换
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/01/28/squid-3-2-5-centos-x86_64-configure-error-c-compiler-cannot-create-executables/">squid-3.2.5 CentOS X86_64 Configure: Error: C Compiler Cannot Create Executables</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-28T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>squid-3.2.5 在CentOS X86_64位的环境下默认配置编译会遇到错误，如下:</p>
-
-<pre>
-checking whether the C compiler works... no
-configure: error: in `/opt/packages/goodlePackages/squid/squid_src/squid-3.2.5':
-configure: error: C compiler cannot create executables
-</pre>
-
-
-<p>x86_64解决办法如下:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>./configure <span class="nv">CXXFLAGS</span><span class="o">=</span><span class="s2">&quot;-g -O2&quot;</span>  <span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O2 -march=x86-64&quot;</span> --prefix<span class="o">=</span>/usr/local/squid
-</span><span class='line'>make
-</span><span class='line'>make install
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>i686</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>./configure -disable-64bit <span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O3 -march=i686&quot;</span> --prefix<span class="o">=</span>/usr/local/squid
-</span><span class='line'>make
-</span><span class='line'>make install
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -740,6 +880,10 @@ configure: error: C compiler cannot create executables
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/05/28/git-and-proxy/">配置git使用proxy</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2014/03/28/a-linux-server-hardware-detection-resource-script/">检测 Linux 服务器硬件资源的 Bash 脚本</a>
       </li>
     
@@ -753,10 +897,6 @@ configure: error: C compiler cannot create executables
     
       <li class="post">
         <a href="/blog/2013/10/07/my-sharing-notes/">我的Evernote笔记</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
       </li>
     
   </ul>

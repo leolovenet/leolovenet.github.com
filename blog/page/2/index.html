@@ -84,6 +84,71 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2013/01/28/squid-3-2-5-centos-x86_64-configure-error-c-compiler-cannot-create-executables/">squid-3.2.5 CentOS X86_64 Configure: Error: C Compiler Cannot Create Executables</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-28T00:00:00+08:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>squid-3.2.5 在CentOS X86_64位的环境下默认配置编译会遇到错误，如下:</p>
+
+<pre>
+checking whether the C compiler works... no
+configure: error: in `/opt/packages/goodlePackages/squid/squid_src/squid-3.2.5':
+configure: error: C compiler cannot create executables
+</pre>
+
+
+<p>x86_64解决办法如下:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>./configure <span class="nv">CXXFLAGS</span><span class="o">=</span><span class="s2">&quot;-g -O2&quot;</span>  <span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O2 -march=x86-64&quot;</span> --prefix<span class="o">=</span>/usr/local/squid
+</span><span class='line'>make
+</span><span class='line'>make install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>i686</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>./configure -disable-64bit <span class="nv">CFLAGS</span><span class="o">=</span><span class="s2">&quot;-O3 -march=i686&quot;</span> --prefix<span class="o">=</span>/usr/local/squid
+</span><span class='line'>make
+</span><span class='line'>make install
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2013/01/25/the-open-command/">Mac 下的 Open命令</a></h1>
     
     
@@ -765,59 +830,9 @@ Ready Go.<br/>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/12/18/hello-world/">Hello World</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-18T00:00:00+08:00" pubdate data-updated="true"></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>终于在传说中的“世界末日(2012.12.20)”之前搭建起来这个blog了</p>
-
-<p>作为惯例，我要大喊一声</p>
-
-<blockquote><h2>Hello world!</h2></blockquote>
-
-<p>但是现在如果喊出</p>
-
-<blockquote><h2>Hello the end of the world!</h2></blockquote>
-
-<p>更加的贴切.</p>
-
-<p>其实我是不相信末日论的,最起码末日不会发生在一天之内.</p>
-
-<p>但要给blog起一个名字,就想到这个了, “末日前几天”,挺贴切,让人感觉要抓紧时间珍惜现在.</p>
-
-<p>拥有的只剩回忆,盼望的还有未来,愿我们珍惜现在.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/3/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
@@ -830,6 +845,10 @@ Ready Go.<br/>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/05/28/git-and-proxy/">配置git使用proxy</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2014/03/28/a-linux-server-hardware-detection-resource-script/">检测 Linux 服务器硬件资源的 Bash 脚本</a>
@@ -845,10 +864,6 @@ Ready Go.<br/>
     
       <li class="post">
         <a href="/blog/2013/10/07/my-sharing-notes/">我的Evernote笔记</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/07/11/machinebill/">简单的机器资产管理,machineBill</a>
       </li>
     
   </ul>
