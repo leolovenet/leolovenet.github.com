@@ -4,7 +4,7 @@
   <title><![CDATA[末日前几天]]></title>
   <link href="http://leolovenet.com/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-21T17:44:30+08:00</updated>
+  <updated>2015-01-23T14:58:52+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -12,6 +12,523 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How to Use Xdebug and LLDT to Debug Your PHP Code With Vagrant and PHPStrom]]></title>
+    <link href="http://leolovenet.com/blog/2015/01/22/how-to-use-xdebug-and-lldt-to-debug-your-php-code-with-vagrant-and-phpstorm/"/>
+    <updated>2015-01-22T17:53:58+08:00</updated>
+    <id>http://leolovenet.com/blog/2015/01/22/how-to-use-xdebug-and-lldt-to-debug-your-php-code-with-vagrant-and-phpstorm</id>
+    <content type="html"><![CDATA[<h2>主要用到的软件</h2>
+
+<ul>
+<li><a href="https://www.jetbrains.com/phpstorm/">PhpStorm</a> PHP 开发IDE</li>
+<li><a href="http://xdebug.org/">Xdebug</a> PHP debug 插件</li>
+<li><a href="https://github.com/phacility/xhprof">Xhprof</a> Facebook 出品的 PHP 性能测量插件</li>
+<li><a href="https://github.com/leolovenet/LLDT-chrome-plugin">LLDT-chrome-plugin</a> 自己写的一个 Chrome 浏览器插件，集成了<a href="https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc?hl=en">xdebugHelper</a>，并添加了更多的选项。</li>
+<li><a href="https://www.vagrantup.com/">Vagrant</a> 一款可以管理 VirtualBox 虚拟机的软件。</li>
+<li><a href="https://www.virtualbox.org/">VirtualBox</a> 一款夸平台的虚拟机软件。</li>
+<li><a href="http://nginx.org/">Nginx</a> web 服务器软件(运行在虚拟机中)</li>
+<li><a href="http://php.net/">PHP-FPM</a> php运行管理(运行在虚拟机中)</li>
+</ul>
+
+
+<!--more-->
+
+
+<h2>Vbox &amp; Vagrant 虚拟环境介绍</h2>
+
+<h3>下载地址</h3>
+
+<ul>
+<li>Vbox最新版本下载地址 <a href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a></li>
+<li>Vagrant最新版本下载地址 <a href="http://downloads.vagrantup.com/">http://downloads.vagrantup.com/</a></li>
+</ul>
+
+
+<p>直接运行安装包进行安装。
+安装包里同时包含了卸载脚本，如果想卸载的话，直接运行就可以了。</p>
+
+<h3>相关目录</h3>
+
+<p>在 Mac 平台下：<code>Vbox</code>的虚拟机默认保存路径为<code>~/VirtualBox VMs</code>，<code>Vagrant</code>用户的数据文件保存在<code>~/.vagrant.d</code>目录下面，删除这个目录将删除<code>vagrant</code>的所有<code>box</code>与<code>plugins</code>。</p>
+
+<h3>什么是Box？</h3>
+
+<p>box就相当于是一个环境，它一般是一个Vbox虚拟机的镜像，官方提供了一个基于Ubuntu的box。
+给vagrant添加一个 Box 的命令, 打开 <code>Terminal</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant box add Ubuntu12.04 http://files.vagrantup.com/precise32.box
+</span><span class='line'>
+</span><span class='line'><span class="c"># Ubuntu12.04 的含义是虚拟机的名字.</span>
+</span><span class='line'><span class="c"># 上面的命令会下载 http://files.vagrantup.com/precise32.box ,并添加到 ~/.vagrant.d/boxes/Ubuntu12.04 下</span>
+</span><span class='line'><span class="c"># 也可以直接将box下载下来，然后添加，需要执行：</span>
+</span><span class='line'>vagrant box add Ubuntu12.04 /the/path/for/your/precise32.box
+</span><span class='line'>
+</span><span class='line'><span class="c">#查看本机安装的 box 列表</span>
+</span><span class='line'>vagrant box list
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>怎样使用 Vagrant 管理 Vbox 虚拟机</h3>
+
+<ul>
+<li><strong>初始化 Vagrant 环境</strong>，下面这个命令会在当前目录下面创建一个 Vagrant 使用的配置文件 Vagrantfile ，里面包含了 Vagrant 启动需要的配置。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant init YOUR_BOX_NAME
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>开启 VirtualBox 虚拟机</strong>，下面这个命令，会创建一个新的 VirtualBox 的虚拟机。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant up
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>关闭 VirtualBox 虚拟机</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant halt
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>挂起 VirtualBox 虚拟机</strong>，下次开机时间很短，非常快，但是占用更多的内存和硬盘空间。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant <span class="nb">suspend</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>恢复 VirtualBox 虚拟机</strong>， 将虚拟机恢复到初始状态.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant destroy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>登陆 VirtualBox 虚拟机</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant ssh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自己从官网下载一个 box，安装上后，我们开始讲正题。</p>
+
+<h2>启动软件环境</h2>
+
+<p>进入到你 Web 项目的根目录，手工创建<code>Vagrantfile</code>配置文件，或者也可以使用<code>vagrant ini</code>创建后再手工修改，添加了一个用来跟虚拟机通信的独立的 IP。</p>
+
+<p>下面是 Vagrantfile 的内容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># -*- mode: ruby -*-</span>
+</span><span class='line'><span class="c1"># vi: set ft=ruby :</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Vagrantfile API/syntax version. Don&#39;t touch unless you know what you&#39;re doing!</span>
+</span><span class='line'><span class="no">VAGRANTFILE_API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;2&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="no">VAGRANTFILE_API_VERSION</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;edengdev-CentOS6.4x86_64&quot;</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.168.168&quot;</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="s2">&quot;virtualbox&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">vb</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">vb</span><span class="o">.</span><span class="n">customize</span> <span class="o">[</span><span class="s2">&quot;modifyvm&quot;</span><span class="p">,</span> <span class="ss">:id</span><span class="p">,</span> <span class="s2">&quot;--memory&quot;</span><span class="p">,</span> <span class="s2">&quot;1024&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后运行下面的命令，开启，并登陆进虚拟机里</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant up
+</span><span class='line'>vagrant ssh
+</span><span class='line'>
+</span><span class='line'><span class="c">#创建待会需要用的目录</span>
+</span><span class='line'>mkdir -p /var/log/php/xdebug/trace_output
+</span><span class='line'>mkdir -p /var/log/php/xdebug/profiler_output
+</span><span class='line'>mkdir -p /var/log/php/xhprof/xhprof_data
+</span><span class='line'>mkdir -p /etc/php/include
+</span><span class='line'>
+</span><span class='line'><span class="c">#修噶 hosts 文件，这样可以直接访问网址 「http://me.dev」来进行本机开发了。</span>
+</span><span class='line'>sudo  <span class="nb">echo</span> <span class="s2">&quot;me.dev 192.168.168.168&quot;</span>  &gt;&gt; /etc/hosts
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在虚拟机中安装好<code>Nginx</code>，<code>PHP-FPM</code>，<code>Xdebug</code>，<code>Xhprof</code>，这个过程就不过多的介绍了。</p>
+
+<p>下面是我的 Xdebug 配置文件样例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">; xdebug             ;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="k">[xdebug]</span>
+</span><span class='line'><span class="c1">; 这里要求必须是绝对路径，不能是相对路径 see:</span>
+</span><span class='line'><span class="c1">; http://stackoverflow.com/questions/1758014/whats-the-difference-between-extension-and-zend-extension-in-php-ini</span>
+</span><span class='line'><span class="na">zend_extension</span><span class="o">=</span><span class="s">&quot;/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/xdebug.so&quot;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;;;     All API Docs At http://xdebug.org/docs/all_settings     ;;;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">xdebug.overload_var_dump</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="c1">; 强制指定显示错误，不管php.ini的设置</span>
+</span><span class='line'><span class="na">xdebug.force_display_errors</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="na">xdebug.force_error_reporting</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">; If this setting is 1, then stacktraces will be shown by default on an error event.</span>
+</span><span class='line'><span class="c1">; You can disable showing stacktraces from your code with xdebug_disable().</span>
+</span><span class='line'><span class="c1">; As this is one of the basic functions of Xdebug, it is advisable to leave this setting set to 1.</span>
+</span><span class='line'><span class="na">xdebug.default_enable</span><span class="o">=</span><span class="s">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">; don&#39;t use coverage function</span>
+</span><span class='line'><span class="na">xdebug.coverage_enable</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;                 Stack Traces                       ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;       http://xdebug.org/docs/stack_trace           ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">xdebug.collect_params</span><span class="o">=</span><span class="s">3</span>
+</span><span class='line'><span class="na">xdebug.collect_return</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="c1">; xdebug.collect_vars=On</span>
+</span><span class='line'><span class="c1">; xdebug.dump_globals=On</span>
+</span><span class='line'><span class="c1">; xdebug.dump.SERVER=&quot;REQUEST_URI&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;            Function Trace                          ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;     http://xdebug.org/docs/execution_trace         ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">xdebug.auto_trace</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="na">xdebug.collect_includes</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="c1">;显示内存信息,在trace的时候</span>
+</span><span class='line'><span class="na">xdebug.show_mem_delta</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="na">xdebug.trace_enable_trigger</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="na">xdebug.trace_output_dir</span><span class="o">=</span><span class="s">&quot;/var/log/php/xdebug/trace_output&quot;</span>
+</span><span class='line'><span class="c1">;指定trace输出文件的格式, 0 是文本文件，1 计算机可读格式， 2 html格式</span>
+</span><span class='line'><span class="na">xdebug.trace_format</span><span class="o">=</span><span class="s">0</span>
+</span><span class='line'><span class="c1">;When set to &#39;1&#39; the trace files will be appended to, instead of being overwritten in subsequent requests.</span>
+</span><span class='line'><span class="na">xdebug.trace_options</span><span class="o">=</span><span class="s">0</span>
+</span><span class='line'><span class="c1">;指定trace输出文件名的格式, %R Meaning $_SERVER[&#39;REQUEST_URI&#39;]</span>
+</span><span class='line'><span class="na">xdebug.trace_output_name</span><span class="o">=</span><span class="s">trace.%R</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;            Profiling Script                        ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;        http://xdebug.org/docs/profiler             ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">xdebug.profiler_enable</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="na">xdebug.profiler_output_dir</span><span class="o">=</span><span class="s">&quot;/var/log/php/xdebug/profiler_output&quot;</span>
+</span><span class='line'><span class="na">xdebug.profiler_enable_trigger</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="c1">;profiler文件是追加，还是重写</span>
+</span><span class='line'><span class="na">xdebug.profiler_append</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="na">xdebug.profiler_output_name</span><span class="o">=</span><span class="s">%R.cachegrind</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;              Remote Debugging                      ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;        http://xdebug.org/docs/remote               ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">xdebug.remote_handler</span><span class="o">=</span><span class="s">dbgp</span>
+</span><span class='line'><span class="na">xdebug.remote_autostart</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="na">xdebug.remote_enable</span><span class="o">=</span><span class="s">1</span>
+</span><span class='line'><span class="na">xdebug.remote_host</span><span class="o">=</span><span class="s">192.168.192.1</span>
+</span><span class='line'><span class="na">xdebug.remote_port</span><span class="o">=</span><span class="s">9000</span>
+</span><span class='line'><span class="na">xdebug.remote_mode</span><span class="o">=</span><span class="s">req</span>
+</span><span class='line'><span class="c1">;xdebug.remote_log=&quot;&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是我的 Xhprof 的配置样例：</p>
+
+<p>首先，将<code>Xhprof</code>自带的<code>xhprof_html</code>,<code>xhprof_lib</code>目录放入到<code>/var/log/php/xhprof/</code> 下。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="c1">;;;;;;;;;;; add the following configuration to php.ini ;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">auto_prepend_file</span> <span class="o">=</span> <span class="s">&quot;/etc/php/include/auto_prepend.php&quot;</span>
+</span><span class='line'><span class="na">auto_append_file</span>  <span class="o">=</span> <span class="s">&quot;/etc/php/include/auto_append.php&quot;</span>
+</span><span class='line'><span class="c1">; Xhprof Module</span>
+</span><span class='line'><span class="k">[xhprof]</span>
+</span><span class='line'><span class="na">xhprof.output_dir</span> <span class="o">=</span> <span class="s">/var/log/php/xhprof/xhprof_data</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;; add the following configuration to php-fpm.conf ;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;#### for xhprof</span>
+</span><span class='line'><span class="na">php_admin_value[extension]</span> <span class="o">=</span> <span class="s">xhprof.so</span>
+</span><span class='line'><span class="na">env[XHPROF_ROOT_PATH]</span> <span class="o">=</span> <span class="s">/var/log/php/xhprof</span>
+</span><span class='line'><span class="c1"># 采样百分比，多少次访问后性能采样一次</span>
+</span><span class='line'><span class="na">env[XHPROF_SAMPLING_PERCENTAGE]</span> <span class="o">=</span> <span class="s">3000</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是 <code>/etc/php/include/auto_prepend.php</code> 的内容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">if</span><span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;XHPROF_ROOT_PATH&#39;</span><span class="p">])){</span>
+</span><span class='line'>    <span class="c1">// start profiling</span>
+</span><span class='line'>    <span class="c1">// options: xhprof_enable(  XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY + XHPROF_FLAGS_NO_BUILTINS );</span>
+</span><span class='line'>    <span class="nv">$xhprof_on</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//if ($_SERVER[&#39;REQUEST_METHOD&#39;] == &#39;POST&#39;){</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span> <span class="nb">function_exists</span><span class="p">(</span><span class="s1">&#39;xhprof_enable&#39;</span><span class="p">)</span>  <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">mt_rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;XHPROF_SAMPLING_PERCENTAGE&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">||</span> <span class="nb">isset</span><span class="p">(</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s1">&#39;XHPROF_PROFILE&#39;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">xhprof_enable</span><span class="p">(</span><span class="nx">XHPROF_FLAGS_NO_BUILTINS</span> <span class="o">+</span> <span class="nx">XHPROF_FLAGS_MEMORY</span><span class="p">);</span>
+</span><span class='line'>            <span class="nv">$xhprof_on</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="c1">//}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是 <code>/etc/php/include/auto_append.php</code> 的内容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nv">$xhprof_on</span><span class="p">){</span>
+</span><span class='line'>    <span class="nv">$xhprof_data</span> <span class="o">=</span> <span class="nx">xhprof_disable</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">include_once</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;XHPROF_ROOT_PATH&#39;</span><span class="p">]</span> <span class="o">.</span> <span class="s2">&quot;/xhprof_lib/utils/xhprof_lib.php&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">include_once</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;XHPROF_ROOT_PATH&#39;</span><span class="p">]</span> <span class="o">.</span> <span class="s2">&quot;/xhprof_lib/utils/xhprof_runs.php&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nv">$xhprof_runs</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XHProfRuns_Default</span><span class="p">();</span>
+</span><span class='line'>    <span class="nv">$xhporf_script_name</span><span class="o">=</span> <span class="nb">str_replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="nx">substr</span><span class="p">(</span><span class="nb">str_replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;SCRIPT_FILENAME&#39;</span><span class="p">]),</span><span class="mi">1</span><span class="p">)</span> <span class="p">);</span>
+</span><span class='line'>    <span class="nv">$run_id</span> <span class="o">=</span> <span class="nv">$xhprof_runs</span><span class="o">-&gt;</span><span class="na">save_run</span><span class="p">(</span> <span class="nv">$xhprof_data</span><span class="p">,</span> <span class="nv">$xhporf_script_name</span> <span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="s1">&#39;YmdHis&#39;</span><span class="p">)</span><span class="o">.</span><span class="nx">substr</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span><span class="nb">microtime</span><span class="p">(),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>设置 PhpStorm</h2>
+
+<p>我使用的 IDE 软件为  <a href="https://www.jetbrains.com/phpstorm/">PhpStorm</a>，要配合使用 Vagrant 的话，还需要特殊配置一下。</p>
+
+<h3>1.Create New Project</h3>
+
+<p><img src="http://leolovenet.com/downloads/images/phpstorm-1.jpg" alt="phpstorm-1" /></p>
+
+<h3>2. Edit Configrations&hellip;</h3>
+
+<p>Run > Edit Configrations&hellip; > Defaults > PHP Remote Debug > Servers
+<img src="http://leolovenet.com/downloads/images/phpstorm-4.jpg" alt="phpstorm-4" /></p>
+
+<p>因为使用 Vagrant 的缘故，所以调试 PHP 代码的时候，需要配置目录映射。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="c1"># your/sites/path            --&gt;  /vagrant</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://leolovenet.com/downloads/images/phpstorm-5.jpg" alt="phpstorm-5" /></p>
+
+<h3>3.Debug</h3>
+
+<p>勾选， Run > &ldquo;Break at first line in PHP scripts&rdquo; 后，点击 “Debug &lsquo;xxxxx&rsquo;
+<img src="http://leolovenet.com/downloads/images/phpstorm-6.jpg" alt="phpstorm-6" />
+<img src="http://leolovenet.com/downloads/images/phpstorm-7.jpg" alt="phpstorm-7" /></p>
+
+<h2>Chrome 浏览器的插件 LLDT</h2>
+
+<p>chrome 安装 LLDT 后，打开你开发的网址<a href="http://me.dev,">http://me.dev,</a> 刷新一下。会看到地址栏的LLDT图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗。
+<img src="http://leolovenet.com/downloads/images/phpstorm-8.png" alt="phpstorm-8" /></p>
+
+<h3>Enable Xdebug debug</h3>
+
+<p>点击<code>Enable Xdebug debug</code>，或者按快捷键 <code>D</code>, 刷新网页。 返回PhpStorm程序，应该已经开启debug了。
+<img src="http://leolovenet.com/downloads/images/phpstorm-9.jpg" alt="phpstorm-9" /></p>
+
+<h3>Enable Xdebug Profile</h3>
+
+<p>Xdebug Profile 功能可以对HTTP请求页面对应的脚本性能进行分析，并将分析数据保存到文件中。</p>
+
+<ul>
+<li>Mac 用户可以安装 qcachegrind ,来观看Profilling保存的数据文件，<code>brew install qcachegrind</code>。</li>
+<li>Windows 用户可以安装 WinCacheGrind, 或者 KCacheGrind, 来观看。</li>
+</ul>
+
+
+<p>找到Chrome浏览器地址栏的LLDT图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗，点击<code>Enable Xdebug Profile</code>，或者按快捷键 <code>P</code>, 刷新网页就可以了。</p>
+
+<p>Profile 的数据文件存储在了，<code>/var/log/php/xdebug/profiler_output</code> 目录中。
+mac下查看分析结果，安装完qcachegrind，将数据文件 copy 出来，打开 <code>Terminal</code>，运行<code>qcachegrind xxxx.cachegrind</code>  命令，查看相应地xxxx数据文件。</p>
+
+<p>例如：
+<img src="http://leolovenet.com/downloads/images/phpstorm-10.jpg" alt="phpstorm-10" /></p>
+
+<h3>Enable Xdebug Trace</h3>
+
+<p>Xdebug Trace 功能可以对HTTP请求页面对应的脚本执行过程的函数调用进行记录，并将记录结果保存到文件中。</p>
+
+<p>找到 Chrome 浏览器地址栏的 LLDT 图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗，点击<code>Enable Xdebug Trace</code>，或者按快捷键 <code>T</code>, 刷新网页就可以了。</p>
+
+<p>保存的数据文件存储在了，<code>/var/log/php/xdebug/trace_output</code> 目录中。
+直接可以用你自己喜欢的文本编辑器查看分析结果。</p>
+
+<h3>Enable Xhprof</h3>
+
+<p>Xhprof 为 Facebook 出品的分层PHP性能分析工具。 可以对 PHP脚本的执行进行性能分析。并将记录结果保存到文件中。</p>
+
+<p>找到 Chrome 浏览器地址栏的 LLDT 图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗，点击<code>Enable Xhprof</code>，或者按快捷键 <code>X</code>, 刷新网页就可以了。</p>
+
+<p>保存的数据文件存储在了，<code>/var/log/php/xhprof/xhprof_data</code> 目录中。
+xhprof 的分析结果怎么查看, 自己查看官网的介绍吧。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[配置git使用proxy]]></title>
@@ -3628,787 +4145,6 @@ int result = myBlock(4); // 返回结果是 28
     <content type="html"><![CDATA[<p>ShowYourIP利用php+Bootstrap+QQwrt.dat展示用户IP和位置信息，并可以利用ajax查询任意ip地址的物理位置。 <a href="https://github.com/leolovenet/ShowYourIP">GitHub</a>.</p>
 
 <p><img src="https://raw.github.com/leolovenet/ShowYourIP/master/showYourIP.png" title="showYourIP" alt="showYourIP.png" /></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[手工编译安装Mysql+Nginx+PHP+CentOS+wordpress]]></title>
-    <link href="http://leolovenet.com/blog/2012/12/19/mysql-nginx-php-linux-wordpress/"/>
-    <updated>2012-12-19T00:00:00+08:00</updated>
-    <id>http://leolovenet.com/blog/2012/12/19/mysql-nginx-php-linux-wordpress</id>
-    <content type="html"><![CDATA[<p>首先,关于这个组合非常的出名,(早先是apache用做web服务,后被nginx篡位), 他们的好处就不细讲了,具体的可以看一下<a href="http://blog.s135.com/nginx_php_v6/" title="张宴" target="_blank">张宴同学的Nginx 0.8.x + PHP 5.2.13（FastCGI）搭建胜过Apache十倍的Web服务器（第6版）[原创]</a>,那篇文章写的很详细,不过有段时间没有更新了,有些软件有些老,而且我的搭建环境是在CentOS(x86_64)位下,有一些不同的地方.<br/>
-OK, Next.
-安装步骤为先安装Mysql, 然后PHP, 然后Nginx, 最后讲一下nginx下配置worldpress时怎样修改配置文件.<br/>
-顺便说一下,本文中提到的所有开源软件截止到<span style="color:red;">2012年12月21日</span>,全部为最新<strong>稳定版</strong>.</p>
-
-<p>本文提及的所有的软件全部下载到了<code>/data/packages/</code>目录下.
-本文提及的所有的软件全部安装到了<code>/data/webservers/</code>目录下.
-(如果你的安装环境跟本文有出处的话,只需要在下面的初始环境命令中更换变量<code>{TEMP_DIR_PACKAGES|TEMP_DIR_WEBSERVERS}</code>即可)
-本文所有安装的新服务都会利用<code>chkconfig</code>添加到系统启动服务里,确保机器重启后服务能够自动启动.<br/>
-本文所有安装好的新服务都可以利用标准的命令格式<code>/etc/init.d/XXX {start|stop|restart|reload}</code>进行手工的<code>{start|stop|restart|reload}</code><br/>
-Ready Go.<br/>
-初步准备,利用CentOS系统自带的yum命令安装、升级所需的程序库,建立基本目录,构建初始环境.</p>
-
-<!--more-->
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mkdir -p /data/packages
-</span><span class='line'>mkdir -p /data/webservers
-</span><span class='line'><span class="nb">export </span><span class="nv">TEMP_DIR_PACKAGES</span><span class="o">=</span>/data/packages
-</span><span class='line'><span class="nb">export </span><span class="nv">TEMP_DIR_WEBSERVERS</span><span class="o">=</span>/data/webservers
-</span><span class='line'>yum -y install gcc gcc-c++ autoconf libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel libidn libidn-devel openssl openssl-devel openldap openldap-devel openldap-clients openldap-servers cmake
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>敲入回车之后,让yum飞一会&hellip; &hellip;</p>
-
-<h2>Mysql</h2>
-
-<p>我们第一个要安装mysql,全部安装命令如下,注意我把下载的压缩包的详细版本换成了<code>*</code>,这样有助与解决小版本的不同,可能你下载的mysql会升级小版本号:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_PACKAGES</span>
-</span><span class='line'>wget http://dev.mysql.com/downloads/mirror.php?id<span class="o">=</span>411115
-</span><span class='line'>tar -zxf mysql-5.5.*.tar.gz
-</span><span class='line'><span class="nb">cd </span>mysql-5.5.*
-</span><span class='line'>groupadd mysql
-</span><span class='line'>useradd -r -g mysql mysql
-</span><span class='line'>cmake -D  CMAKE_INSTALL_PREFIX:PATH<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/  -D MYSQL_DATADIR:PATH<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/data/ .
-</span><span class='line'>make
-</span><span class='line'>make install
-</span><span class='line'>
-</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;$TEMP_DIR_WEBSERVERS/mysql/lib/&quot;</span> &gt;&gt; /etc/ld.so.conf.d/webservers.conf
-</span><span class='line'>/sbin/ldconfig
-</span><span class='line'>
-</span><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/
-</span><span class='line'>chown -R mysql .
-</span><span class='line'>chgrp -R mysql .
-</span><span class='line'>scripts/mysql_install_db --user<span class="o">=</span>mysql
-</span><span class='line'>chown -R root .
-</span><span class='line'>chown -R mysql data
-</span><span class='line'>cp support-files/my-medium.cnf /etc/my.cnf
-</span><span class='line'>cp support-files/mysql.server /etc/init.d/mysql.server
-</span><span class='line'>chkconfig --add mysql.server
-</span><span class='line'>chkconfig --list mysql.server
-</span><span class='line'>/etc/init.d/mysql.server start
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>上面最后一行命令就是用我说的标准启动服务格式,开启mysql服务.当然你也可以用<code>service xxx start</code>这种格式.<br/>
-下面的的命令是可选的,你也可以不这样做,但是还是建议看一下,毕竟没有坏处只有好处.<br/>
-<strong>Next command is optional</strong></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#运行脚本,给mysql的root用户设置密码,删除测试的用户和测试数据库</span>
-</span><span class='line'><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/bin/mysql_secure_installation
-</span><span class='line'><span class="c">#修改mysql配置文件,让它避免中文乱码问题</span>
-</span><span class='line'>vim /etc/my.cnf
-</span><span class='line'><span class="c">#在[client]后面添加</span>
-</span><span class='line'>default-character-set <span class="o">=</span> utf8
-</span><span class='line'><span class="c">#在[mysqld]后面添加</span>
-</span><span class='line'>character-set-server <span class="o">=</span> utf8
-</span><span class='line'><span class="c">#用你刚刚设置的root密码登陆mysql,为mysql创建一个新的用户</span>
-</span><span class='line'><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/bin/mysql -uroot -p
-</span><span class='line'>GRANT ALL PRIVILEGES ON *.* TO <span class="s1">&#39;leolovenet&#39;</span>@<span class="s1">&#39;%&#39;</span> IDENTIFIED BY <span class="s1">&#39;123&#39;</span>;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>安装php的依赖软件</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_PACKAGES</span>
-</span><span class='line'>
-</span><span class='line'>wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
-</span><span class='line'>tar zxf libiconv-1.14.tar.gz
-</span><span class='line'><span class="nb">cd </span>libiconv-1.14/
-</span><span class='line'>./configure
-</span><span class='line'>make
-</span><span class='line'>make install
-</span><span class='line'><span class="nb">cd</span> ../
-</span><span class='line'>
-</span><span class='line'>wget http://sourceforge.net/projects/mcrypt/files/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz/download
-</span><span class='line'>tar zxf libmcrypt-2.5.8.tar.gz
-</span><span class='line'><span class="nb">cd </span>libmcrypt-2.5.8/
-</span><span class='line'>./configure
-</span><span class='line'>make
-</span><span class='line'>make install
-</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;/usr/local/lib/&quot;</span> &gt;&gt; /etc/ld.so.conf.d/webservers.conf
-</span><span class='line'>/sbin/ldconfig
-</span><span class='line'><span class="nb">cd </span>libltdl/
-</span><span class='line'>./configure --enable-ltdl-install
-</span><span class='line'>make
-</span><span class='line'>make install
-</span><span class='line'><span class="nb">cd</span> ../../
-</span><span class='line'>
-</span><span class='line'>wget http://sourceforge.net/projects/mhash/files/latest/download
-</span><span class='line'>tar zxvf mhash-*.tar.gz
-</span><span class='line'><span class="nb">cd </span>mhash-*/
-</span><span class='line'>./configure
-</span><span class='line'>make
-</span><span class='line'>make install
-</span><span class='line'><span class="nb">cd</span> ../
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>wget http://sourceforge.net/projects/mcrypt/files/latest/download
-</span><span class='line'>tar zxvf mcrypt-*.tar.gz
-</span><span class='line'><span class="nb">cd </span>mcrypt-*/
-</span><span class='line'>/sbin/ldconfig
-</span><span class='line'>./configure
-</span><span class='line'>make
-</span><span class='line'>make install
-</span><span class='line'><span class="nb">cd</span> ../
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>安装php</h2>
-
-<p>因为我的机器是x86_64位环境,所以在配置php的时候加入了<code>--with-libdir=lib64</code>选项.<br/>
-此时,php会检查mysql的<code>$TEMP_DIR_WEBSERVERS/mysql/lib64</code>目录,而不是<code>$TEMP_DIR_WEBSERVERS/mysql/lib</code>目录,所以我们加入了一个软链接</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>ln -s <span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/lib <span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/lib64
-</span><span class='line'>
-</span><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_PACKAGES</span>
-</span><span class='line'>wget http://cn2.php.net/get/php-5.3.20.tar.gz/from/this/mirror
-</span><span class='line'>tar zxf php-5.3.20.tar.gz
-</span><span class='line'><span class="nb">cd </span>php-5.3.20
-</span><span class='line'>./configure --prefix<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/php --with-config-file-path<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/php/etc --with-mysql<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql --with-mysqli<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/mysql/bin/mysql_config --with-iconv-dir<span class="o">=</span>/usr/local --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-libxml-dir<span class="o">=</span>/usr --enable-xml --disable-rpath  --enable-safe-mode --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --with-curl --with-curlwrappers --enable-mbregex  --enable-fpm  --enable-mbstring --with-mcrypt --with-gd --enable-gd-native-ttf --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-ldap --with-ldap-sasl --with-xmlrpc --enable-zip --enable-soap --enable-sqlite-utf8 --with-libdir<span class="o">=</span>lib64
-</span><span class='line'>make <span class="nv">ZEND_EXTRA_LIBS</span><span class="o">=</span><span class="s1">&#39;-liconv&#39;</span>
-</span><span class='line'>make install
-</span><span class='line'>cp <span class="nv">$TEMP_DIR_PACKAGES</span>/php-5.3.20/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
-</span><span class='line'>chmod 755 /etc/init.d/php-fpm
-</span><span class='line'>chkconfig --add php-fpm
-</span><span class='line'>cp <span class="nv">$TEMP_DIR_PACKAGES</span>/php-5.3.20/php.ini-production <span class="nv">$TEMP_DIR_WEBSERVERS</span>/php/etc/php.ini
-</span><span class='line'>cp <span class="nv">$TEMP_DIR_WEBSERVERS</span>/php/etc/php-fpm.conf.default <span class="nv">$TEMP_DIR_WEBSERVERS</span>/php/etc/php-fpm.conf
-</span><span class='line'>
-</span><span class='line'><span class="c">#手工修改php.ini文件,vim $TEMP_DIR_WEBSERVERS/php/etc/php.ini</span>
-</span><span class='line'><span class="c">#修改cgi.fix_pathinfo=0,防止Nginx文件类型错误解析漏洞.</span>
-</span><span class='line'><span class="c">#手工修改vim $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.ini文件,根据自己机器的内存大小,修改php-fpm开启的运行进程数</span>
-</span><span class='line'><span class="c">#pm.max_spare_servers = 5</span>
-</span><span class='line'>
-</span><span class='line'>/etc/init.d/php-fpm start
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Nginx</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>wget http://sourceforge.net/projects/pcre/files/latest/download
-</span><span class='line'>tar zxf pcre-*
-</span><span class='line'><span class="nb">cd </span>pcre-*/
-</span><span class='line'>./configure
-</span><span class='line'>make <span class="o">&amp;&amp;</span> make install
-</span><span class='line'><span class="nb">cd</span> ../
-</span><span class='line'>
-</span><span class='line'>wget http://nginx.org/download/nginx-1.2.6.tar.gz
-</span><span class='line'>./configure --user<span class="o">=</span>www --group<span class="o">=</span>www --prefix<span class="o">=</span><span class="nv">$TEMP_DIR_WEBSERVERS</span>/nginx --with-http_stub_status_module --with-http_ssl_module
-</span><span class='line'>make <span class="o">&amp;&amp;</span> make install
-</span><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_WEBSERVERS</span>/nginx/conf
-</span><span class='line'>mkdir global
-</span><span class='line'>mkdir vhost
-</span><span class='line'>mkdir -p <span class="nv">$TEMP_DIR_WEBSERVERS</span>/www/other/
-</span><span class='line'>mv nginx.conf nginx.conf.org
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>手工编辑 <code>vim $TEMP_DIR_WEBSERVERS/nginx/conf/nginx.conf</code>,输入下面的内容.<br/>
-注意下面内容的路径<code>/data/webservers</code>,如果你的环境不同,请手工更换.</p>
-
-<pre>
-user  www www;
-#ususally equal to number of CPU's you have. run command "grep processor /proc/cpuinfo | wc -l" to find it
-worker_processes  1;
-error_log  /data/webservers/nginx/logs/nginx_error.log  crit;
-pid        /data/webservers/nginx/nginx.pid;
-
-#Specifies the value for maximum file descriptors that can be opened by this process. 
-#worker_rlimit_nofile 65535;
-
-events {
-    #use epoll;
-    worker_connections  1024;
-}
-
-http {
-    include       mime.types;
-    default_type  application/octet-stream;
-      
-    #rewrite_log on;
-    sendfile on;
-    #tcp_nopush     on;
-    keepalive_timeout 3;
-    #tcp_nodelay on;
-    
-    fastcgi_connect_timeout 300;
-    fastcgi_send_timeout 300;
-    fastcgi_read_timeout 300;
-    fastcgi_buffer_size 64k;
-    fastcgi_buffers 4 64k;
-    fastcgi_busy_buffers_size 128k;
-    fastcgi_temp_file_write_size 128k;
-  
-    gzip on;
-    gzip_min_length  1k;
-    gzip_buffers     4 16k;
-    gzip_http_version 1.0;
-    gzip_comp_level 2;
-    gzip_types       text/plain application/x-javascript text/css application/xml;
-    gzip_vary on;
-
-    #php max upload limit cannot be larger than this       
-    client_max_body_size 13m;
-    server_names_hash_bucket_size 128;
-    client_header_buffer_size 32k;
-    large_client_header_buffers 4 32k;
-      
-    index  index.php index.html index.htm;
-  # Upstream to abstract backend connection(s) for PHP.
-    upstream php {
-                #this should match value of "listen" directive in php-fpm pool
-                #server unix:/tmp/php-fpm.sock;
-                server 127.0.0.1:9000;
-      }
-
-    log_format  access  '$remote_addr - $remote_user [$time_local] "$request" '
-              '$status $body_bytes_sent "$http_referer" '
-              '"$http_user_agent" $http_x_forwarded_for';
-
-    server  {
-        listen       80;
-        server_name  bbkanba.com  www.bbkanba.com;
-        charset utf-8;
-      root      /data/webservers/www/other/;
-      access_log  /data/webservers/nginx/logs/access.log  access;
-    
-    include   global/restrictions.conf;
-    include   global/php.conf;
-    } 
-  include vhost/*.conf;
-}
-</pre>
-
-
-<p>进入到<code>cd $TEMP_DIR_WEBSERVERS/nginx/conf/global/</code>,创建php.conf,输入下面的内容:</p>
-
-<pre>
-# Pass all .php files onto a php-fpm/php-fcgi server.
-location ~ \.php$ {
-    # Zero-day exploit defense.
-    # http://forum.nginx.org/read.php?2,88845,page=3
-    # Won't work properly (404 error) if the file is not stored on this server, which is entirely possible with php-fpm/php-fcgi.
-    # Comment the 'try_files' line out if you set up php-fpm/php-fcgi on another machine.  And then cross your fingers that you won't get hacked.
-    try_files $uri =404;
-
-    fastcgi_split_path_info ^(.+\.php)(/.+)$;
-    #NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
-
-    include fastcgi_params;
-    fastcgi_index index.php;
-    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    #fastcgi_intercept_errors on;
-    fastcgi_pass php;
-}
-</pre>
-
-
-<p>继续创建restrictions.conf,输入下面的内容:</p>
-
-<pre>
-# Global restrictions configuration file.
-# Designed to be included in any server {} block.
-
-location = /favicon.ico {
-  log_not_found off;
-  access_log off;
-}
-
-location = /robots.txt {
-  allow all;
-  log_not_found off;
-  access_log off;
-}
-
-# Deny all attempts to access hidden files such as .htaccess, .htpasswd, .DS_Store (Mac).
-# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
-location ~ /\. {
-  deny all;
-}
-
-# Deny access to any files with a .php extension in the uploads directory
-# Works in sub-directory installs and also in multisite network
-# Keep logging the requests to parse later (or to pass to firewall utilities such as fail2ban)
-location ~* /(?:uploads|files)/.*\.php$ {
-  deny all;
-}
-</pre>
-
-
-<p>配置文件创建完毕,为了遵循我们之前说的,可以用<code>/etc/init.d/XXX {start|stop|restart|reload}</code>这种格式进行服务的控制,需要手工创建脚本,<br/>
-<code>vim /etc/init.d/nginx</code>,输入下面内容:<br/>
-注意下面内容的路径<code>/data/webservers</code>,如果你的环境不同,请手工更换.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-<span class='line-number'>121</span>
-<span class='line-number'>122</span>
-<span class='line-number'>123</span>
-<span class='line-number'>124</span>
-<span class='line-number'>125</span>
-<span class='line-number'>126</span>
-<span class='line-number'>127</span>
-<span class='line-number'>128</span>
-<span class='line-number'>129</span>
-<span class='line-number'>130</span>
-<span class='line-number'>131</span>
-<span class='line-number'>132</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/sh</span>
-</span><span class='line'><span class="c"># nginx - this script starts and stops the nginx daemon</span>
-</span><span class='line'><span class="c">#</span>
-</span><span class='line'><span class="c"># chkconfig:   - 85 15</span>
-</span><span class='line'><span class="c"># Required-Start:    $remote_fs $network</span>
-</span><span class='line'><span class="c"># Required-Stop:     $remote_fs $network</span>
-</span><span class='line'><span class="c"># Default-Start:     2 3 4 5</span>
-</span><span class='line'><span class="c"># Default-Stop:      0 1 6</span>
-</span><span class='line'><span class="c"># description:  Nginx is an HTTP(S) server, HTTP(S) reverse \</span>
-</span><span class='line'><span class="c">#               proxy and IMAP/POP3 proxy server</span>
-</span><span class='line'><span class="c"># processname: nginx</span>
-</span><span class='line'><span class="c"># config:      /data/webservers/nginx/conf/nginx.conf</span>
-</span><span class='line'><span class="c"># pidfile:     /data/webservers/nginx/nginx.pid</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Source function library.</span>
-</span><span class='line'>. /etc/rc.d/init.d/functions
-</span><span class='line'>
-</span><span class='line'><span class="c"># Source networking configuration.</span>
-</span><span class='line'>. /etc/sysconfig/network
-</span><span class='line'>
-</span><span class='line'><span class="c"># Check that networking is up.</span>
-</span><span class='line'><span class="o">[</span> <span class="s2">&quot;$NETWORKING&quot;</span> <span class="o">=</span> <span class="s2">&quot;no&quot;</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">exit </span>0
-</span><span class='line'>
-</span><span class='line'><span class="nv">nginx</span><span class="o">=</span><span class="s2">&quot;/data/webservers/nginx/sbin/nginx&quot;</span>
-</span><span class='line'><span class="nv">prog</span><span class="o">=</span><span class="k">$(</span>basename <span class="nv">$nginx</span><span class="k">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="nv">NGINX_CONF_FILE</span><span class="o">=</span><span class="s2">&quot;/data/webservers/nginx/conf/nginx.conf&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">[</span> -f /etc/sysconfig/nginx <span class="o">]</span> <span class="o">&amp;&amp;</span> . /etc/sysconfig/nginx
-</span><span class='line'>
-</span><span class='line'><span class="nv">lockfile</span><span class="o">=</span>/var/lock/subsys/nginx
-</span><span class='line'>
-</span><span class='line'>make_dirs<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>   <span class="c"># make required directories</span>
-</span><span class='line'>   <span class="nv">user</span><span class="o">=</span><span class="sb">`</span><span class="nv">$nginx</span> -V 2&gt;&amp;1 | grep <span class="s2">&quot;configure arguments:&quot;</span> | sed <span class="s1">&#39;s/[^*]*--user=\([^ ]*\).*/\1/g&#39;</span> -<span class="sb">`</span>
-</span><span class='line'>   <span class="k">if</span> <span class="o">[</span> -z <span class="s2">&quot;`grep $user /etc/passwd`&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">       </span>useradd -M -s /bin/nologin <span class="nv">$user</span>
-</span><span class='line'>   <span class="k">fi</span>
-</span><span class='line'><span class="k">   </span><span class="nv">options</span><span class="o">=</span><span class="sb">`</span><span class="nv">$nginx</span> -V 2&gt;&amp;1 | grep <span class="s1">&#39;configure arguments:&#39;</span><span class="sb">`</span>
-</span><span class='line'>   <span class="k">for </span>opt in <span class="nv">$options</span>; <span class="k">do</span>
-</span><span class='line'><span class="k">       if</span> <span class="o">[</span> <span class="sb">`</span><span class="nb">echo</span> <span class="nv">$opt</span> | grep <span class="s1">&#39;.*-temp-path&#39;</span><span class="sb">`</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'><span class="k">           </span><span class="nv">value</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> <span class="nv">$opt</span> | cut -d <span class="s2">&quot;=&quot;</span> -f 2<span class="sb">`</span>
-</span><span class='line'>           <span class="k">if</span> <span class="o">[</span> ! -d <span class="s2">&quot;$value&quot;</span> <span class="o">]</span>; <span class="k">then</span>
-</span><span class='line'>               <span class="c"># echo &quot;creating&quot; $value</span>
-</span><span class='line'>               mkdir -p <span class="nv">$value</span> <span class="o">&amp;&amp;</span> chown -R <span class="nv">$user</span> <span class="nv">$value</span>
-</span><span class='line'>           <span class="k">fi</span>
-</span><span class='line'><span class="k">       fi</span>
-</span><span class='line'><span class="k">   done</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>start<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="o">[</span> -x <span class="nv">$nginx</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">exit </span>5
-</span><span class='line'>    <span class="o">[</span> -f <span class="nv">$NGINX_CONF_FILE</span> <span class="o">]</span> <span class="o">||</span> <span class="nb">exit </span>6
-</span><span class='line'>    make_dirs
-</span><span class='line'>    <span class="nb">echo</span> -n <span class="s2">$&quot;Starting $prog: &quot;</span>
-</span><span class='line'>    daemon <span class="nv">$nginx</span> -c <span class="nv">$NGINX_CONF_FILE</span>
-</span><span class='line'>    <span class="nv">retval</span><span class="o">=</span><span class="nv">$?</span>
-</span><span class='line'>    <span class="nb">echo</span>
-</span><span class='line'>    <span class="o">[</span> <span class="nv">$retval</span> -eq 0 <span class="o">]</span> <span class="o">&amp;&amp;</span> touch <span class="nv">$lockfile</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nv">$retval</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>stop<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="nb">echo</span> -n <span class="s2">$&quot;Stopping $prog: &quot;</span>
-</span><span class='line'>    killproc <span class="nv">$prog</span> -QUIT
-</span><span class='line'>    <span class="nv">retval</span><span class="o">=</span><span class="nv">$?</span>
-</span><span class='line'>    <span class="nb">echo</span>
-</span><span class='line'>    <span class="o">[</span> <span class="nv">$retval</span> -eq 0 <span class="o">]</span> <span class="o">&amp;&amp;</span> rm -f <span class="nv">$lockfile</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nv">$retval</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>restart<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    configtest <span class="o">||</span> <span class="k">return</span> <span class="nv">$?</span>
-</span><span class='line'>    stop
-</span><span class='line'>    sleep 1
-</span><span class='line'>    start
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>reload<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    configtest <span class="o">||</span> <span class="k">return</span> <span class="nv">$?</span>
-</span><span class='line'>    <span class="nb">echo</span> -n <span class="s2">$&quot;Reloading $prog: &quot;</span>
-</span><span class='line'>    killproc <span class="nv">$nginx</span> -HUP
-</span><span class='line'>    <span class="nv">RETVAL</span><span class="o">=</span><span class="nv">$?</span>
-</span><span class='line'>    <span class="nb">echo</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>force_reload<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    restart
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>configtest<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>  <span class="nv">$nginx</span> -t -c <span class="nv">$NGINX_CONF_FILE</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>rh_status<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    status <span class="nv">$prog</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>rh_status_q<span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    rh_status &gt;/dev/null 2&gt;&amp;1
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">case</span> <span class="s2">&quot;$1&quot;</span> in
-</span><span class='line'>    start<span class="o">)</span>
-</span><span class='line'>        rh_status_q <span class="o">&amp;&amp;</span> <span class="nb">exit </span>0
-</span><span class='line'>        <span class="nv">$1</span>
-</span><span class='line'>        ;;
-</span><span class='line'>    stop<span class="o">)</span>
-</span><span class='line'>        rh_status_q <span class="o">||</span> <span class="nb">exit </span>0
-</span><span class='line'>        <span class="nv">$1</span>
-</span><span class='line'>        ;;
-</span><span class='line'>    restart|configtest<span class="o">)</span>
-</span><span class='line'>        <span class="nv">$1</span>
-</span><span class='line'>        ;;
-</span><span class='line'>    reload<span class="o">)</span>
-</span><span class='line'>        rh_status_q <span class="o">||</span> <span class="nb">exit </span>7
-</span><span class='line'>        <span class="nv">$1</span>
-</span><span class='line'>        ;;
-</span><span class='line'>    force-reload<span class="o">)</span>
-</span><span class='line'>        force_reload
-</span><span class='line'>        ;;
-</span><span class='line'>    status<span class="o">)</span>
-</span><span class='line'>        rh_status
-</span><span class='line'>        ;;
-</span><span class='line'>    condrestart|try-restart<span class="o">)</span>
-</span><span class='line'>        rh_status_q <span class="o">||</span> <span class="nb">exit </span>0
-</span><span class='line'>            ;;
-</span><span class='line'>    *<span class="o">)</span>
-</span><span class='line'>        <span class="nb">echo</span> <span class="s2">$&quot;Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}&quot;</span>
-</span><span class='line'>        <span class="nb">exit </span>2
-</span><span class='line'><span class="k">esac</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>然后,需要赋予脚本可执行权限:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>chmod 755 /etc/init.d/nginx
-</span><span class='line'>chkconfig --add nginx
-</span><span class='line'>/etc/init.d/nginx start
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>到此,nginx+php+mysql已经部署完毕.下面是配置wordpress了.</p>
-
-<h2>wordpress</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">cd</span> <span class="nv">$TEMP_DIR_PACKAGES</span>
-</span><span class='line'>wget http://wordpress.org/latest.zip
-</span><span class='line'>unzip latest.zip
-</span><span class='line'>mv wordpress <span class="nv">$TEMP_DIR_WEBSERVERS</span>/www/
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>剩下的是添加wordpress的nginx配置文件:<code>vim $TEMP_DIR_WEBSERVERS/www/nginx/conf/global/wordpress.conf</code></p>
-
-<pre>
-# WordPress single blog rules.
-# Designed to be included in any server {} block.
-
-# This order might seem weird - this is attempted to match last if rules below fail.
-# http://wiki.nginx.org/HttpCoreModule
-location / {
-  try_files $uri $uri/ /index.php?$args;
-}
-
-# Add trailing slash to */wp-admin requests.
-rewrite /wp-admin$ $scheme://$host$uri/ permanent;
-
-# Directives to send expires headers and turn off 404 error logging.
-location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
-       access_log off; log_not_found off; expires max;
-}
-
-# Uncomment one of the lines below for the appropriate caching plugin (if used).
-#include global/wordpress-wp-super-cache.conf;
-#include global/wordpress-w3-total-cache.conf;
-</pre>
-
-
-<p>接着是另外一个配置文件:<code>vim $TEMP_DIR_WEBSERVERS/www/nginx/conf/vhost/wordpress.conf</code></p>
-
-<pre>
-server {
-    listen       80;
-    server_name  blog.bbkanba.com;
-    charset utf-8;
-    index index.html index.php;
-    root  /data/webservers/www/wordpress/;
-    access_log  /data/webservers/nginx/logs/wordpress.log  access;
-
-    include   global/restrictions.conf;
-    include   global/php.conf;  
-    include   global/wordpress.conf;
-}
-</pre>
-
-
-<p>接着重新加载一下nginx的配置文件</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>/etc/init.d/nginx reload
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>你就可以访问自己上面配置的blog地址, <code>http://blog.bbkanba.com</code>, 进行著名的5分钟安装了.<br/>
-如果你需要在nginx上使用更高级的cache规则,对wordpress进行优化的话,建议查看这里:</p>
-
-<p><a href="http://codex.wordpress.org/Nginx">http://codex.wordpress.org/Nginx</a></p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,792 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>How to Use Xdebug and LLDT to Debug Your PHP Code With Vagrant and PHPStrom - 末日前几天</title>
+  <meta name="author" content="leolovenet">
+
+  
+  <meta name="description" content="How to use Xdebug and LLDT to debug your PHP code with Vagrant and PHPStrom" />
+  
+  <meta name="keywords" content="PHP, Xdebug, LL Developer Tools, Vagrant" />
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://leolovenet.com/blog/2015/01/22/how-to-use-xdebug-and-lldt-to-debug-your-php-code-with-vagrant-and-phpstorm">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="末日前几天" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+    <link rel="apple-touch-icon" sizes="57x57" href="/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon-152x152.png">
+  <link rel="icon" type="image/png" href="/favicon-196x196.png" sizes="196x196">
+  <link rel="icon" type="image/png" href="/favicon-160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+  <meta name="msapplication-TileColor" content="#2b5797">
+  <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+  <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+  <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37154253-2']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">末日前几天</a></h1>
+  
+    <h2>the days before Doomsday</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:leolovenet.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">How to Use Xdebug and LLDT to Debug Your PHP Code With Vagrant and PHPStrom</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-22T17:53:58+08:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2015</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>主要用到的软件</h2>
+
+<ul>
+<li><a href="https://www.jetbrains.com/phpstorm/">PhpStorm</a> PHP 开发IDE</li>
+<li><a href="http://xdebug.org/">Xdebug</a> PHP debug 插件</li>
+<li><a href="https://github.com/phacility/xhprof">Xhprof</a> Facebook 出品的 PHP 性能测量插件</li>
+<li><a href="https://github.com/leolovenet/LLDT-chrome-plugin">LLDT-chrome-plugin</a> 自己写的一个 Chrome 浏览器插件，集成了<a href="https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc?hl=en">xdebugHelper</a>，并添加了更多的选项。</li>
+<li><a href="https://www.vagrantup.com/">Vagrant</a> 一款可以管理 VirtualBox 虚拟机的软件。</li>
+<li><a href="https://www.virtualbox.org/">VirtualBox</a> 一款夸平台的虚拟机软件。</li>
+<li><a href="http://nginx.org/">Nginx</a> web 服务器软件(运行在虚拟机中)</li>
+<li><a href="http://php.net/">PHP-FPM</a> php运行管理(运行在虚拟机中)</li>
+</ul>
+
+
+<!--more-->
+
+
+<h2>Vbox &amp; Vagrant 虚拟环境介绍</h2>
+
+<h3>下载地址</h3>
+
+<ul>
+<li>Vbox最新版本下载地址 <a href="https://www.virtualbox.org/wiki/Downloads">https://www.virtualbox.org/wiki/Downloads</a></li>
+<li>Vagrant最新版本下载地址 <a href="http://downloads.vagrantup.com/">http://downloads.vagrantup.com/</a></li>
+</ul>
+
+
+<p>直接运行安装包进行安装。
+安装包里同时包含了卸载脚本，如果想卸载的话，直接运行就可以了。</p>
+
+<h3>相关目录</h3>
+
+<p>在 Mac 平台下：<code>Vbox</code>的虚拟机默认保存路径为<code>~/VirtualBox VMs</code>，<code>Vagrant</code>用户的数据文件保存在<code>~/.vagrant.d</code>目录下面，删除这个目录将删除<code>vagrant</code>的所有<code>box</code>与<code>plugins</code>。</p>
+
+<h3>什么是Box？</h3>
+
+<p>box就相当于是一个环境，它一般是一个Vbox虚拟机的镜像，官方提供了一个基于Ubuntu的box。
+给vagrant添加一个 Box 的命令, 打开 <code>Terminal</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant box add Ubuntu12.04 http://files.vagrantup.com/precise32.box
+</span><span class='line'>
+</span><span class='line'><span class="c"># Ubuntu12.04 的含义是虚拟机的名字.</span>
+</span><span class='line'><span class="c"># 上面的命令会下载 http://files.vagrantup.com/precise32.box ,并添加到 ~/.vagrant.d/boxes/Ubuntu12.04 下</span>
+</span><span class='line'><span class="c"># 也可以直接将box下载下来，然后添加，需要执行：</span>
+</span><span class='line'>vagrant box add Ubuntu12.04 /the/path/for/your/precise32.box
+</span><span class='line'>
+</span><span class='line'><span class="c">#查看本机安装的 box 列表</span>
+</span><span class='line'>vagrant box list
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>怎样使用 Vagrant 管理 Vbox 虚拟机</h3>
+
+<ul>
+<li><strong>初始化 Vagrant 环境</strong>，下面这个命令会在当前目录下面创建一个 Vagrant 使用的配置文件 Vagrantfile ，里面包含了 Vagrant 启动需要的配置。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant init YOUR_BOX_NAME
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>开启 VirtualBox 虚拟机</strong>，下面这个命令，会创建一个新的 VirtualBox 的虚拟机。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant up
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>关闭 VirtualBox 虚拟机</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant halt
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>挂起 VirtualBox 虚拟机</strong>，下次开机时间很短，非常快，但是占用更多的内存和硬盘空间。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant <span class="nb">suspend</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>恢复 VirtualBox 虚拟机</strong>， 将虚拟机恢复到初始状态.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant destroy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>登陆 VirtualBox 虚拟机</strong></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant ssh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>自己从官网下载一个 box，安装上后，我们开始讲正题。</p>
+
+<h2>启动软件环境</h2>
+
+<p>进入到你 Web 项目的根目录，手工创建<code>Vagrantfile</code>配置文件，或者也可以使用<code>vagrant ini</code>创建后再手工修改，添加了一个用来跟虚拟机通信的独立的 IP。</p>
+
+<p>下面是 Vagrantfile 的内容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># -*- mode: ruby -*-</span>
+</span><span class='line'><span class="c1"># vi: set ft=ruby :</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># Vagrantfile API/syntax version. Don&#39;t touch unless you know what you&#39;re doing!</span>
+</span><span class='line'><span class="no">VAGRANTFILE_API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;2&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="no">VAGRANTFILE_API_VERSION</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;edengdev-CentOS6.4x86_64&quot;</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="s2">&quot;private_network&quot;</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.168.168&quot;</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provider</span> <span class="s2">&quot;virtualbox&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">vb</span><span class="o">|</span>
+</span><span class='line'>        <span class="n">vb</span><span class="o">.</span><span class="n">customize</span> <span class="o">[</span><span class="s2">&quot;modifyvm&quot;</span><span class="p">,</span> <span class="ss">:id</span><span class="p">,</span> <span class="s2">&quot;--memory&quot;</span><span class="p">,</span> <span class="s2">&quot;1024&quot;</span><span class="o">]</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后运行下面的命令，开启，并登陆进虚拟机里</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>vagrant up
+</span><span class='line'>vagrant ssh
+</span><span class='line'>
+</span><span class='line'><span class="c">#创建待会需要用的目录</span>
+</span><span class='line'>mkdir -p /var/log/php/xdebug/trace_output
+</span><span class='line'>mkdir -p /var/log/php/xdebug/profiler_output
+</span><span class='line'>mkdir -p /var/log/php/xhprof/xhprof_data
+</span><span class='line'>mkdir -p /etc/php/include
+</span><span class='line'>
+</span><span class='line'><span class="c">#修噶 hosts 文件，这样可以直接访问网址 「http://me.dev」来进行本机开发了。</span>
+</span><span class='line'>sudo  <span class="nb">echo</span> <span class="s2">&quot;me.dev 192.168.168.168&quot;</span>  &gt;&gt; /etc/hosts
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在虚拟机中安装好<code>Nginx</code>，<code>PHP-FPM</code>，<code>Xdebug</code>，<code>Xhprof</code>，这个过程就不过多的介绍了。</p>
+
+<p>下面是我的 Xdebug 配置文件样例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">; xdebug             ;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="k">[xdebug]</span>
+</span><span class='line'><span class="c1">; 这里要求必须是绝对路径，不能是相对路径 see:</span>
+</span><span class='line'><span class="c1">; http://stackoverflow.com/questions/1758014/whats-the-difference-between-extension-and-zend-extension-in-php-ini</span>
+</span><span class='line'><span class="na">zend_extension</span><span class="o">=</span><span class="s">&quot;/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/xdebug.so&quot;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;;;     All API Docs At http://xdebug.org/docs/all_settings     ;;;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">xdebug.overload_var_dump</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="c1">; 强制指定显示错误，不管php.ini的设置</span>
+</span><span class='line'><span class="na">xdebug.force_display_errors</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="na">xdebug.force_error_reporting</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">; If this setting is 1, then stacktraces will be shown by default on an error event.</span>
+</span><span class='line'><span class="c1">; You can disable showing stacktraces from your code with xdebug_disable().</span>
+</span><span class='line'><span class="c1">; As this is one of the basic functions of Xdebug, it is advisable to leave this setting set to 1.</span>
+</span><span class='line'><span class="na">xdebug.default_enable</span><span class="o">=</span><span class="s">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">; don&#39;t use coverage function</span>
+</span><span class='line'><span class="na">xdebug.coverage_enable</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;                 Stack Traces                       ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;       http://xdebug.org/docs/stack_trace           ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">xdebug.collect_params</span><span class="o">=</span><span class="s">3</span>
+</span><span class='line'><span class="na">xdebug.collect_return</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="c1">; xdebug.collect_vars=On</span>
+</span><span class='line'><span class="c1">; xdebug.dump_globals=On</span>
+</span><span class='line'><span class="c1">; xdebug.dump.SERVER=&quot;REQUEST_URI&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;            Function Trace                          ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;     http://xdebug.org/docs/execution_trace         ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">xdebug.auto_trace</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="na">xdebug.collect_includes</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="c1">;显示内存信息,在trace的时候</span>
+</span><span class='line'><span class="na">xdebug.show_mem_delta</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="na">xdebug.trace_enable_trigger</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="na">xdebug.trace_output_dir</span><span class="o">=</span><span class="s">&quot;/var/log/php/xdebug/trace_output&quot;</span>
+</span><span class='line'><span class="c1">;指定trace输出文件的格式, 0 是文本文件，1 计算机可读格式， 2 html格式</span>
+</span><span class='line'><span class="na">xdebug.trace_format</span><span class="o">=</span><span class="s">0</span>
+</span><span class='line'><span class="c1">;When set to &#39;1&#39; the trace files will be appended to, instead of being overwritten in subsequent requests.</span>
+</span><span class='line'><span class="na">xdebug.trace_options</span><span class="o">=</span><span class="s">0</span>
+</span><span class='line'><span class="c1">;指定trace输出文件名的格式, %R Meaning $_SERVER[&#39;REQUEST_URI&#39;]</span>
+</span><span class='line'><span class="na">xdebug.trace_output_name</span><span class="o">=</span><span class="s">trace.%R</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;            Profiling Script                        ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;        http://xdebug.org/docs/profiler             ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">xdebug.profiler_enable</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="na">xdebug.profiler_output_dir</span><span class="o">=</span><span class="s">&quot;/var/log/php/xdebug/profiler_output&quot;</span>
+</span><span class='line'><span class="na">xdebug.profiler_enable_trigger</span><span class="o">=</span><span class="s">On</span>
+</span><span class='line'><span class="c1">;profiler文件是追加，还是重写</span>
+</span><span class='line'><span class="na">xdebug.profiler_append</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="na">xdebug.profiler_output_name</span><span class="o">=</span><span class="s">%R.cachegrind</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;              Remote Debugging                      ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;;        http://xdebug.org/docs/remote               ;;</span>
+</span><span class='line'><span class="c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">xdebug.remote_handler</span><span class="o">=</span><span class="s">dbgp</span>
+</span><span class='line'><span class="na">xdebug.remote_autostart</span><span class="o">=</span><span class="s">Off</span>
+</span><span class='line'><span class="na">xdebug.remote_enable</span><span class="o">=</span><span class="s">1</span>
+</span><span class='line'><span class="na">xdebug.remote_host</span><span class="o">=</span><span class="s">192.168.192.1</span>
+</span><span class='line'><span class="na">xdebug.remote_port</span><span class="o">=</span><span class="s">9000</span>
+</span><span class='line'><span class="na">xdebug.remote_mode</span><span class="o">=</span><span class="s">req</span>
+</span><span class='line'><span class="c1">;xdebug.remote_log=&quot;&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是我的 Xhprof 的配置样例：</p>
+
+<p>首先，将<code>Xhprof</code>自带的<code>xhprof_html</code>,<code>xhprof_lib</code>目录放入到<code>/var/log/php/xhprof/</code> 下。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ini'><span class='line'><span class="c1">;;;;;;;;;;; add the following configuration to php.ini ;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="na">auto_prepend_file</span> <span class="o">=</span> <span class="s">&quot;/etc/php/include/auto_prepend.php&quot;</span>
+</span><span class='line'><span class="na">auto_append_file</span>  <span class="o">=</span> <span class="s">&quot;/etc/php/include/auto_append.php&quot;</span>
+</span><span class='line'><span class="c1">; Xhprof Module</span>
+</span><span class='line'><span class="k">[xhprof]</span>
+</span><span class='line'><span class="na">xhprof.output_dir</span> <span class="o">=</span> <span class="s">/var/log/php/xhprof/xhprof_data</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">;;;;;;;;;;; add the following configuration to php-fpm.conf ;;;;;;;;;;;;;;;;;;;;;</span>
+</span><span class='line'><span class="c1">;#### for xhprof</span>
+</span><span class='line'><span class="na">php_admin_value[extension]</span> <span class="o">=</span> <span class="s">xhprof.so</span>
+</span><span class='line'><span class="na">env[XHPROF_ROOT_PATH]</span> <span class="o">=</span> <span class="s">/var/log/php/xhprof</span>
+</span><span class='line'><span class="c1"># 采样百分比，多少次访问后性能采样一次</span>
+</span><span class='line'><span class="na">env[XHPROF_SAMPLING_PERCENTAGE]</span> <span class="o">=</span> <span class="s">3000</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是 <code>/etc/php/include/auto_prepend.php</code> 的内容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">if</span><span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;XHPROF_ROOT_PATH&#39;</span><span class="p">])){</span>
+</span><span class='line'>    <span class="c1">// start profiling</span>
+</span><span class='line'>    <span class="c1">// options: xhprof_enable(  XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY + XHPROF_FLAGS_NO_BUILTINS );</span>
+</span><span class='line'>    <span class="nv">$xhprof_on</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>    <span class="c1">//if ($_SERVER[&#39;REQUEST_METHOD&#39;] == &#39;POST&#39;){</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span> <span class="nb">function_exists</span><span class="p">(</span><span class="s1">&#39;xhprof_enable&#39;</span><span class="p">)</span>  <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">mt_rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;XHPROF_SAMPLING_PERCENTAGE&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">||</span> <span class="nb">isset</span><span class="p">(</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s1">&#39;XHPROF_PROFILE&#39;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nx">xhprof_enable</span><span class="p">(</span><span class="nx">XHPROF_FLAGS_NO_BUILTINS</span> <span class="o">+</span> <span class="nx">XHPROF_FLAGS_MEMORY</span><span class="p">);</span>
+</span><span class='line'>            <span class="nv">$xhprof_on</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="c1">//}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是 <code>/etc/php/include/auto_append.php</code> 的内容：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nv">$xhprof_on</span><span class="p">){</span>
+</span><span class='line'>    <span class="nv">$xhprof_data</span> <span class="o">=</span> <span class="nx">xhprof_disable</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">include_once</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;XHPROF_ROOT_PATH&#39;</span><span class="p">]</span> <span class="o">.</span> <span class="s2">&quot;/xhprof_lib/utils/xhprof_lib.php&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">include_once</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;XHPROF_ROOT_PATH&#39;</span><span class="p">]</span> <span class="o">.</span> <span class="s2">&quot;/xhprof_lib/utils/xhprof_runs.php&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="nv">$xhprof_runs</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XHProfRuns_Default</span><span class="p">();</span>
+</span><span class='line'>    <span class="nv">$xhporf_script_name</span><span class="o">=</span> <span class="nb">str_replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="nx">substr</span><span class="p">(</span><span class="nb">str_replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;SCRIPT_FILENAME&#39;</span><span class="p">]),</span><span class="mi">1</span><span class="p">)</span> <span class="p">);</span>
+</span><span class='line'>    <span class="nv">$run_id</span> <span class="o">=</span> <span class="nv">$xhprof_runs</span><span class="o">-&gt;</span><span class="na">save_run</span><span class="p">(</span> <span class="nv">$xhprof_data</span><span class="p">,</span> <span class="nv">$xhporf_script_name</span> <span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="s1">&#39;YmdHis&#39;</span><span class="p">)</span><span class="o">.</span><span class="nx">substr</span><span class="p">((</span><span class="nx">string</span><span class="p">)</span><span class="nb">microtime</span><span class="p">(),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>设置 PhpStorm</h2>
+
+<p>我使用的 IDE 软件为  <a href="https://www.jetbrains.com/phpstorm/">PhpStorm</a>，要配合使用 Vagrant 的话，还需要特殊配置一下。</p>
+
+<h3>1.Create New Project</h3>
+
+<p><img src="/downloads/images/phpstorm-1.jpg" alt="phpstorm-1" /></p>
+
+<h3>2. Edit Configrations&hellip;</h3>
+
+<p>Run > Edit Configrations&hellip; > Defaults > PHP Remote Debug > Servers
+<img src="/downloads/images/phpstorm-4.jpg" alt="phpstorm-4" /></p>
+
+<p>因为使用 Vagrant 的缘故，所以调试 PHP 代码的时候，需要配置目录映射。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="c1"># your/sites/path            --&gt;  /vagrant</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/downloads/images/phpstorm-5.jpg" alt="phpstorm-5" /></p>
+
+<h3>3.Debug</h3>
+
+<p>勾选， Run > &ldquo;Break at first line in PHP scripts&rdquo; 后，点击 “Debug &lsquo;xxxxx&rsquo;
+<img src="/downloads/images/phpstorm-6.jpg" alt="phpstorm-6" />
+<img src="/downloads/images/phpstorm-7.jpg" alt="phpstorm-7" /></p>
+
+<h2>Chrome 浏览器的插件 LLDT</h2>
+
+<p>chrome 安装 LLDT 后，打开你开发的网址<a href="http://me.dev,">http://me.dev,</a> 刷新一下。会看到地址栏的LLDT图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗。
+<img src="/downloads/images/phpstorm-8.png" alt="phpstorm-8" /></p>
+
+<h3>Enable Xdebug debug</h3>
+
+<p>点击<code>Enable Xdebug debug</code>，或者按快捷键 <code>D</code>, 刷新网页。 返回PhpStorm程序，应该已经开启debug了。
+<img src="/downloads/images/phpstorm-9.jpg" alt="phpstorm-9" /></p>
+
+<h3>Enable Xdebug Profile</h3>
+
+<p>Xdebug Profile 功能可以对HTTP请求页面对应的脚本性能进行分析，并将分析数据保存到文件中。</p>
+
+<ul>
+<li>Mac 用户可以安装 qcachegrind ,来观看Profilling保存的数据文件，<code>brew install qcachegrind</code>。</li>
+<li>Windows 用户可以安装 WinCacheGrind, 或者 KCacheGrind, 来观看。</li>
+</ul>
+
+
+<p>找到Chrome浏览器地址栏的LLDT图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗，点击<code>Enable Xdebug Profile</code>，或者按快捷键 <code>P</code>, 刷新网页就可以了。</p>
+
+<p>Profile 的数据文件存储在了，<code>/var/log/php/xdebug/profiler_output</code> 目录中。
+mac下查看分析结果，安装完qcachegrind，将数据文件 copy 出来，打开 <code>Terminal</code>，运行<code>qcachegrind xxxx.cachegrind</code>  命令，查看相应地xxxx数据文件。</p>
+
+<p>例如：
+<img src="/downloads/images/phpstorm-10.jpg" alt="phpstorm-10" /></p>
+
+<h3>Enable Xdebug Trace</h3>
+
+<p>Xdebug Trace 功能可以对HTTP请求页面对应的脚本执行过程的函数调用进行记录，并将记录结果保存到文件中。</p>
+
+<p>找到 Chrome 浏览器地址栏的 LLDT 图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗，点击<code>Enable Xdebug Trace</code>，或者按快捷键 <code>T</code>, 刷新网页就可以了。</p>
+
+<p>保存的数据文件存储在了，<code>/var/log/php/xdebug/trace_output</code> 目录中。
+直接可以用你自己喜欢的文本编辑器查看分析结果。</p>
+
+<h3>Enable Xhprof</h3>
+
+<p>Xhprof 为 Facebook 出品的分层PHP性能分析工具。 可以对 PHP脚本的执行进行性能分析。并将记录结果保存到文件中。</p>
+
+<p>找到 Chrome 浏览器地址栏的 LLDT 图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗，点击<code>Enable Xhprof</code>，或者按快捷键 <code>X</code>, 刷新网页就可以了。</p>
+
+<p>保存的数据文件存储在了，<code>/var/log/php/xhprof/xhprof_data</code> 目录中。
+xhprof 的分析结果怎么查看, 自己查看官网的介绍吧。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">leolovenet</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-22T17:53:58+08:00" pubdate data-updated="true">Jan 22<span>nd</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/ll-developer-tools/'>LL Developer Tools</a>, <a class='category' href='/blog/categories/php/'>PHP</a>, <a class='category' href='/blog/categories/web-develop/'>Web Develop</a>, <a class='category' href='/blog/categories/xdebug/'>Xdebug</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/05/28/git-and-proxy/" title="Previous Post: 配置git使用proxy">&laquo; 配置git使用proxy</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/01/22/how-to-use-xdebug-and-lldt-to-debug-your-php-code-with-vagrant-and-phpstorm/">How to Use Xdebug and LLDT to Debug Your PHP Code With Vagrant and PHPStrom</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/05/28/git-and-proxy/">配置git使用proxy</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/03/28/a-linux-server-hardware-detection-resource-script/">检测 Linux 服务器硬件资源的 Bash 脚本</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/02/13/hi-octopress/">Hi Octopress</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/10/11/enhanced-ping-command-function-with-ruby/">用Ruby增强ping命令</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/leolovenet">@leolovenet</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'leolovenet',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - leolovenet -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'leolovenet';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://leolovenet.com/blog/2015/01/22/how-to-use-xdebug-and-lldt-to-debug-your-php-code-with-vagrant-and-phpstorm/';
+        var disqus_url = 'http://leolovenet.com/blog/2015/01/22/how-to-use-xdebug-and-lldt-to-debug-your-php-code-with-vagrant-and-phpstorm/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
