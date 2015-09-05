@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Octopress | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -19,7 +19,7 @@
     <updated>2014-02-13T17:16:08+08:00</updated>
     <id>http://leolovenet.com/blog/2014/02/13/hi-octopress</id>
     <content type="html"><![CDATA[<p>完成了 Blog 由 Wordpress 转向 Octopress 的迁移.
-我的 Blog 的迁移轨迹是 <a href="blog.csdn.net/apoxlo">CSDN</a> &mdash;> <a href="http://blog.bbkanba.com">Wordpress</a> &mdash;> Octepress.
+我的 Blog 的迁移轨迹是 <a href="blog.csdn.net/apoxlo">CSDN</a> &ndash;> <a href="http://blog.bbkanba.com">Wordpress</a> &ndash;> Octepress.
 由于 CSDN 上面没有什么有用的文章我就没有迁移过来, Wordpress 的代码共享功能没有 Octepress 好用, 所以最终选择了 Octepress.</p>
 
 <p>Github Pages 对用户使用 master 分支作为 <code>http://username.github.io</code> 网站的公共目录.因此,你需要在 source 分支上对你的 blog 源代码编辑,然后 commit 生成的内容到 master 分支上.</p>
@@ -29,23 +29,21 @@
 
 <h2>创建并部署一篇新博文的完整过程：</h2>
 
-<p><code>bash
-rake new_post["New Post”]
+<pre><code class="bash">rake new_post["New Post”]
 rake generate
 git add .
-git commit -am "Some comment here.”
+git commit -am "Some comment here.” 
 git push origin source
 rake deploy
-</code></p>
+</code></pre>
 
 <h2>How to Update Octopress</h2>
 
-<p><code>bash
-git pull octopress master     # Get the latest Octopress
+<pre><code class="bash">git pull octopress master     # Get the latest Octopress
 bundle install                # Keep gems updated
 rake update_source            # update the template's source
 rake update_style             # update the template's style
-</code></p>
+</code></pre>
 ]]></content>
   </entry>
   

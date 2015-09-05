@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -30,42 +30,40 @@
 
 <p>第一步,安装所需要的依赖库,qqwry.dat自己下载,然后改脚本里的路径信息.</p>
 
-<p><code>
-gem install escape qqwry
-</code>
-下面的代码我是另存为一个叫p的文件,放到了 <code>$home/bin/</code> 下面.
-``` ruby</p>
+<pre><code class="">gem install escape qqwry
+</code></pre>
 
-<h1>!/usr/bin/env ruby</h1>
+<p>下面的代码我是另存为一个叫p的文件,放到了 <code>$home/bin/</code> 下面.</p>
 
-<h1>encoding : utf-8</h1>
+<pre><code class="ru">#!/usr/bin/env ruby
+# encoding : utf-8
+require "escape"
+require "uri"
+require 'qqwry'
+require 'resolv'
 
-<p>require &ldquo;escape&rdquo;
-require &ldquo;uri&rdquo;
-require &lsquo;qqwry&rsquo;
-require &lsquo;resolv&rsquo;</p>
-
-<p>unless ARGV.length == 1
-  puts &ldquo;Usage: p <domain>\n&rdquo;
+unless ARGV.length == 1
+  puts "Usage: p &lt;domain&gt;\n"
   exit
-end</p>
-
-<p>domain=ARGV[0].dup</p>
-
-<p>if domain[0..3] != &ldquo;http&rdquo;
-   domain.insert(0,&lsquo;<a href="http://">http://</a>&rsquo;)
 end
-host=URI.parse(&ldquo;#{domain}&rdquo;).host
-ip=Resolv.getaddress host</p>
 
-<p>db = QQWry::Database.new(&lsquo;/Users/yourname/Documents/vbox/ip/qqwry.dat&rsquo;)
-r = db.query(ip)</p>
+domain=ARGV[0].dup
 
-<p>puts &ldquo;&rdquo;
-puts &ldquo;#{host}\t===>\t#{ip}\t===>\t#{r.country} #{r.area}&rdquo;
-puts &ldquo;&rdquo;
-exec &ldquo;ping #{host}&rdquo;
-```</p>
+
+if domain[0..3] != "http"
+   domain.insert(0,'http://')
+end
+host=URI.parse("#{domain}").host
+ip=Resolv.getaddress host
+
+db = QQWry::Database.new('/Users/yourname/Documents/vbox/ip/qqwry.dat')
+r = db.query(ip)
+
+puts ""
+puts "#{host}\t===&gt;\t#{ip}\t===&gt;\t#{r.country} #{r.area}"
+puts ""
+exec "ping #{host}"
+</code></pre>
 
 <p>使用方法:
 <code>

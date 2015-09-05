@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Mac | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/mac/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -30,42 +30,40 @@
 
 <p>第一步,安装所需要的依赖库,qqwry.dat自己下载,然后改脚本里的路径信息.</p>
 
-<p><code>
-gem install escape qqwry
-</code>
-下面的代码我是另存为一个叫p的文件,放到了 <code>$home/bin/</code> 下面.
-``` ruby</p>
+<pre><code class="">gem install escape qqwry
+</code></pre>
 
-<h1>!/usr/bin/env ruby</h1>
+<p>下面的代码我是另存为一个叫p的文件,放到了 <code>$home/bin/</code> 下面.</p>
 
-<h1>encoding : utf-8</h1>
+<pre><code class="ru">#!/usr/bin/env ruby
+# encoding : utf-8
+require "escape"
+require "uri"
+require 'qqwry'
+require 'resolv'
 
-<p>require &ldquo;escape&rdquo;
-require &ldquo;uri&rdquo;
-require &lsquo;qqwry&rsquo;
-require &lsquo;resolv&rsquo;</p>
-
-<p>unless ARGV.length == 1
-  puts &ldquo;Usage: p <domain>\n&rdquo;
+unless ARGV.length == 1
+  puts "Usage: p &lt;domain&gt;\n"
   exit
-end</p>
-
-<p>domain=ARGV[0].dup</p>
-
-<p>if domain[0..3] != &ldquo;http&rdquo;
-   domain.insert(0,&lsquo;<a href="http://">http://</a>&rsquo;)
 end
-host=URI.parse(&ldquo;#{domain}&rdquo;).host
-ip=Resolv.getaddress host</p>
 
-<p>db = QQWry::Database.new(&lsquo;/Users/yourname/Documents/vbox/ip/qqwry.dat&rsquo;)
-r = db.query(ip)</p>
+domain=ARGV[0].dup
 
-<p>puts &ldquo;&rdquo;
-puts &ldquo;#{host}\t===>\t#{ip}\t===>\t#{r.country} #{r.area}&rdquo;
-puts &ldquo;&rdquo;
-exec &ldquo;ping #{host}&rdquo;
-```</p>
+
+if domain[0..3] != "http"
+   domain.insert(0,'http://')
+end
+host=URI.parse("#{domain}").host
+ip=Resolv.getaddress host
+
+db = QQWry::Database.new('/Users/yourname/Documents/vbox/ip/qqwry.dat')
+r = db.query(ip)
+
+puts ""
+puts "#{host}\t===&gt;\t#{ip}\t===&gt;\t#{r.country} #{r.area}"
+puts ""
+exec "ping #{host}"
+</code></pre>
 
 <p>使用方法:
 <code>
@@ -158,20 +156,18 @@ Ctrl+⌘+Up/Down  在.h与.m文件之间切换
 
 <p>比如,我想在命令行下运行Firefox,运行下面的命令即可</p>
 
-<p><code>bash
-open -a /Applications/Firefox.app
-</code></p>
+<pre><code class="bash">open -a /Applications/Firefox.app
+</code></pre>
 
 <p>想在命令行下,用 Finder 打开此时的路径的话,运行下面的命令</p>
 
-<p><code>bash
-open ./
-</code>
-想要用系统默认程序打开响应的文件,运行下面的命令</p>
+<pre><code class="bash">open ./
+</code></pre>
 
-<p><code>bash
-open Readme.md
-</code></p>
+<p>想要用系统默认程序打开响应的文件,运行下面的命令</p>
+
+<pre><code class="bash">open Readme.md
+</code></pre>
 
 <p>open命令的其他参数:</p>
 
@@ -227,7 +223,7 @@ Options:
 
 <p>下面是具体命令</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[execute below script in terminal]  (terminal_colorful.sh)</span> <a href='/downloads/code/terminal_colorful.sh'>download</a></figcaption>
+<p><figure class='code'><figcaption><span>[execute below script in terminal]  (terminal_colorful.sh)</span> <a href='/downloads/code/terminal_colorful.sh'>download</a></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -300,7 +296,7 @@ Options:
 </span><span class='line'><span class="s">END</span>
 </span><span class='line'><span class="nb">source</span> ~/.bashrc
 </span><span class='line'>ls /
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>该项目的<a href="https://github.com/seebi/dircolors-solarized/blob/master/README.md">ReadMe</a>文件还有很多信息,比如怎样配置265色的终端,感兴趣的可以仔细看看.</p>
 
@@ -311,9 +307,8 @@ Options:
 
 <p>这里需要补充一点的是,mac 下的ls命令不是gun ls,所以即使iterm2安装了颜色主题,敲入ls命令以后,显示的文件颜色还是有问题的,这里有一个补救办法,运行下面这行,之后再看ls命令的颜色是不是变了</p>
 
-<p><code>bash
-export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
-</code></p>
+<pre><code class="bash">export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
+</code></pre>
 
 <p>但是,这种补救办法也不完美,比如不能根据文件类型来显示颜色.</p>
 

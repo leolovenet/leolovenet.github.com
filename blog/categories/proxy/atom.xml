@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Proxy | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/proxy/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -36,47 +36,31 @@
 
 <p>让 git 走 HTTP 代理需要创建 <code>gitproxy.sh</code> 脚本,然后赋予可执行权限: 参考的<a href="http://www.emilsit.net/blog/archives/how-to-use-the-git-protocol-through-a-http-connect-proxy/">这个文章</a></p>
 
-<p>``` bash</p>
+<pre><code class="bash">
+#!/bin/sh
+# Use socat to proxy git through an HTTP CONNECT firewall.
+# Useful if you are trying to clone git:// from inside a company.
+# Requires that the proxy allows CONNECT to port 9418.
+#
+# Save this file as gitproxy somewhere in your path (e.g., ~/bin) and then run
+# chmod +x gitproxy
+# git config --global core.gitproxy gitproxy
+#
+# More details at http://tinyurl.com/8xvpny
 
-<h1>!/bin/sh</h1>
+# Configuration. Common proxy ports are 3128, 8123, 8000.
+_proxy=proxy.yourcompany.com
+_proxyport=3128
 
-<h1>Use socat to proxy git through an HTTP CONNECT firewall.</h1>
-
-<h1>Useful if you are trying to clone git:// from inside a company.</h1>
-
-<h1>Requires that the proxy allows CONNECT to port 9418.</h1>
-
-<p>#</p>
-
-<h1>Save this file as gitproxy somewhere in your path (e.g., ~/bin) and then run</h1>
-
-<h1>chmod +x gitproxy</h1>
-
-<h1>git config &mdash;global core.gitproxy gitproxy</h1>
-
-<p>#</p>
-
-<h1>More details at <a href="http://tinyurl.com/8xvpny">http://tinyurl.com/8xvpny</a></h1>
-
-<h1>Configuration. Common proxy ports are 3128, 8123, 8000.</h1>
-
-<p><em>proxy=proxy.yourcompany.com
-</em>proxyport=3128</p>
-
-<p>exec socat STDIO PROXY:$<em>proxy:$1:$2,proxyport=$</em>proxyport</p>
-
-<p>```</p>
+exec socat STDIO PROXY:$_proxy:$1:$2,proxyport=$_proxyport
+</code></pre>
 
 <p>然后,配置 git 使用这个代理, 在 <code>~/.gitconfig</code> 文件里写入:</p>
 
-<p>``` bash
-[core]</p>
-
-<pre><code>gitproxy=gitproxy.sh for github.com
-#man git-config 查看 core.gitproxy 部分,关于 for * 的说明
+<pre><code class="bash">[core]
+    gitproxy=gitproxy.sh for github.com
+    #man git-config 查看 core.gitproxy 部分,关于 for * 的说明
 </code></pre>
-
-<p>```</p>
 
 <h3>2. Git Through A SOCKS Proxy (or SSH Tunnel)</h3>
 
@@ -88,11 +72,9 @@ ssh -nNT -D 8119 remote.host</p>
 
 <h1>This command starts a SOCKS v4 proxy listening on localhost, port 8119.</h1>
 
-<p>```</p>
-
-<p>第二步: 创建一个新的 <code>gitproxysocks.sh</code> 脚本,并赋予可执行权限.</p>
-
-<p>```bash</p>
+<pre><code>
+第二步: 创建一个新的 `gitproxysocks.sh` 脚本,并赋予可执行权限.
+</code></pre>
 
 <h1>!/bin/sh</h1>
 
@@ -113,48 +95,34 @@ execsocat STDIO SOCKS4:$</em>proxy:$1:$2,socksport=$_proxyport
 <code>``
 第三步: 配置 git 使用这个脚本,可以像上面那样写入到配置文件</code>~/.gitconfig<code>中,也可以配置</code>GIT_PROXY_COMMAND` 环境变量, git 获取数据时会检查这个环境变量.</p>
 
-<p><code>bash
-export GIT_PROXY_COMMAND=gitproxysocks.sh
-</code></p>
+<pre><code class="bash">export GIT_PROXY_COMMAND=gitproxysocks.sh
+</code></pre>
 
 <h2>(二) 针对HTTP 协议(<a href="http://">http://</a>)配置代理</h2>
 
 <p>配置 git 对 <code>http://</code> 协议开头的仓库使用 http 代理,可以直接编辑 <code>~/.gitconfig</code> 文件.</p>
 
-<p>```bash
-[http]</p>
-
-<pre><code>proxy = http://proxy.yourcompany.com:8080
+<pre><code class="bash">[http]
+    proxy = http://proxy.yourcompany.com:8080
 </code></pre>
-
-<p>```</p>
 
 <p>或者,可以通过下面的脚本直接设置 <code>http_proxy</code>, <code>https_proxy</code> 与 <code>all_proxy</code> 环境变量.<br/>
 把下面的脚本保存为 <code>http_proxy.sh</code> , 并在  <code>~/.bashrc</code> 或者 <code>~/.zshrc</code> 里加入 <code>source /path/to/http_proxy.sh</code>,这样在想使用 proxy 时,运行 <code>http_proxy_enable</code> 命令就可以了,取消时运行 <code>http_proxy_disable</code></p>
 
-<p>```bash</p>
+<pre><code class="bash">#!/bin/sh
+http_proxy_enable() {
+    IP="proxy.yourcompany.com:8080"
+    export http_proxy=$IP
+    export https_proxy=$IP
+    export all_proxy=$IP
+}
 
-<h1>!/bin/sh</h1>
-
-<p>http_proxy_enable() {</p>
-
-<pre><code>IP="proxy.yourcompany.com:8080"
-export http_proxy=$IP
-export https_proxy=$IP
-export all_proxy=$IP
+http_proxy_disable() {
+    unset http_proxy
+    unset https_proxy
+    unset all_proxy
+}
 </code></pre>
-
-<p>}</p>
-
-<p>http_proxy_disable() {</p>
-
-<pre><code>unset http_proxy
-unset https_proxy
-unset all_proxy
-</code></pre>
-
-<p>}
-```</p>
 
 <h2>(三) 针对SSH 协议(ssh://)配置代理</h2>
 
@@ -162,17 +130,13 @@ unset all_proxy
 下面是 ssh 的设置,打开 <code>~/.ssh/config</code>
 输入 :</p>
 
-<p>``` bash
-Host github*</p>
-
-<pre><code>User git
-Hostname github.com
-Port 22
-Proxycommand ssh root@proxy.yourcompany.com nc %h %p
-IdentityFile  ~/.ssh/id_rsa
+<pre><code class="bash">Host github*
+    User git
+    Hostname github.com
+    Port 22
+    Proxycommand ssh root@proxy.yourcompany.com nc %h %p
+    IdentityFile  ~/.ssh/id_rsa
 </code></pre>
-
-<p>```</p>
 ]]></content>
   </entry>
   

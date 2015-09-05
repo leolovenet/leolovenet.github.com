@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: LL Developer Tools | 末日前几天]]></title>
+  <title><![CDATA[Category: Ll Developer Tools | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/ll-developer-tools/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -54,176 +54,185 @@
 
 <h3>什么是Box？</h3>
 
-<p>box就相当于是一个环境，它一般是一个Vbox虚拟机的镜像，官方提供了一个基于Ubuntu的box。
+<p>box 就相当于是一个环境，它一般是一个 Vbox 虚拟机的镜像，官方提供了一个基于 Ubuntu 的box。
 给vagrant添加一个 Box 的命令, 打开 <code>Terminal</code></p>
 
-<p>```bash
-vagrant box add Ubuntu12.04 <a href="http://files.vagrantup.com/precise32.box">http://files.vagrantup.com/precise32.box</a></p>
+<pre><code class="bash">vagrant box add Ubuntu12.04 http://files.vagrantup.com/precise32.box
 
-<h1>Ubuntu12.04 的含义是虚拟机的名字.</h1>
+# Ubuntu12.04 的含义是虚拟机的名字.
+# 上面的命令会下载 http://files.vagrantup.com/precise32.box ,并添加到 ~/.vagrant.d/boxes/Ubuntu12.04 下
+# 也可以直接将box下载下来，然后添加，需要执行：
+vagrant box add Ubuntu12.04 /the/path/for/your/precise32.box
 
-<h1>上面的命令会下载 <a href="http://files.vagrantup.com/precise32.box">http://files.vagrantup.com/precise32.box</a> ,并添加到 ~/.vagrant.d/boxes/Ubuntu12.04 下</h1>
-
-<h1>也可以直接将box下载下来，然后添加，需要执行：</h1>
-
-<p>vagrant box add Ubuntu12.04 /the/path/for/your/precise32.box</p>
-
-<h1>查看本机安装的 box 列表</h1>
-
-<p>vagrant box list
-```</p>
+#查看本机安装的 box 列表
+vagrant box list
+</code></pre>
 
 <h3>怎样使用 Vagrant 管理 Vbox 虚拟机</h3>
 
 <ul>
-<li><p><strong>初始化 Vagrant 环境</strong>，下面这个命令会在当前目录下面创建一个 Vagrant 使用的配置文件 Vagrantfile ，里面包含了 Vagrant 启动需要的配置。
-<code>
-vagrant init YOUR_BOX_NAME
-</code></p></li>
-<li><p><strong>开启 VirtualBox 虚拟机</strong>，下面这个命令，会创建一个新的 VirtualBox 的虚拟机。
-<code>
-vagrant up
-</code></p></li>
-<li><p><strong>关闭 VirtualBox 虚拟机</strong>
-<code>
-vagrant halt
-</code></p></li>
-<li><p><strong>挂起 VirtualBox 虚拟机</strong>，下次开机时间很短，非常快，但是占用更多的内存和硬盘空间。
-<code>
-vagrant suspend
-</code></p></li>
-<li><p><strong>恢复 VirtualBox 虚拟机</strong>， 将虚拟机恢复到初始状态.
-<code>
-vagrant destroy
-</code></p></li>
-<li><strong>登陆 VirtualBox 虚拟机</strong>
-<code>
-vagrant ssh
-</code></li>
+<li><strong>初始化 Vagrant 环境</strong>，下面这个命令会在当前目录下面创建一个 Vagrant 使用的配置文件 Vagrantfile ，里面包含了 Vagrant 启动需要的配置。</li>
 </ul>
 
 
+<pre><code class="bash">vagrant init YOUR_BOX_NAME
+</code></pre>
+
+<ul>
+<li><strong>开启 VirtualBox 虚拟机</strong>，下面这个命令，会创建一个新的 VirtualBox 的虚拟机。</li>
+</ul>
+
+
+<pre><code class="bash">vagrant up
+</code></pre>
+
+<ul>
+<li><strong>关闭 VirtualBox 虚拟机</strong></li>
+</ul>
+
+
+<pre><code class="bash">vagrant halt
+</code></pre>
+
+<ul>
+<li><strong>挂起 VirtualBox 虚拟机</strong>，下次开机时间很短，非常快，但是占用更多的内存和硬盘空间。</li>
+</ul>
+
+
+<pre><code class="bash">vagrant suspend
+</code></pre>
+
+<ul>
+<li><strong>恢复 VirtualBox 虚拟机</strong>， 将虚拟机恢复到初始状态.</li>
+</ul>
+
+
+<pre><code class="bash">vagrant destroy
+</code></pre>
+
+<ul>
+<li><strong>登陆 VirtualBox 虚拟机</strong></li>
+</ul>
+
+
+<pre><code class="bash">vagrant ssh
+</code></pre>
+
 <p>自己从官网下载一个 box，安装上后，我们开始讲正题。</p>
 
-<h2>启动软件环境</h2>
+<h3>启动软件环境</h3>
 
 <p>进入到你 Web 项目的根目录，手工创建<code>Vagrantfile</code>配置文件，或者也可以使用<code>vagrant ini</code>创建后再手工修改，添加了一个用来跟虚拟机通信的独立的 IP。</p>
 
-<p>下面是 Vagrantfile 的内容：
-```ruby</p>
+<p>下面是 Vagrantfile 的内容：</p>
 
-<h1>&ndash;<em>&ndash; mode: ruby &ndash;</em>&ndash;</h1>
+<pre><code class="ru"># -*- mode: ruby -*-
+# vi: set ft=ruby :
 
-<h1>vi: set ft=ruby :</h1>
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
 
-<h1>Vagrantfile API/syntax version. Don&rsquo;t touch unless you know what you&rsquo;re doing!</h1>
-
-<p>VAGRANTFILE_API_VERSION = &ldquo;2&rdquo;</p>
-
-<p>Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|</p>
-
-<pre><code>config.vm.box = "edengdev-CentOS6.4x86_64"
-config.vm.network "private_network", ip: "192.168.168.168"
-config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--memory", "1024"]
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "edengdev-CentOS6.4x86_64"
+    config.vm.network "private_network", ip: "192.168.168.168"
+    config.vm.provider "virtualbox" do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "1024"]
+    end
 end
 </code></pre>
 
-<p>end
-```</p>
+<p>然后运行下面的命令，开启，并登陆进虚拟机里</p>
 
-<p>然后运行下面的命令，开启，并登陆进虚拟机里
-```bash
-vagrant up
-vagrant ssh</p>
+<pre><code class="bash">vagrant up
+vagrant ssh
 
-<h1>创建待会需要用的目录</h1>
-
-<p>mkdir -p /var/log/php/xdebug/trace_output
+#创建待会需要用的目录
+mkdir -p /var/log/php/xdebug/trace_output
 mkdir -p /var/log/php/xdebug/profiler_output
 mkdir -p /var/log/php/xhprof/xhprof_data
-mkdir -p /etc/php/include</p>
+mkdir -p /etc/php/include
 
-<h1>修噶 hosts 文件，这样可以直接访问网址 「<a href="http://me.dev%E3%80%8D%E6%9D%A5%E8%BF%9B%E8%A1%8C%E6%9C%AC%E6%9C%BA%E5%BC%80%E5%8F%91%E4%BA%86%E3%80%82">http://me.dev%E3%80%8D%E6%9D%A5%E8%BF%9B%E8%A1%8C%E6%9C%AC%E6%9C%BA%E5%BC%80%E5%8F%91%E4%BA%86%E3%80%82</a></h1>
-
-<p>sudo  echo &ldquo;me.dev 192.168.168.168&rdquo;  >> /etc/hosts
-```</p>
+#修噶 hosts 文件，这样可以直接访问网址 「http://me.dev」来进行本机开发了。
+sudo  echo "me.dev 192.168.168.168"  &gt;&gt; /etc/hosts
+</code></pre>
 
 <p>在虚拟机中安装好<code>Nginx</code>，<code>PHP-FPM</code>，<code>Xdebug</code>，<code>Xhprof</code>，这个过程就不过多的介绍了。</p>
 
-<p>下面是我的 Xdebug 配置文件样例：
-```ini
-;;;;;;;;;;;;;;;;;;;;;;
+<p>下面是我的 Xdebug 配置文件样例：</p>
+
+<pre><code class="ini">;;;;;;;;;;;;;;;;;;;;;;
 ; xdebug             ;
 ;;;;;;;;;;;;;;;;;;;;;;
 [xdebug]
 ; 这里要求必须是绝对路径，不能是相对路径 see:
-; <a href="http://stackoverflow.com/questions/1758014/whats-the-difference-between-extension-and-zend-extension-in-php-ini">http://stackoverflow.com/questions/1758014/whats-the-difference-between-extension-and-zend-extension-in-php-ini</a>
-zend_extension=&ldquo;/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/xdebug.so&rdquo;
+; http://stackoverflow.com/questions/1758014/whats-the-difference-between-extension-and-zend-extension-in-php-ini
+zend_extension="/usr/local/php/lib/php/extensions/no-debug-non-zts-20090626/xdebug.so"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;     All API Docs At <a href="http://xdebug.org/docs/all_settings">http://xdebug.org/docs/all_settings</a>     ;;;;
+;;;;     All API Docs At http://xdebug.org/docs/all_settings     ;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</p>
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-<p>xdebug.overload_var_dump=On
+xdebug.overload_var_dump=On
 ; 强制指定显示错误，不管php.ini的设置
 xdebug.force_display_errors=On
-xdebug.force_error_reporting=On</p>
+xdebug.force_error_reporting=On
 
-<p>; If this setting is 1, then stacktraces will be shown by default on an error event.
+; If this setting is 1, then stacktraces will be shown by default on an error event.
 ; You can disable showing stacktraces from your code with xdebug_disable().
 ; As this is one of the basic functions of Xdebug, it is advisable to leave this setting set to 1.
-xdebug.default_enable=1</p>
+xdebug.default_enable=1
 
-<p>; don&rsquo;t use coverage function
-xdebug.coverage_enable=Off</p>
+; don't use coverage function
+xdebug.coverage_enable=Off
 
-<p>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                 Stack Traces                       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       <a href="http://xdebug.org/docs/stack_trace">http://xdebug.org/docs/stack_trace</a>           ;;
+;;       http://xdebug.org/docs/stack_trace           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 xdebug.collect_params=3
 xdebug.collect_return=Off
 ; xdebug.collect_vars=On
 ; xdebug.dump_globals=On
-; xdebug.dump.SERVER=&ldquo;REQUEST_URI&rdquo;</p>
+; xdebug.dump.SERVER="REQUEST_URI"
 
-<p>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;            Function Trace                          ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;     <a href="http://xdebug.org/docs/execution_trace">http://xdebug.org/docs/execution_trace</a>         ;;
+;;     http://xdebug.org/docs/execution_trace         ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 xdebug.auto_trace=Off
 xdebug.collect_includes=On
 ;显示内存信息,在trace的时候
 xdebug.show_mem_delta=On
 xdebug.trace_enable_trigger=On
-xdebug.trace_output_dir=&ldquo;/var/log/php/xdebug/trace_output&rdquo;
+xdebug.trace_output_dir="/var/log/php/xdebug/trace_output"
 ;指定trace输出文件的格式, 0 是文本文件，1 计算机可读格式， 2 html格式
 xdebug.trace_format=0
-;When set to &lsquo;1&rsquo; the trace files will be appended to, instead of being overwritten in subsequent requests.
+;When set to '1' the trace files will be appended to, instead of being overwritten in subsequent requests.
 xdebug.trace_options=0
-;指定trace输出文件名的格式, %R Meaning $_SERVER[&lsquo;REQUEST_URI&rsquo;]
-xdebug.trace_output_name=trace.%R</p>
+;指定trace输出文件名的格式, %R Meaning $_SERVER['REQUEST_URI']
+xdebug.trace_output_name=trace.%R
 
-<p>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;            Profiling Script                        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;        <a href="http://xdebug.org/docs/profiler">http://xdebug.org/docs/profiler</a>             ;;
+;;        http://xdebug.org/docs/profiler             ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 xdebug.profiler_enable=Off
-xdebug.profiler_output_dir=&ldquo;/var/log/php/xdebug/profiler_output&rdquo;
+xdebug.profiler_output_dir="/var/log/php/xdebug/profiler_output"
 xdebug.profiler_enable_trigger=On
 ;profiler文件是追加，还是重写
 xdebug.profiler_append=Off
-xdebug.profiler_output_name=%R.cachegrind</p>
+xdebug.profiler_output_name=%R.cachegrind
 
-<p>;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;              Remote Debugging                      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;        <a href="http://xdebug.org/docs/remote">http://xdebug.org/docs/remote</a>               ;;
+;;        http://xdebug.org/docs/remote               ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 xdebug.remote_handler=dbgp
 xdebug.remote_autostart=Off
@@ -231,91 +240,82 @@ xdebug.remote_enable=1
 xdebug.remote_host=192.168.192.1
 xdebug.remote_port=9000
 xdebug.remote_mode=req
-;xdebug.remote_log=&ldquo;&rdquo;
-```</p>
+;xdebug.remote_log=""
+</code></pre>
 
 <p>下面是我的 Xhprof 的配置样例：</p>
 
-<p>首先，将<code>Xhprof</code>自带的<code>xhprof_html</code>,<code>xhprof_lib</code>目录放入到<code>/var/log/php/xhprof/</code> 下。
-```ini
-;;;;;;;;;;; add the following configuration to php.ini ;;;;;;;;;;;;;;;;;;;;;;;;;;;
-auto_prepend_file = &ldquo;/etc/php/include/auto_prepend.php&rdquo;
-auto_append_file  = &ldquo;/etc/php/include/auto_append.php&rdquo;
+<p>首先，将 <code>Xhprof</code> 自带的 <code>xhprof_html</code>, <code>xhprof_lib</code> 目录放入到 <code>/var/log/php/xhprof/</code> 下。</p>
+
+<pre><code class="ini">;;;;;;;;;;; add the following configuration to php.ini ;;;;;;;;;;;;;;;;;;;;;;;;;;;
+auto_prepend_file = "/etc/php/include/auto_prepend.php"
+auto_append_file  = "/etc/php/include/auto_append.php"
 ; Xhprof Module
 [xhprof]
-xhprof.output_dir = /var/log/php/xhprof/xhprof_data</p>
+xhprof.output_dir = /var/log/php/xhprof/xhprof_data
 
-<p>;;;;;;;;;;; add the following configuration to php-fpm.conf ;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;; add the following configuration to php-fpm.conf ;;;;;;;;;;;;;;;;;;;;;
 ;#### for xhprof
 php_admin_value[extension] = xhprof.so
-env[XHPROF_ROOT_PATH] = /var/log/php/xhprof</p>
-
-<h1>采样百分比，多少次访问后性能采样一次</h1>
-
-<p>env[XHPROF_SAMPLING_PERCENTAGE] = 3000
-```</p>
-
-<p>下面是 <code>/etc/php/include/auto_prepend.php</code> 的内容：
-```php
-if(isset($_SERVER[&lsquo;XHPROF_ROOT_PATH&rsquo;])){</p>
-
-<pre><code>// start profiling
-// options: xhprof_enable(  XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY + XHPROF_FLAGS_NO_BUILTINS );
-$xhprof_on = false;
-//if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-    if ( function_exists('xhprof_enable')  &amp;&amp; ( ( mt_rand(1, $_SERVER['XHPROF_SAMPLING_PERCENTAGE']) == 1 ) || isset( $_REQUEST['XHPROF_PROFILE'] ) ) ) {
-        xhprof_enable(XHPROF_FLAGS_NO_BUILTINS + XHPROF_FLAGS_MEMORY);
-        $xhprof_on = true;
-    }
-//}
+env[XHPROF_ROOT_PATH] = /var/log/php/xhprof
+# 采样百分比，多少次访问后性能采样一次
+env[XHPROF_SAMPLING_PERCENTAGE] = 3000
 </code></pre>
 
-<p>}
-```</p>
+<p>下面是 <code>/etc/php/include/auto_prepend.php</code> 的内容：</p>
 
-<p>下面是 <code>/etc/php/include/auto_append.php</code> 的内容：
-```php
-if ($xhprof_on){</p>
-
-<pre><code>$xhprof_data = xhprof_disable();
-include_once $_SERVER['XHPROF_ROOT_PATH'] . "/xhprof_lib/utils/xhprof_lib.php";
-include_once $_SERVER['XHPROF_ROOT_PATH'] . "/xhprof_lib/utils/xhprof_runs.php";
-$xhprof_runs = new XHProfRuns_Default();
-$xhporf_script_name= str_replace('.','^', substr(str_replace('/', '_', $_SERVER['SCRIPT_FILENAME']),1) );
-$run_id = $xhprof_runs-&gt;save_run( $xhprof_data, $xhporf_script_name , date('YmdHis').substr((string)microtime(), 2, 8));
+<pre><code class="php">if(isset($_SERVER['XHPROF_ROOT_PATH'])){
+    // start profiling
+    // options: xhprof_enable(  XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY + XHPROF_FLAGS_NO_BUILTINS );
+    $xhprof_on = false;
+    //if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+        if ( function_exists('xhprof_enable')  &amp;&amp; ( ( mt_rand(1, $_SERVER['XHPROF_SAMPLING_PERCENTAGE']) == 1 ) || isset( $_REQUEST['XHPROF_PROFILE'] ) ) ) {
+            xhprof_enable(XHPROF_FLAGS_NO_BUILTINS + XHPROF_FLAGS_MEMORY);
+            $xhprof_on = true;
+        }
+    //}
+}
 </code></pre>
 
-<p>}
-```</p>
+<p>下面是 <code>/etc/php/include/auto_append.php</code> 的内容：</p>
 
-<h2>设置 PhpStorm</h2>
+<pre><code class="php">if ($xhprof_on){
+    $xhprof_data = xhprof_disable();
+    include_once $_SERVER['XHPROF_ROOT_PATH'] . "/xhprof_lib/utils/xhprof_lib.php";
+    include_once $_SERVER['XHPROF_ROOT_PATH'] . "/xhprof_lib/utils/xhprof_runs.php";
+    $xhprof_runs = new XHProfRuns_Default();
+    $xhporf_script_name= str_replace('.','^', substr(str_replace('/', '_', $_SERVER['SCRIPT_FILENAME']),1) );
+    $run_id = $xhprof_runs-&gt;save_run( $xhprof_data, $xhporf_script_name , date('YmdHis').substr((string)microtime(), 2, 8));
+}
+</code></pre>
+
+<h3>设置 PhpStorm</h3>
 
 <p>我使用的 IDE 软件为  <a href="https://www.jetbrains.com/phpstorm/">PhpStorm</a>，要配合使用 Vagrant 的话，还需要特殊配置一下。</p>
 
-<h3>1.Create New Project</h3>
+<h4>1.Create New Project</h4>
 
 <p><img src="/downloads/images/phpstorm-1.jpg" alt="phpstorm-1" /></p>
 
-<h3>2. Edit Configrations&hellip;</h3>
+<h4>2. Edit Configrations&hellip;</h4>
 
 <p>Run > Edit Configrations&hellip; > Defaults > PHP Remote Debug > Servers
 <img src="/downloads/images/phpstorm-4.jpg" alt="phpstorm-4" /></p>
 
-<p>因为使用 Vagrant 的缘故，所以调试 PHP 代码的时候，需要配置目录映射。
-```</p>
+<p>因为使用 Vagrant 的缘故，所以调试 PHP 代码的时候，需要配置目录映射。</p>
 
-<h1>your/sites/path            &mdash;>  /vagrant</h1>
+<pre><code># your/sites/path            --&gt;  /vagrant
+</code></pre>
 
-<p>```
-<img src="/downloads/images/phpstorm-5.jpg" alt="phpstorm-5" /></p>
+<p><img src="/downloads/images/phpstorm-5.jpg" alt="phpstorm-5" /></p>
 
-<h3>3.Debug</h3>
+<h4>3.Debug</h4>
 
 <p>勾选， Run > &ldquo;Break at first line in PHP scripts&rdquo; 后，点击 “Debug &lsquo;xxxxx&rsquo;
 <img src="/downloads/images/phpstorm-6.jpg" alt="phpstorm-6" />
 <img src="/downloads/images/phpstorm-7.jpg" alt="phpstorm-7" /></p>
 
-<h2>Chrome 浏览器的插件 LLDT</h2>
+<h3>Chrome 浏览器的插件 LLDT</h3>
 
 <p>chrome 安装 LLDT 后，打开你开发的网址<a href="http://me.dev,">http://me.dev,</a> 刷新一下。会看到地址栏的LLDT图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗。
 <img src="/downloads/images/phpstorm-8.png" alt="phpstorm-8" /></p>

@@ -4,7 +4,7 @@
   <title><![CDATA[末日前几天]]></title>
   <link href="http://leolovenet.com/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -54,7 +54,7 @@
 
 <h3>什么是Box？</h3>
 
-<p>box就相当于是一个环境，它一般是一个Vbox虚拟机的镜像，官方提供了一个基于Ubuntu的box。
+<p>box 就相当于是一个环境，它一般是一个 Vbox 虚拟机的镜像，官方提供了一个基于 Ubuntu 的box。
 给vagrant添加一个 Box 的命令, 打开 <code>Terminal</code></p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -142,7 +142,7 @@
 
 <p>自己从官网下载一个 box，安装上后，我们开始讲正题。</p>
 
-<h2>启动软件环境</h2>
+<h3>启动软件环境</h3>
 
 <p>进入到你 Web 项目的根目录，手工创建<code>Vagrantfile</code>配置文件，或者也可以使用<code>vagrant ini</code>创建后再手工修改，添加了一个用来跟虚拟机通信的独立的 IP。</p>
 
@@ -375,7 +375,7 @@
 
 <p>下面是我的 Xhprof 的配置样例：</p>
 
-<p>首先，将<code>Xhprof</code>自带的<code>xhprof_html</code>,<code>xhprof_lib</code>目录放入到<code>/var/log/php/xhprof/</code> 下。</p>
+<p>首先，将 <code>Xhprof</code> 自带的 <code>xhprof_html</code>, <code>xhprof_lib</code> 目录放入到 <code>/var/log/php/xhprof/</code> 下。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -454,15 +454,15 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<h2>设置 PhpStorm</h2>
+<h3>设置 PhpStorm</h3>
 
 <p>我使用的 IDE 软件为  <a href="https://www.jetbrains.com/phpstorm/">PhpStorm</a>，要配合使用 Vagrant 的话，还需要特殊配置一下。</p>
 
-<h3>1.Create New Project</h3>
+<h4>1.Create New Project</h4>
 
 <p><img src="http://leolovenet.com/downloads/images/phpstorm-1.jpg" alt="phpstorm-1" /></p>
 
-<h3>2. Edit Configrations&hellip;</h3>
+<h4>2. Edit Configrations&hellip;</h4>
 
 <p>Run > Edit Configrations&hellip; > Defaults > PHP Remote Debug > Servers
 <img src="http://leolovenet.com/downloads/images/phpstorm-4.jpg" alt="phpstorm-4" /></p>
@@ -476,13 +476,13 @@
 
 <p><img src="http://leolovenet.com/downloads/images/phpstorm-5.jpg" alt="phpstorm-5" /></p>
 
-<h3>3.Debug</h3>
+<h4>3.Debug</h4>
 
 <p>勾选， Run > &ldquo;Break at first line in PHP scripts&rdquo; 后，点击 “Debug &lsquo;xxxxx&rsquo;
 <img src="http://leolovenet.com/downloads/images/phpstorm-6.jpg" alt="phpstorm-6" />
 <img src="http://leolovenet.com/downloads/images/phpstorm-7.jpg" alt="phpstorm-7" /></p>
 
-<h2>Chrome 浏览器的插件 LLDT</h2>
+<h3>Chrome 浏览器的插件 LLDT</h3>
 
 <p>chrome 安装 LLDT 后，打开你开发的网址<a href="http://me.dev,">http://me.dev,</a> 刷新一下。会看到地址栏的LLDT图标，点击一下，或者按快捷键<code>Ctrl+Shift+X</code>，mac用户为<code>command+Shift+x</code>，调出菜单弹窗。
 <img src="http://leolovenet.com/downloads/images/phpstorm-8.png" alt="phpstorm-8" /></p>
@@ -816,7 +816,7 @@ xhprof 的分析结果怎么查看, 自己查看官网的介绍吧。</p>
     <updated>2014-02-13T17:16:08+08:00</updated>
     <id>http://leolovenet.com/blog/2014/02/13/hi-octopress</id>
     <content type="html"><![CDATA[<p>完成了 Blog 由 Wordpress 转向 Octopress 的迁移.
-我的 Blog 的迁移轨迹是 <a href="blog.csdn.net/apoxlo">CSDN</a> &mdash;> <a href="http://blog.bbkanba.com">Wordpress</a> &mdash;> Octepress.
+我的 Blog 的迁移轨迹是 <a href="blog.csdn.net/apoxlo">CSDN</a> &ndash;> <a href="http://blog.bbkanba.com">Wordpress</a> &ndash;> Octepress.
 由于 CSDN 上面没有什么有用的文章我就没有迁移过来, Wordpress 的代码共享功能没有 Octepress 好用, 所以最终选择了 Octepress.</p>
 
 <p>Github Pages 对用户使用 master 分支作为 <code>http://username.github.io</code> 网站的公共目录.因此,你需要在 source 分支上对你的 blog 源代码编辑,然后 commit 生成的内容到 master 分支上.</p>
@@ -1002,7 +1002,7 @@ Pow是一个Rack Server for Mac OS X.</p>
     <link href="http://leolovenet.com/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance/"/>
     <updated>2013-04-10T00:00:00+08:00</updated>
     <id>http://leolovenet.com/blog/2013/04/10/about-the-development-squid-ecap-dynamic-libraries-plug-guidance</id>
-    <content type="html"><![CDATA[<blockquote><p>&ldquo;Squid cache&#8221;（简称为Squid）是一个流行的自由软件（GNU通用公共许可证）的代理服务器和Web缓存服务器. Squid 有广泛的用途,从作为网页服务器的前置cache服务器缓存相关请求来提高Web服务器的速度,到为一组人共享网络资源而缓存万维网,域名系统和其他网络搜索,到通过过滤流量帮助网络安全,到局域网通过代理上网. Squid主要设计用于在Unix一类系统运行.</p></blockquote>
+    <content type="html"><![CDATA[<blockquote><p>&ldquo;Squid cache"（简称为Squid）是一个流行的自由软件（GNU通用公共许可证）的代理服务器和Web缓存服务器. Squid 有广泛的用途,从作为网页服务器的前置cache服务器缓存相关请求来提高Web服务器的速度,到为一组人共享网络资源而缓存万维网,域名系统和其他网络搜索,到通过过滤流量帮助网络安全,到局域网通过代理上网. Squid主要设计用于在Unix一类系统运行.</p></blockquote>
 
 <p>上面是摘自开源中国(oscine.net)对squid的中文介绍. squid的功能的确很强大,甚至有些需要深入挖掘一下,今天这篇文章主要讲述一下这几天研究成果. squid做透明代理或者网关的情况下,过滤用户请求内容,或者过滤用户请求的回应内容的技术.可以把 squid 当做一个理论上的“防火墙”来使用,避免用户浏览非法网站或下载带有病毒的文件(结合开源杀毒软件功能),甚至替换掉那些烦人的广告.当然,它还可以在服务器的返回结果中植入自己的广告代码,或者统计代码.最灵活的是可以控制操作用户请求的HTTP头内容,过滤不必要的HTTP头信息,或者添加自定义HTTP头信息.</p>
 
@@ -1079,7 +1079,7 @@ Pow是一个Rack Server for Mac OS X.</p>
 <p>而这几种方案又各有优缺点,最好的排序方式是:</p>
 
 <div class="squid"><table><tbody><tr>  <td><p class="line862"> <strong>Evaluation Criteria</strong> </p></td>
-  <td><p class="line862"> <strong>Mechanisms in rough order from &#8220;best&#8221; to &#8220;worst&#8221;</strong> </p></td>
+  <td><p class="line862"> <strong>Mechanisms in rough order from "best" to "worst"</strong> </p></td>
 </tr>
 <tr>  <td><span class="anchor" id="line-111"></span><p class="line862"> Squid independence </p></td>
   <td><p class="line862"> <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secICAP">ICAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#seceCAP">eCAP</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secACLs">ACLs</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secClientStreams">Client Streams</a>, <a href="http://leolovenet.com/SquidFaq/ContentAdaptation#secCodeHacks">code hacks</a> </p></td>
@@ -1612,8 +1612,8 @@ squid的通过继承自<code>libecap::adapter::Service</code>类的子类,实现
 3. <code>libecap::Message</code> 类型,为squid转发过来的每个用户http请求的封装,其中包含用户请求的url,http头,和可能附带的其他数据(请求的话,post可能带有的数据,回应的话,就是回应的body信息了).<br/>
 4. <code>libecap::host::Xaction</code> 类型,每个用户请求的封装,包含<code>libecap::Message</code>.<br/>
 ok,主要用到的就这么多.要到达我们上面列出的案例要求,其实很简单,这里只在<code>void Adapter::Xaction::start()</code>里实现就可以了.<br/>
-这里我们假设,用户的认证登陆页面在本机的9090端口,任何未经过认证的,或者认证超时的用户,全部默认跳转到<a href="http://127.0.0.1:9090;  ">http://127.0.0.1:9090;  </a>
-查询用户是否可以访问网络的api接口是,<a href="http://127.0.0.1:9090/check.php?uip=x.x.x.x.  ">http://127.0.0.1:9090/check.php?uip=x.x.x.x.  </a>
+这里我们假设,用户的认证登陆页面在本机的9090端口,任何未经过认证的,或者认证超时的用户,全部默认跳转到<a href="http://127.0.0.1:9090;">http://127.0.0.1:9090;</a><br/>
+查询用户是否可以访问网络的api接口是,<a href="http://127.0.0.1:9090/check.php?uip=x.x.x.x.">http://127.0.0.1:9090/check.php?uip=x.x.x.x.</a><br/>
 查询结果如果为0,则表示用户没有经过认证,为1表示已经过期,为2表示正常放行.</p>
 
 <p>下面为全部的代码,没有经过测试,不保证正确哦.</p>

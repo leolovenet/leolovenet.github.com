@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Compiler | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/compiler/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -29,19 +29,17 @@ configure: error: C compiler cannot create executables
 
 <p>x86_64解决办法如下:</p>
 
-<p><code>bash
-./configure CXXFLAGS="-g -O2"  CFLAGS="-O2 -march=x86-64" --prefix=/usr/local/squid
-make
+<pre><code class="bash">./configure CXXFLAGS="-g -O2"  CFLAGS="-O2 -march=x86-64" --prefix=/usr/local/squid
+make 
 make install
-</code></p>
+</code></pre>
 
 <p>i686</p>
 
-<p><code>bash
-./configure -disable-64bit CFLAGS="-O3 -march=i686" --prefix=/usr/local/squid
-make
+<pre><code class="bash ">./configure -disable-64bit CFLAGS="-O3 -march=i686" --prefix=/usr/local/squid
+make 
 make install
-</code></p>
+</code></pre>
 ]]></content>
   </entry>
   

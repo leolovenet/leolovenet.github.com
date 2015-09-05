@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Terminal | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/terminal/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -39,7 +39,7 @@
 
 <p>下面是具体命令</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>[execute below script in terminal]  (terminal_colorful.sh)</span> <a href='/downloads/code/terminal_colorful.sh'>download</a></figcaption>
+<p><figure class='code'><figcaption><span>[execute below script in terminal]  (terminal_colorful.sh)</span> <a href='/downloads/code/terminal_colorful.sh'>download</a></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -112,7 +112,7 @@
 </span><span class='line'><span class="s">END</span>
 </span><span class='line'><span class="nb">source</span> ~/.bashrc
 </span><span class='line'>ls /
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+</span></code></pre></td></tr></table></div></figure></p>
 
 <p>该项目的<a href="https://github.com/seebi/dircolors-solarized/blob/master/README.md">ReadMe</a>文件还有很多信息,比如怎样配置265色的终端,感兴趣的可以仔细看看.</p>
 
@@ -123,9 +123,8 @@
 
 <p>这里需要补充一点的是,mac 下的ls命令不是gun ls,所以即使iterm2安装了颜色主题,敲入ls命令以后,显示的文件颜色还是有问题的,这里有一个补救办法,运行下面这行,之后再看ls命令的颜色是不是变了</p>
 
-<p><code>bash
-export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
-</code></p>
+<pre><code class="bash">export LSCOLORS=gxfxbEaEBxxEhEhBaDaCaD
+</code></pre>
 
 <p>但是,这种补救办法也不完美,比如不能根据文件类型来显示颜色.</p>
 

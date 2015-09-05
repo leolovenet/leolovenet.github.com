@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Xcode | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/xcode/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -141,21 +141,19 @@ Usage:
 
 <p><strong>Listing 1:</strong> Undoing iOS PNG optimization</p>
 
-<p><code>bash
-$ /Applications/Xcode.app/Contents/Developer\
+<pre><code class="bash ">$ /Applications/Xcode.app/Contents/Developer\
 /Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush \
 -revert-iphone-optimizations -q Local.png Local-standard.png
-</code></p>
+</code></pre>
 
 <p>If you have Xcode installed in a non-standard place, you can locate the tool using <strong>xcode-select</strong>, as shown in Listing 2.</p>
 
 <p><strong>Listing 2:</strong> Using <strong>xcode-select</strong> to locate pngcrush</p>
 
-<p><code>bash
-$ "`xcode-select -print-path`"\
+<pre><code class="bash ">$ "`xcode-select -print-path`"\
 /Platforms/iPhoneOS.platform/Developer/usr/bin/pngcrush \
 -revert-iphone-optimizations -q Local.png Local-standard.png
-</code></p>
+</code></pre>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Squid | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/squid/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -147,8 +147,7 @@ bitz-server(<a target="_blank" href="https://github.com/uditha-atukorala/bitz-se
 今天主要讲一下ecap的开发,部署,服务器环境为CentOS release 6.4 (Final) x86_64.<br/>
 到<a href="http://www.e-cap.org/Downloads">http://www.e-cap.org/Downloads</a>下载安装最新版本的ecap库,编译安装.并同时下载最新版本的开发例子包<a href="http://www.measurement-factory.com/tmp/ecap/ecap_adapter_sample-0.2.0.tar.gz">ecap_adapter_sample-0.2.0.tar.gz</a></p>
 
-<p><code>bash
-yum -y install automake autoconf libtool
+<pre><code class="bash">yum -y install automake autoconf libtool 
 mkdir -p /opt/packages
 cd /opt/packages
 wget http://www.measurement-factory.com/tmp/ecap/ecap_adapter_sample-0.2.0.tar.gz
@@ -158,18 +157,17 @@ cd libecap-0.2.0
 ./configure
 make
 make install
-</code></p>
+</code></pre>
 
 <p>编译安装squid,并在configure要加入<code>–enable-ecap</code>,开启ecap支持,如果你还想squid同时支持icap的话,还需要加入<code>–enable-icap-client</code>开关,然后配置,编译安装.</p>
 
-<p><code>
-wget http://www.squid-cache.org/Versions/v3/3.3/squid-3.3.3.tar.bz2
+<pre><code>wget http://www.squid-cache.org/Versions/v3/3.3/squid-3.3.3.tar.bz2
 tar -xf squid-3.3.3.tar.bz2
 cd squid-3.3.3
-./configure --enable-http-violations --enable-ltdl-convenience --enable-icap-client --enable-ecap --prefix=/usr/local/squid PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+./configure --enable-http-violations --enable-ltdl-convenience --enable-icap-client --enable-ecap --prefix=/usr/local/squid PKG_CONFIG_PATH=/usr/local/lib/pkgconfig 
 make
 make install
-</code></p>
+</code></pre>
 
 <p>下面讲一下ecap的具体开发步骤,举个案例,现在我们想实现用户第一次访问网络时跳转到一个用户认证页面,认证通过以后才可以继续浏览网络.<br/>
 实现原理大概是:</p>
@@ -227,134 +225,108 @@ make install
 写ecap插件很简单,例子包给出了3个例子插件.基本上一个插件只有一个源文件就可以搞定.所以写和部署起来还是蛮方便的.<br/>
 这里我们在原有的例子程序框架下修改一下. 然后写出我们自己的插件来.</p>
 
-<p>``` bash
-tar -zxf ecap_adapter_sample-0.2.0.tar.gz
+<pre><code class="bash">tar -zxf ecap_adapter_sample-0.2.0.tar.gz
 mv ecap_adapter_sample-0.2.0 ecap_adapter_bbkanba
 cd ecap_adapter_bbkanba/src
 cp adapter_modifying.cc adapter_bbkanba.cc
-sed -i -e &rsquo;s/sample.h/bbkanba.h/&lsquo; adapter_bbkanba.cc
-sed -i -e &rsquo;/.<em>\/config.h.</em>/d' adapter_bbkanba.cc
-sed -i -e &rsquo;s/.<em>ecap:\/\/.</em>/return &ldquo;ecap:\/\/bbkanba.com\/bbkanba&rdquo;;/&lsquo; adapter_bbkanba.cc
-cat > Makefile.am &lt;&lt;ALLEND
-EXTRA_DIST = \</p>
+sed -i -e 's/sample.h/bbkanba.h/' adapter_bbkanba.cc
+sed -i -e '/.*\/config.h.*/d' adapter_bbkanba.cc
+sed -i -e 's/.*ecap:\/\/.*/return "ecap:\/\/bbkanba.com\/bbkanba";/' adapter_bbkanba.cc
+cat &gt; Makefile.am &lt;&lt;ALLEND
+EXTRA_DIST = \
+    adapter_bbkanba.cc   
 
-<pre><code>adapter_bbkanba.cc   
-</code></pre>
+lib_LTLIBRARIES = \
+    ecap_adapter_bbkanba.la
 
-<p>lib_LTLIBRARIES = \</p>
+noinst_HEADERS = \
+    bbkanba.h \
+    Debugger.h \
+    \
+    autoconf.h 
 
-<pre><code>ecap_adapter_bbkanba.la
-</code></pre>
+ecap_adapter_bbkanba_la_SOURCES = adapter_bbkanba.cc \
+                                 Debugger.cc 
 
-<p>noinst_HEADERS = \</p>
-
-<pre><code>bbkanba.h \
-Debugger.h \
-\
-autoconf.h 
-</code></pre>
-
-<p>ecap_adapter_bbkanba_la_SOURCES = adapter_bbkanba.cc \</p>
-
-<pre><code>                             Debugger.cc 
-</code></pre>
-
-<p>ecap_adapter_bbkanba_la_CPPFLAGS = \$(LIBECAP_CFLAGS)
+ecap_adapter_bbkanba_la_CPPFLAGS = \$(LIBECAP_CFLAGS) 
 ecap_adapter_bbkanba_la_LDFLAGS = -module -avoid-version \$(libecap_LIBS)
-ecap_adapter_bbkanba_la_LIBADD= \$(LIBECAP_LIBS)  -lboost_system -lcppnetlib-uri</p>
+ecap_adapter_bbkanba_la_LIBADD= \$(LIBECAP_LIBS)  -lboost_system -lcppnetlib-uri
 
-<p>DISTCLEANFILES = \</p>
 
-<pre><code>    autoconf.h
-</code></pre>
+DISTCLEANFILES = \
+        autoconf.h
 
-<p>AM_CPPFLAGS = -I\$(top_srcdir)/src
+AM_CPPFLAGS = -I\$(top_srcdir)/src
 ALLEND
 mv sample.h  bbkanba.h
-cat > Debugger.h &lt;&lt;ALLEND
-/<em> eCAP ClamAV Adapter  <a href="http://www.e-cap.org/">http://www.e-cap.org/</a>
- * Copyright &copy; 2011 The Measurement Factory.
- * Distributed under GPL v2 without any warranty.  </em>/</p>
+cat &gt; Debugger.h &lt;&lt;ALLEND
+/* eCAP ClamAV Adapter  http://www.e-cap.org/
+ * Copyright (C) 2011 The Measurement Factory.
+ * Distributed under GPL v2 without any warranty.  */
 
-<h1>ifndef ECAP_MBAIDU_ADAPTER_DEBUGGER_H</h1>
+#ifndef ECAP_MBAIDU_ADAPTER_DEBUGGER_H
+#define ECAP_MBAIDU_ADAPTER_DEBUGGER_H
 
-<h1>define ECAP_MBAIDU_ADAPTER_DEBUGGER_H</h1>
+#include &lt;libecap/common/log.h&gt;
+#include &lt;iosfwd&gt;
 
-<h1>include &lt;libecap/common/log.h></h1>
-
-<h1>include <iosfwd></h1>
-
-<p>using libecap::ilNormal;
+using libecap::ilNormal;
 using libecap::ilCritical;
 using libecap::flXaction;
 using libecap::flApplication;
-using libecap::mslLarge;</p>
+using libecap::mslLarge;
 
-<p>// TODO: rename to Log</p>
+// TODO: rename to Log
 
-<p>// libecap::host::openDebug/closeDebug calls wrapper for safety and convenience
-class Debugger {</p>
+// libecap::host::openDebug/closeDebug calls wrapper for safety and convenience
+class Debugger {
+    public:
+        explicit Debugger(const libecap::LogVerbosity lv); // opens
+        ~Debugger(); // closes
 
-<pre><code>public:
-    explicit Debugger(const libecap::LogVerbosity lv); // opens
-    ~Debugger(); // closes
+        // logs a message if host enabled debugging at the specified level
+        template &lt;class T&gt;
+        const Debugger &amp;operator &lt;&lt;(const T &amp;msg) const {
+            if (debug)
+                *debug &lt;&lt; msg;
+            return *this;
+        }
 
-    // logs a message if host enabled debugging at the specified level
-    template &lt;class T&gt;
-    const Debugger &amp;operator &lt;&lt;(const T &amp;msg) const {
-        if (debug)
-            *debug &lt;&lt; msg;
-        return *this;
-    }
+    private:
+        /* prohibited and not implemented */
+        Debugger(const Debugger&amp;);
+        Debugger &amp;operator=(const Debugger&amp;);
 
-private:
-    /* prohibited and not implemented */
-    Debugger(const Debugger&amp;);
-    Debugger &amp;operator=(const Debugger&amp;);
+        std::ostream *debug; // host-provided debug ostream or nil
+};
 
-    std::ostream *debug; // host-provided debug ostream or nil
-</code></pre>
+#endif
+ALLEND
+cat &gt; Debugger.cc &lt;&lt;ALLEND
+/* eCAP ClamAV Adapter   http://www.e-cap.org/
+ * Copyright (C) 2011 The Measurement Factory.
+ * Distributed under GPL v2 without any warranty.  */
 
-<p>};</p>
+#include "bbkanba.h"
+#include "Debugger.h"
+#include &lt;libecap/common/registry.h&gt;
+#include &lt;libecap/host/host.h&gt;
+#include &lt;iostream&gt;
 
-<h1>endif</h1>
+// TODO: support automated prefixing of log messages
 
-<p>ALLEND
-cat > Debugger.cc &lt;&lt;ALLEND
-/<em> eCAP ClamAV Adapter   <a href="http://www.e-cap.org/">http://www.e-cap.org/</a>
- * Copyright &copy; 2011 The Measurement Factory.
- * Distributed under GPL v2 without any warranty.  </em>/</p>
+Debugger::Debugger(const libecap::LogVerbosity lv):
+    debug(libecap::MyHost().openDebug(lv)) {
+}
 
-<h1>include &ldquo;bbkanba.h&rdquo;</h1>
-
-<h1>include &ldquo;Debugger.h&rdquo;</h1>
-
-<h1>include &lt;libecap/common/registry.h></h1>
-
-<h1>include &lt;libecap/host/host.h></h1>
-
-<h1>include <iostream></h1>
-
-<p>// TODO: support automated prefixing of log messages</p>
-
-<p>Debugger::Debugger(const libecap::LogVerbosity lv):</p>
-
-<pre><code>debug(libecap::MyHost().openDebug(lv)) {
-</code></pre>
-
-<p>}</p>
-
-<p>Debugger::~Debugger() {</p>
-
-<pre><code>if (debug)
-    libecap::MyHost().closeDebug(debug);
-</code></pre>
-
-<p>}
+Debugger::~Debugger() {
+    if (debug)
+        libecap::MyHost().closeDebug(debug);
+}
 ALLEND
 cd ..
-sed -i -e &rsquo;s/AC_INIT.<em>/AC_INIT(eCAP bbkanba Adapter, 0.0.1, leolovenet@gmail.com, eCAP_bbkanba_Adapter)/&lsquo; configure.in
-sed -i -e &rsquo;s/AC_CONFIG_SRCDIR.</em>/AC_CONFIG_SRCDIR([src\/bbkanba.h])/&rsquo; configure.in
+sed -i -e 's/AC_INIT.*/AC_INIT(eCAP bbkanba Adapter, 0.0.1, leolovenet@gmail.com, eCAP_bbkanba_Adapter)/' configure.in
+sed -i -e 's/AC_CONFIG_SRCDIR.*/AC_CONFIG_SRCDIR([src\/bbkanba.h])/' configure.in
 touch  ./NEWS
 touch  ./AUTHORS
 touch  ./ChangeLog
@@ -363,7 +335,7 @@ autoreconf -ivf
 ./configure PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
 make
 make install
-```</p>
+</code></pre>
 
 <p>如果上面运行<code>make</code>命令没有报错的话,说明你的编译环境,例子程序的框架修改没有问题. 下面我们就可以具体的编写插件代码了.<br/>
 上面引入两个debug的文件(源自eCAP ClamAV Adapter插件),便于查看插件程序的执行过程,Debug信息会输出到squid的日志文件. 现在写自己的ecap插件,只需要编辑<code>adapter_bbkanba.cc</code>文件,之后运行<code>./configure &amp;&amp; make &amp;&amp; make install</code>. 默认情况下的安装路径为<code>/usr/local/lib</code>.<br/>
@@ -408,9 +380,8 @@ Service类代表的是一个ecap插件服务,上面我们在squid.conf配置文�
 
 <p>在我们开始真正的编写插件代码之前,我们先引入一些需要的头文件,运行下面的命令.</p>
 
-<p><code>bash
-sed -i -e '/.*bbkanba.h.*/ a\#include "Debugger.h"\n#include &lt;algorithm&gt;' adapter_bbkanba.cc
-</code></p>
+<pre><code class="bash">sed -i -e '/.*bbkanba.h.*/ a\#include "Debugger.h"\n#include &lt;algorithm&gt;' adapter_bbkanba.cc
+</code></pre>
 
 <p>自己手工处理一下Service类,使我们的开发框架变的干净整洁:<br/>
 删除<code>void setVictim(const std::string &amp;value);</code><br/>
@@ -425,40 +396,35 @@ squid为每一个请求创建一个Server类对象,每一个Server类对象负�
 
 <p>为了便于处理url的信息以及利用http请求查询api获取用户ip是否验证通过的结果,这里我利用<a target="_blank" href="http://www.boost.org/">boost</a>库和<a target="_blank" href="http://cpp-netlib.org/">cpp-netlib</a>库.首先让我们安装这两个库的最新版本.</p>
 
-<p>``` bash</p>
-
-<h3>install boost</h3>
-
-<p>yum -y install icu libicu libicu-devel python python-devel
-wget <a href="http://sourceforge.net/projects/boost/files/boost/1.53.0/boost_1_53_0.tar.gz/download">http://sourceforge.net/projects/boost/files/boost/1.53.0/boost_1_53_0.tar.gz/download</a>
+<pre><code class="bash">###install boost####
+yum -y install icu libicu libicu-devel python python-devel
+wget http://sourceforge.net/projects/boost/files/boost/1.53.0/boost_1_53_0.tar.gz/download
 tar -zxf boost_1_53_0.tar.gz
 cd  boost_1_53_0
-./bootstrap.sh &mdash;prefix=/usr/local/boost_1_53_0
+./bootstrap.sh --prefix=/usr/local/boost_1_53_0
 ./b2 install
 ln -s /usr/local/boost_1_53_0/lib/libboost_* /usr/local/lib/
 ln -s /usr/local/boost_1_53_0/include/boost /usr/local/include/boost
-echo &ldquo;/usr/local/lib&rdquo; > /etc/ld.so.conf.d/usrlocallib.conf
-ldconfig</p>
-
-<h3>install cpp-netlib-0.9.4</h3>
-
-<p>wget <a href="http://dl.atrpms.net/el6-x86_64/atrpms/stable/atrpms-repo-6-6.el6.x86_64.rpm">http://dl.atrpms.net/el6-x86_64/atrpms/stable/atrpms-repo-6-6.el6.x86_64.rpm</a>
+echo "/usr/local/lib" &gt; /etc/ld.so.conf.d/usrlocallib.conf
+ldconfig
+###install cpp-netlib-0.9.4####
+wget http://dl.atrpms.net/el6-x86_64/atrpms/stable/atrpms-repo-6-6.el6.x86_64.rpm
 rpm -Uvh atrpms-repo*rpm
-yum -y &mdash;enablerepo=atrpms-testing install cmake
-wget <a href="https://github.com/downloads/cpp-netlib/cpp-netlib/cpp-netlib-0.9.4.zip">https://github.com/downloads/cpp-netlib/cpp-netlib/cpp-netlib-0.9.4.zip</a>
+yum -y --enablerepo=atrpms-testing install cmake
+wget https://github.com/downloads/cpp-netlib/cpp-netlib/cpp-netlib-0.9.4.zip
 unzip cpp-netlib-0.9.4.zip
 cd cpp-netlib-0.9.4
-sed -i -e &lsquo;/if (Boost_FOUND)/ a\set (CMAKE_CXX_FLAGS &ldquo;-lrt -fPIC&rdquo;)&rsquo; CMakeLists.txt
+sed -i -e '/if (Boost_FOUND)/ a\set (CMAKE_CXX_FLAGS "-lrt -fPIC")' CMakeLists.txt
 mkdir cpp-netlib-build
 cd cpp-netlib-build
 cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ ..
-make -j4</p>
+make -j4
 
-<p>cp libs/network/src/<em>.a /usr/local/lib/
+cp libs/network/src/*.a /usr/local/lib/
 cd ..
-cp -r boost/</em> /usr/local/include/boost/
+cp -r boost/* /usr/local/include/boost/
 ldconfig
-```</p>
+</code></pre>
 
 <p><strong>吐槽题外话,不想看的跳过.</strong><br/>
 这篇文章写到这里,已经写了有几天了.虽然中途因为工作,生活,还有懒惰心一度中断,但是这些原因都不是原因,最根本的原因是,我还得吐槽一下这个库,我当初在找http方面的库时候看到了cpp-netlib,觉得它很好用,可就是太臃肿了,为了用它我还的不得已引入boost,一路摸索的在公司高配服务器上安装编译调试,不是很费劲最后成了.感觉也没有那么复杂.但是但是,为了写这篇文章,我又的重新的在我的aliyun的低配置服务器上重新编译,编译问题到还是可以慢慢解决.但是我受不了的是cpp-netlib的编译速度之慢之慢之慢之慢之慢之慢之慢之慢之慢&#8230;..,我编译它用了超过8个小时,对,超过8个小时,超过8个小时,虽然这充分地表明我的机器配置有多低,但是我还要吐槽,这么个简单的库为啥要编译这么费劲,个老子里&#8230;,好,发泄完毕,继续之前贴出我机器的配置,以供瞻仰:</p>
@@ -502,460 +468,350 @@ squid的通过继承自<code>libecap::adapter::Service</code>类的子类,实现
 3. <code>libecap::Message</code> 类型,为squid转发过来的每个用户http请求的封装,其中包含用户请求的url,http头,和可能附带的其他数据(请求的话,post可能带有的数据,回应的话,就是回应的body信息了).<br/>
 4. <code>libecap::host::Xaction</code> 类型,每个用户请求的封装,包含<code>libecap::Message</code>.<br/>
 ok,主要用到的就这么多.要到达我们上面列出的案例要求,其实很简单,这里只在<code>void Adapter::Xaction::start()</code>里实现就可以了.<br/>
-这里我们假设,用户的认证登陆页面在本机的9090端口,任何未经过认证的,或者认证超时的用户,全部默认跳转到<a href="http://127.0.0.1:9090;  ">http://127.0.0.1:9090;  </a>
-查询用户是否可以访问网络的api接口是,<a href="http://127.0.0.1:9090/check.php?uip=x.x.x.x.  ">http://127.0.0.1:9090/check.php?uip=x.x.x.x.  </a>
+这里我们假设,用户的认证登陆页面在本机的9090端口,任何未经过认证的,或者认证超时的用户,全部默认跳转到<a href="http://127.0.0.1:9090;">http://127.0.0.1:9090;</a><br/>
+查询用户是否可以访问网络的api接口是,<a href="http://127.0.0.1:9090/check.php?uip=x.x.x.x.">http://127.0.0.1:9090/check.php?uip=x.x.x.x.</a><br/>
 查询结果如果为0,则表示用户没有经过认证,为1表示已经过期,为2表示正常放行.</p>
 
 <p>下面为全部的代码,没有经过测试,不保证正确哦.</p>
 
-<p>``` cpp</p>
+<pre><code class="cpp">#include "bbkanba.h"
+#include "Debugger.h"
+#include &lt;iostream&gt;
+#include &lt;algorithm&gt;
+#include &lt;libecap/common/registry.h&gt;
+#include &lt;libecap/common/errors.h&gt;
+#include &lt;libecap/common/message.h&gt;
+#include &lt;libecap/common/header.h&gt;
+#include &lt;libecap/common/names.h&gt;
+#include &lt;libecap/common/named_values.h&gt;
+#include &lt;libecap/host/host.h&gt;
+#include &lt;libecap/adapter/service.h&gt;
+#include &lt;libecap/adapter/xaction.h&gt;
+#include &lt;libecap/host/xaction.h&gt;
+#include &lt;boost/network/uri.hpp&gt;
+#include &lt;boost/network/uri/uri_io.hpp&gt;
+#include &lt;boost/network/protocol/http/client.hpp&gt;
+using namespace boost::network;
 
-<h1>include &ldquo;bbkanba.h&rdquo;</h1>
-
-<h1>include &ldquo;Debugger.h&rdquo;</h1>
-
-<h1>include <iostream></h1>
-
-<h1>include <algorithm></h1>
-
-<h1>include &lt;libecap/common/registry.h></h1>
-
-<h1>include &lt;libecap/common/errors.h></h1>
-
-<h1>include &lt;libecap/common/message.h></h1>
-
-<h1>include &lt;libecap/common/header.h></h1>
-
-<h1>include &lt;libecap/common/names.h></h1>
-
-<h1>include &lt;libecap/common/named_values.h></h1>
-
-<h1>include &lt;libecap/host/host.h></h1>
-
-<h1>include &lt;libecap/adapter/service.h></h1>
-
-<h1>include &lt;libecap/adapter/xaction.h></h1>
-
-<h1>include &lt;libecap/host/xaction.h></h1>
-
-<h1>include &lt;boost/network/uri.hpp></h1>
-
-<h1>include &lt;boost/network/uri/uri_io.hpp></h1>
-
-<h1>include &lt;boost/network/protocol/http/client.hpp></h1>
-
-<p>using namespace boost::network;</p>
-
-<p>namespace Adapter { // not required, but adds clarity
+namespace Adapter { // not required, but adds clarity
 using   libecap::size_type;
-typedef libecap::RequestLine *CLRLP;</p>
-
-<p>class Service: public libecap::adapter::Service {</p>
-
-<pre><code>public:
-    // About
-    virtual std::string uri() const; // unique across all vendors
-    virtual std::string tag() const; // changes with version and config
-    virtual void describe(std::ostream &amp;os) const; // free-format info
-
-    // Configuration
-    virtual void configure(const libecap::Options &amp;cfg);
-    virtual void reconfigure(const libecap::Options &amp;cfg);
-
-    // Lifecycle
-    virtual void start(); // expect makeXaction() calls
-    virtual void stop(); // no more makeXaction() calls until start()
-    virtual void retire(); // no more makeXaction() calls
-
-    // Scope (XXX: this may be changed to look at the whole header)
-    virtual bool wantsUrl(const char *url) const;
-
-    // Work
-    virtual libecap::adapter::Xaction *makeXaction(libecap::host::Xaction *hostx);
-</code></pre>
-
-<p>};</p>
-
-<p>class Xaction: public libecap::adapter::Xaction {</p>
-
-<pre><code>public:
-    Xaction(libecap::shared_ptr&lt;Service&gt; s, libecap::host::Xaction *x);
-    virtual ~Xaction();
-
-    // meta-information for the host transaction
-    virtual const libecap::Area option(const libecap::Name &amp;name) const;
-    virtual void visitEachOption(libecap::NamedValueVisitor &amp;visitor) const;
-
-    // lifecycle
-    virtual void start();
-    virtual void stop();
-
-    // adapted body transmission control
-    virtual void abDiscard();
-    virtual void abMake();
-    virtual void abMakeMore();
-    virtual void abStopMaking();
-
-    // adapted body content extraction and consumption
-    virtual libecap::Area abContent(size_type offset, size_type size);
-    virtual void abContentShift(size_type size);
-
-    // virgin body state notification
-    virtual void noteVbContentDone(bool atEnd);
-    virtual void noteVbContentAvailable();
-
-    // libecap::Callable API, via libecap::host::Xaction
-    virtual bool callable() const;
-
-protected:
-    void stopVb(); // stops receiving vb (if we are receiving it)
-
-    void getUri(libecap::shared_ptr&lt;libecap::Message&gt; &amp;);
-    void goToUrl( std::string orgUrl,std::string host,std::string state);
-    void debugAction(const std::string &amp;action,const bool &amp;showOrgUrl=true);
-    libecap::host::Xaction *lastHostCall(); // clears hostx
-
-private:
-    CLRLP requestLine;
-    libecap::Area uri; // Request-URI from headers, for logging
-    libecap::shared_ptr&lt;const Service&gt; service; // configuration access
-    libecap::host::Xaction *hostx; // Host transaction rep
-
-    typedef enum { opUndecided, opOn, opComplete, opNever } OperationState;
-    typedef enum { localWebServer, normal } OprationAdaptedState;
-    OperationState receivingVb;
-    OperationState sendingAb;
-    OprationAdaptedState adaptedGotoAction;
-</code></pre>
-
-<p>};</p>
-
-<p>static const std::string CfgErrorPrefix =</p>
-
-<pre><code>"eBBkanba Adapter: configuration error: ";
-</code></pre>
-
-<p>} // namespace Adapter</p>
-
-<p>std::string Adapter::Service::uri() const {</p>
-
-<pre><code>return "ecap://bbkanba.com/bbkanba";
-</code></pre>
-
-<p>}</p>
-
-<p>std::string Adapter::Service::tag() const {</p>
-
-<pre><code>return PACKAGE_VERSION;
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Service::describe(std::ostream &amp;os) const {</p>
-
-<pre><code>os &lt;&lt; "A eBBkanba adapter from " &lt;&lt; PACKAGE_NAME &lt;&lt; " v" &lt;&lt; PACKAGE_VERSION;
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Service::configure(const libecap::Options &amp;cfg) {
-}</p>
-
-<p>void Adapter::Service::reconfigure(const libecap::Options &amp;cfg) {
-}
-void Adapter::Service::start() {</p>
-
-<pre><code>libecap::adapter::Service::start();
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Service::stop() {</p>
-
-<pre><code>libecap::adapter::Service::stop();
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Service::retire() {</p>
-
-<pre><code>libecap::adapter::Service::stop();
-</code></pre>
-
-<p>}</p>
-
-<p>bool Adapter::Service::wantsUrl(const char *url) const {</p>
-
-<pre><code>return true; // no-op is applied to all messages
-</code></pre>
-
-<p>}</p>
-
-<p>libecap::adapter::Xaction <em>Adapter::Service::makeXaction(libecap::host::Xaction </em>hostx) {</p>
-
-<pre><code>return new Adapter::Xaction(std::tr1::static_pointer_cast&lt;Service&gt;(self),hostx);
-</code></pre>
-
-<p>}</p>
-
-<p>Adapter::Xaction::Xaction(libecap::shared_ptr<Service> aService,libecap::host::Xaction *x):</p>
-
-<pre><code>service(aService),
-hostx(x),
-receivingVb(opUndecided),
-sendingAb(opUndecided),
-adaptedGotoAction(normal){
-</code></pre>
-
-<p>}</p>
-
-<p>Adapter::Xaction::~Xaction() {</p>
-
-<pre><code>if (libecap::host::Xaction *x = hostx) {
-    hostx = 0;
-    requestLine = 0;
-    x-&gt;adaptationAborted();
-}
-</code></pre>
-
-<p>}</p>
-
-<p>const libecap::Area Adapter::Xaction::option(const libecap::Name &amp;) const {</p>
-
-<pre><code>return libecap::Area(); // this transaction has no meta-information
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Xaction::visitEachOption(libecap::NamedValueVisitor &amp;) const {</p>
-
-<pre><code>// this transaction has no meta-information to pass to the visitor
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Xaction::start() {</p>
-
-<pre><code>Must(hostx);
-
-//static int scannerCount = 0;
-//++scannerCount;
-//Debugger(ilNormal|flApplication) &lt;&lt; "eBBkanba: " &lt;&lt; "Initializing eBBkanba engine #" &lt;&lt; scannerCount &lt;&lt; ".";
-
-//查看请求是否包含http头以外的数据
-if (hostx-&gt;virgin().body()) {
-    receivingVb = opOn;
-    hostx-&gt;vbMake(); // ask host to supply virgin body
-} else {
-    // we are not interested in vb if there is not one
-    receivingVb = opNever;
+typedef libecap::RequestLine *CLRLP;
+
+class Service: public libecap::adapter::Service {
+    public:
+        // About
+        virtual std::string uri() const; // unique across all vendors
+        virtual std::string tag() const; // changes with version and config
+        virtual void describe(std::ostream &amp;os) const; // free-format info
+
+        // Configuration
+        virtual void configure(const libecap::Options &amp;cfg);
+        virtual void reconfigure(const libecap::Options &amp;cfg);
+
+        // Lifecycle
+        virtual void start(); // expect makeXaction() calls
+        virtual void stop(); // no more makeXaction() calls until start()
+        virtual void retire(); // no more makeXaction() calls
+
+        // Scope (XXX: this may be changed to look at the whole header)
+        virtual bool wantsUrl(const char *url) const;
+
+        // Work
+        virtual libecap::adapter::Xaction *makeXaction(libecap::host::Xaction *hostx);
+};
+
+class Xaction: public libecap::adapter::Xaction {
+    public:
+        Xaction(libecap::shared_ptr&lt;Service&gt; s, libecap::host::Xaction *x);
+        virtual ~Xaction();
+
+        // meta-information for the host transaction
+        virtual const libecap::Area option(const libecap::Name &amp;name) const;
+        virtual void visitEachOption(libecap::NamedValueVisitor &amp;visitor) const;
+
+        // lifecycle
+        virtual void start();
+        virtual void stop();
+
+        // adapted body transmission control
+        virtual void abDiscard();
+        virtual void abMake();
+        virtual void abMakeMore();
+        virtual void abStopMaking();
+
+        // adapted body content extraction and consumption
+        virtual libecap::Area abContent(size_type offset, size_type size);
+        virtual void abContentShift(size_type size);
+
+        // virgin body state notification
+        virtual void noteVbContentDone(bool atEnd);
+        virtual void noteVbContentAvailable();
+
+        // libecap::Callable API, via libecap::host::Xaction
+        virtual bool callable() const;
+
+    protected:
+        void stopVb(); // stops receiving vb (if we are receiving it)
+
+        void getUri(libecap::shared_ptr&lt;libecap::Message&gt; &amp;);
+        void goToUrl( std::string orgUrl,std::string host,std::string state);
+        void debugAction(const std::string &amp;action,const bool &amp;showOrgUrl=true);
+        libecap::host::Xaction *lastHostCall(); // clears hostx
+
+    private:
+        CLRLP requestLine;
+        libecap::Area uri; // Request-URI from headers, for logging
+        libecap::shared_ptr&lt;const Service&gt; service; // configuration access
+        libecap::host::Xaction *hostx; // Host transaction rep
+
+        typedef enum { opUndecided, opOn, opComplete, opNever } OperationState;
+        typedef enum { localWebServer, normal } OprationAdaptedState;
+        OperationState receivingVb;
+        OperationState sendingAb;
+        OprationAdaptedState adaptedGotoAction;
+};
+
+static const std::string CfgErrorPrefix =
+    "eBBkanba Adapter: configuration error: ";
+
+} // namespace Adapter
+
+std::string Adapter::Service::uri() const {
+    return "ecap://bbkanba.com/bbkanba";
 }
 
-//获取用户ip
-libecap::Header::Value clientIP = hostx-&gt;option(libecap::metaClientIp);
+std::string Adapter::Service::tag() const {
+    return PACKAGE_VERSION;
+}
 
-/* adapt message header ,copy一份http请求的纯原始副本,然后下面可能会修改内容*/
-libecap::shared_ptr&lt;libecap::Message&gt; adapted = hostx-&gt;virgin().clone();
-Must(adapted != 0);
-// delete ContentLength header because we may change the length
-// unknown length may have performance implications for the host
-//获取用户请求的url
-getUri(adapted);
+void Adapter::Service::describe(std::ostream &amp;os) const {
+    os &lt;&lt; "A eBBkanba adapter from " &lt;&lt; PACKAGE_NAME &lt;&lt; " v" &lt;&lt; PACKAGE_VERSION;
+}
 
-if (uri.size &gt; 0) {
-    //adapted-&gt;header().removeAny(libecap::headerContentLength);
-    uri::uri url_path(uri.toString());
-    std::string url_path_tolower = url_path.host();
-    std::transform(url_path_tolower.begin(), url_path_tolower.end(),url_path_tolower.begin(), ::tolower);
-    if (url_path_tolower != "127.0.0.1") {
-        http::client::response response = http::client().get(http::request("http://127.0.0.1:9090/check.php?uip="+clientIP.toString()));
-        std::string check = static_cast&lt;std::string&gt;(body(response));
-        if ( check == "0" ){
-            //则表示用户没有经过认证
-            goToUrl(uri.toString(),"http://127.0.0.1:9090","0");
-        }
-        if( check == "1" ){
-            //表示已经过期
-            goToUrl(uri.toString(),"http://127.0.0.1:9090","1");
-        }
+void Adapter::Service::configure(const libecap::Options &amp;cfg) {
+}
+
+void Adapter::Service::reconfigure(const libecap::Options &amp;cfg) {
+}
+void Adapter::Service::start() {
+    libecap::adapter::Service::start();
+}
+
+void Adapter::Service::stop() {
+    libecap::adapter::Service::stop();
+}
+
+void Adapter::Service::retire() {
+    libecap::adapter::Service::stop();
+}
+
+bool Adapter::Service::wantsUrl(const char *url) const {
+    return true; // no-op is applied to all messages
+}
+
+libecap::adapter::Xaction *Adapter::Service::makeXaction(libecap::host::Xaction *hostx) {
+    return new Adapter::Xaction(std::tr1::static_pointer_cast&lt;Service&gt;(self),hostx);
+}
+
+Adapter::Xaction::Xaction(libecap::shared_ptr&lt;Service&gt; aService,libecap::host::Xaction *x):
+    service(aService),
+    hostx(x),
+    receivingVb(opUndecided),
+    sendingAb(opUndecided),
+    adaptedGotoAction(normal){
+}
+
+Adapter::Xaction::~Xaction() {
+    if (libecap::host::Xaction *x = hostx) {
+        hostx = 0;
+        requestLine = 0;
+        x-&gt;adaptationAborted();
     }
 }
 
-// 最后返回我们修改过的用户请求
-if (!adapted-&gt;body()) {
-    sendingAb = opNever; // there is nothing to send
-    lastHostCall()-&gt;useAdapted(adapted);
-} else {
-    hostx-&gt;useAdapted(adapted);
+const libecap::Area Adapter::Xaction::option(const libecap::Name &amp;) const {
+    return libecap::Area(); // this transaction has no meta-information
 }
-</code></pre>
 
-<p>}</p>
-
-<p>void Adapter::Xaction::stop() {</p>
-
-<pre><code>hostx = 0;
-requestLine = 0;
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Xaction::abDiscard()
-{</p>
-
-<pre><code>Must(sendingAb == opUndecided); // have not started yet
-sendingAb = opNever;
-// we do not need more vb if the host is not interested in ab
-stopVb();
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Xaction::abMake()
-{</p>
-
-<pre><code>Must(sendingAb == opUndecided); // have not yet started or decided not to send
-Must(hostx-&gt;virgin().body()); // that is our only source of ab content
-
-// we are or were receiving vb
-Must(receivingVb == opOn || receivingVb == opComplete);
-
-sendingAb = opOn;
-hostx-&gt;noteAbContentAvailable();
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Xaction::abMakeMore()
-{</p>
-
-<pre><code>Must(receivingVb == opOn); // a precondition for receiving more vb
-hostx-&gt;vbMakeMore();
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Xaction::abStopMaking()
-{</p>
-
-<pre><code>sendingAb = opComplete;
-// we do not need more vb if the host is not interested in more ab
-stopVb();
-</code></pre>
-
-<p>}</p>
-
-<p>libecap::Area Adapter::Xaction::abContent(size_type offset, size_type size) {</p>
-
-<pre><code>Must(sendingAb == opOn || sendingAb == opComplete);
-return hostx-&gt;vbContent(offset, size);
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Xaction::abContentShift(size_type size) {</p>
-
-<pre><code>Must(sendingAb == opOn || sendingAb == opComplete);
-hostx-&gt;vbContentShift(size);
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Xaction::noteVbContentDone(bool atEnd)
-{</p>
-
-<pre><code>Must(receivingVb == opOn);
-receivingVb = opComplete;
-if (sendingAb == opOn) {
-    hostx-&gt;noteAbContentDone(atEnd);
-    sendingAb = opComplete;
+void Adapter::Xaction::visitEachOption(libecap::NamedValueVisitor &amp;) const {
+    // this transaction has no meta-information to pass to the visitor
 }
-</code></pre>
 
-<p>}</p>
+void Adapter::Xaction::start() {
+    Must(hostx);
 
-<p>void Adapter::Xaction::noteVbContentAvailable()
-{</p>
+    //static int scannerCount = 0;
+    //++scannerCount;
+    //Debugger(ilNormal|flApplication) &lt;&lt; "eBBkanba: " &lt;&lt; "Initializing eBBkanba engine #" &lt;&lt; scannerCount &lt;&lt; ".";
 
-<pre><code>Must(receivingVb == opOn);
-if (sendingAb == opOn)
+    //查看请求是否包含http头以外的数据
+    if (hostx-&gt;virgin().body()) {
+        receivingVb = opOn;
+        hostx-&gt;vbMake(); // ask host to supply virgin body
+    } else {
+        // we are not interested in vb if there is not one
+        receivingVb = opNever;
+    }
+
+    //获取用户ip
+    libecap::Header::Value clientIP = hostx-&gt;option(libecap::metaClientIp);
+
+    /* adapt message header ,copy一份http请求的纯原始副本,然后下面可能会修改内容*/
+    libecap::shared_ptr&lt;libecap::Message&gt; adapted = hostx-&gt;virgin().clone();
+    Must(adapted != 0);
+    // delete ContentLength header because we may change the length
+    // unknown length may have performance implications for the host
+    //获取用户请求的url
+    getUri(adapted);
+
+    if (uri.size &gt; 0) {
+        //adapted-&gt;header().removeAny(libecap::headerContentLength);
+        uri::uri url_path(uri.toString());
+        std::string url_path_tolower = url_path.host();
+        std::transform(url_path_tolower.begin(), url_path_tolower.end(),url_path_tolower.begin(), ::tolower);
+        if (url_path_tolower != "127.0.0.1") {
+            http::client::response response = http::client().get(http::request("http://127.0.0.1:9090/check.php?uip="+clientIP.toString()));
+            std::string check = static_cast&lt;std::string&gt;(body(response));
+            if ( check == "0" ){
+                //则表示用户没有经过认证
+                goToUrl(uri.toString(),"http://127.0.0.1:9090","0");
+            }
+            if( check == "1" ){
+                //表示已经过期
+                goToUrl(uri.toString(),"http://127.0.0.1:9090","1");
+            }
+        }
+    }
+
+    // 最后返回我们修改过的用户请求
+    if (!adapted-&gt;body()) {
+        sendingAb = opNever; // there is nothing to send
+        lastHostCall()-&gt;useAdapted(adapted);
+    } else {
+        hostx-&gt;useAdapted(adapted);
+    }
+}
+
+void Adapter::Xaction::stop() {
+    hostx = 0;
+    requestLine = 0;
+}
+
+void Adapter::Xaction::abDiscard()
+{
+    Must(sendingAb == opUndecided); // have not started yet
+    sendingAb = opNever;
+    // we do not need more vb if the host is not interested in ab
+    stopVb();
+}
+
+void Adapter::Xaction::abMake()
+{
+    Must(sendingAb == opUndecided); // have not yet started or decided not to send
+    Must(hostx-&gt;virgin().body()); // that is our only source of ab content
+
+    // we are or were receiving vb
+    Must(receivingVb == opOn || receivingVb == opComplete);
+
+    sendingAb = opOn;
     hostx-&gt;noteAbContentAvailable();
-</code></pre>
-
-<p>}</p>
-
-<p>bool Adapter::Xaction::callable() const {</p>
-
-<pre><code>return hostx != 0; // no point to call us if we are done
-</code></pre>
-
-<p>}</p>
-
-<p>// tells the host that we are not interested in [more] vb
-// if the host does not know that already
-void Adapter::Xaction::stopVb() {</p>
-
-<pre><code>if (receivingVb == opOn) {
-    hostx-&gt;vbStopMaking();
-    receivingVb = opComplete;
-} else {
-    // we already got the entire body or refused it earlier
-    Must(receivingVb != opUndecided);
 }
-</code></pre>
 
-<p>}
+void Adapter::Xaction::abMakeMore()
+{
+    Must(receivingVb == opOn); // a precondition for receiving more vb
+    hostx-&gt;vbMakeMore();
+}
+
+void Adapter::Xaction::abStopMaking()
+{
+    sendingAb = opComplete;
+    // we do not need more vb if the host is not interested in more ab
+    stopVb();
+}
+
+libecap::Area Adapter::Xaction::abContent(size_type offset, size_type size) {
+    Must(sendingAb == opOn || sendingAb == opComplete);
+    return hostx-&gt;vbContent(offset, size);
+}
+
+void Adapter::Xaction::abContentShift(size_type size) {
+    Must(sendingAb == opOn || sendingAb == opComplete);
+    hostx-&gt;vbContentShift(size);
+}
+
+void Adapter::Xaction::noteVbContentDone(bool atEnd)
+{
+    Must(receivingVb == opOn);
+    receivingVb = opComplete;
+    if (sendingAb == opOn) {
+        hostx-&gt;noteAbContentDone(atEnd);
+        sendingAb = opComplete;
+    }
+}
+
+void Adapter::Xaction::noteVbContentAvailable()
+{
+    Must(receivingVb == opOn);
+    if (sendingAb == opOn)
+        hostx-&gt;noteAbContentAvailable();
+}
+
+bool Adapter::Xaction::callable() const {
+    return hostx != 0; // no point to call us if we are done
+}
+
+// tells the host that we are not interested in [more] vb
+// if the host does not know that already
+void Adapter::Xaction::stopVb() {
+    if (receivingVb == opOn) {
+        hostx-&gt;vbStopMaking();
+        receivingVb = opComplete;
+    } else {
+        // we already got the entire body or refused it earlier
+        Must(receivingVb != opUndecided);
+    }
+}
 //重新定位请求地址,到用户认证页面,并把用户请求url作为参数传入
 void Adapter::Xaction::goToUrl(std::string orgUrl,std::string new_host, std::string state)
-{</p>
+{
+    std::string new_url_path = new_host + "/?state=" + state + "&amp;orgUrl=" + orgUrl;
+    const libecap::Header::Value new_url_path_r = libecap::Area::FromTempString(new_url_path);
+    debugAction("new URL: " + new_url_path);
+    requestLine-&gt;uri(new_url_path_r);
+}
+void Adapter::Xaction::getUri(libecap::shared_ptr&lt;libecap::Message&gt; &amp;adapted)
+{
+    if (!hostx)
+        return;
+    if ( (requestLine = dynamic_cast&lt;CLRLP&gt;(&amp;adapted-&gt;firstLine())) )
+        uri = requestLine-&gt;uri();
+}
 
-<pre><code>std::string new_url_path = new_host + "/?state=" + state + "&amp;orgUrl=" + orgUrl;
-const libecap::Header::Value new_url_path_r = libecap::Area::FromTempString(new_url_path);
-debugAction("new URL: " + new_url_path);
-requestLine-&gt;uri(new_url_path_r);
-</code></pre>
+void Adapter::Xaction::debugAction(const std::string &amp;actDescript,const bool &amp;showOrgUrl)
+{
+    std::string descipt (actDescript);
+    if(showOrgUrl)
+        descipt += " ( org URL: " + uri.toString() + " )";
+    Debugger(ilNormal|flApplication) &lt;&lt; "eBBkanba: " &lt;&lt; descipt ;
+}
 
-<p>}
-void Adapter::Xaction::getUri(libecap::shared_ptr&lt;libecap::Message> &amp;adapted)
-{</p>
-
-<pre><code>if (!hostx)
-    return;
-if ( (requestLine = dynamic_cast&lt;CLRLP&gt;(&amp;adapted-&gt;firstLine())) )
-    uri = requestLine-&gt;uri();
-</code></pre>
-
-<p>}</p>
-
-<p>void Adapter::Xaction::debugAction(const std::string &amp;actDescript,const bool &amp;showOrgUrl)
-{</p>
-
-<pre><code>std::string descipt (actDescript);
-if(showOrgUrl)
-    descipt += " ( org URL: " + uri.toString() + " )";
-Debugger(ilNormal|flApplication) &lt;&lt; "eBBkanba: " &lt;&lt; descipt ;
-</code></pre>
-
-<p>}</p>
-
-<p>// this method is used to make the last call to hostx transaction
+// this method is used to make the last call to hostx transaction
 // last call may delete adapter transaction if the host no longer needs it
-// TODO: replace with hostx-independent &ldquo;done&rdquo; method
-libecap::host::Xaction *Adapter::Xaction::lastHostCall() {</p>
+// TODO: replace with hostx-independent "done" method
+libecap::host::Xaction *Adapter::Xaction::lastHostCall() {
+    libecap::host::Xaction *x = hostx;
+    Must(x);
+    hostx = 0;
+    requestLine = 0;
+    return x;
+}
 
-<pre><code>libecap::host::Xaction *x = hostx;
-Must(x);
-hostx = 0;
-requestLine = 0;
-return x;
+// create the adapter and register with libecap to reach the host application
+static const bool Registered = (libecap::RegisterService(new Adapter::Service), true);
 </code></pre>
 
-<p>}</p>
-
-<p>// create the adapter and register with libecap to reach the host application
-static const bool Registered = (libecap::RegisterService(new Adapter::Service), true);
-```
-可以下载我写的上面的例子文件<a href="/downloads/files/eCAP_bbkanba_Adapter-0.0.1.tar.gz">eCAP_bbkanba_Adapter-0.0.1.tar.gz</a></p>
+<p>可以下载我写的上面的例子文件<a href="/downloads/files/eCAP_bbkanba_Adapter-0.0.1.tar.gz">eCAP_bbkanba_Adapter-0.0.1.tar.gz</a></p>
 ]]></content>
   </entry>
   
@@ -975,19 +831,17 @@ configure: error: C compiler cannot create executables
 
 <p>x86_64解决办法如下:</p>
 
-<p><code>bash
-./configure CXXFLAGS="-g -O2"  CFLAGS="-O2 -march=x86-64" --prefix=/usr/local/squid
-make
+<pre><code class="bash">./configure CXXFLAGS="-g -O2"  CFLAGS="-O2 -march=x86-64" --prefix=/usr/local/squid
+make 
 make install
-</code></p>
+</code></pre>
 
 <p>i686</p>
 
-<p><code>bash
-./configure -disable-64bit CFLAGS="-O3 -march=i686" --prefix=/usr/local/squid
-make
+<pre><code class="bash ">./configure -disable-64bit CFLAGS="-O3 -march=i686" --prefix=/usr/local/squid
+make 
 make install
-</code></p>
+</code></pre>
 ]]></content>
   </entry>
   

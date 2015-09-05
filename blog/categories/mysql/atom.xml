@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Mysql | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/mysql/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-01-23T14:58:52+08:00</updated>
+  <updated>2015-09-05T13:32:32+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -50,13 +50,12 @@ Ready Go.<br/>
 <!--more-->
 
 
-<p><code>bash
-mkdir -p /data/packages
+<pre><code class="bash">mkdir -p /data/packages
 mkdir -p /data/webservers
 export TEMP_DIR_PACKAGES=/data/packages
 export TEMP_DIR_WEBSERVERS=/data/webservers
 yum -y install gcc gcc-c++ autoconf libjpeg libjpeg-devel libpng libpng-devel freetype freetype-devel libxml2 libxml2-devel zlib zlib-devel glibc glibc-devel glib2 glib2-devel bzip2 bzip2-devel ncurses ncurses-devel curl curl-devel e2fsprogs e2fsprogs-devel libidn libidn-devel openssl openssl-devel openldap openldap-devel openldap-clients openldap-servers cmake
-</code></p>
+</code></pre>
 
 <p>敲入回车之后,让yum飞一会&hellip; &hellip;</p>
 
@@ -64,157 +63,140 @@ yum -y install gcc gcc-c++ autoconf libjpeg libjpeg-devel libpng libpng-devel fr
 
 <p>我们第一个要安装mysql,全部安装命令如下,注意我把下载的压缩包的详细版本换成了<code>*</code>,这样有助与解决小版本的不同,可能你下载的mysql会升级小版本号:</p>
 
-<p>``` bash
-cd $TEMP_DIR_PACKAGES
-wget <a href="http://dev.mysql.com/downloads/mirror.php?id=411115">http://dev.mysql.com/downloads/mirror.php?id=411115</a>
-tar -zxf mysql-5.5.<em>.tar.gz
-cd mysql-5.5.</em>
+<pre><code class="bash">cd $TEMP_DIR_PACKAGES
+wget http://dev.mysql.com/downloads/mirror.php?id=411115
+tar -zxf mysql-5.5.*.tar.gz
+cd mysql-5.5.*
 groupadd mysql
 useradd -r -g mysql mysql
 cmake -D  CMAKE_INSTALL_PREFIX:PATH=$TEMP_DIR_WEBSERVERS/mysql/  -D MYSQL_DATADIR:PATH=$TEMP_DIR_WEBSERVERS/mysql/data/ .
-make
-make install</p>
+make 
+make install
 
-<p>echo &ldquo;$TEMP_DIR_WEBSERVERS/mysql/lib/&rdquo; >> /etc/ld.so.conf.d/webservers.conf
-/sbin/ldconfig</p>
+echo "$TEMP_DIR_WEBSERVERS/mysql/lib/" &gt;&gt; /etc/ld.so.conf.d/webservers.conf
+/sbin/ldconfig
 
-<p>cd $TEMP_DIR_WEBSERVERS/mysql/
+cd $TEMP_DIR_WEBSERVERS/mysql/
 chown -R mysql .
 chgrp -R mysql .
-scripts/mysql_install_db &mdash;user=mysql
+scripts/mysql_install_db --user=mysql
 chown -R root .
 chown -R mysql data
 cp support-files/my-medium.cnf /etc/my.cnf
 cp support-files/mysql.server /etc/init.d/mysql.server
-chkconfig &mdash;add mysql.server
-chkconfig &mdash;list mysql.server
+chkconfig --add mysql.server
+chkconfig --list mysql.server
 /etc/init.d/mysql.server start
-```</p>
+</code></pre>
 
 <p>上面最后一行命令就是用我说的标准启动服务格式,开启mysql服务.当然你也可以用<code>service xxx start</code>这种格式.<br/>
 下面的的命令是可选的,你也可以不这样做,但是还是建议看一下,毕竟没有坏处只有好处.<br/>
 <strong>Next command is optional</strong></p>
 
-<p>``` bash</p>
-
-<h1>运行脚本,给mysql的root用户设置密码,删除测试的用户和测试数据库</h1>
-
-<p>$TEMP_DIR_WEBSERVERS/mysql/bin/mysql_secure_installation</p>
-
-<h1>修改mysql配置文件,让它避免中文乱码问题</h1>
-
-<p>vim /etc/my.cnf</p>
-
-<h1>在[client]后面添加</h1>
-
-<p>default-character-set = utf8</p>
-
-<h1>在[mysqld]后面添加</h1>
-
-<p>character-set-server = utf8</p>
-
-<h1>用你刚刚设置的root密码登陆mysql,为mysql创建一个新的用户</h1>
-
-<p>$TEMP_DIR_WEBSERVERS/mysql/bin/mysql -uroot -p
-GRANT ALL PRIVILEGES ON <em>.</em> TO &lsquo;leolovenet&rsquo;@&lsquo;%&rsquo; IDENTIFIED BY &lsquo;123&rsquo;;
-```</p>
+<pre><code class="bash">#运行脚本,给mysql的root用户设置密码,删除测试的用户和测试数据库
+$TEMP_DIR_WEBSERVERS/mysql/bin/mysql_secure_installation 
+#修改mysql配置文件,让它避免中文乱码问题
+vim /etc/my.cnf
+#在[client]后面添加
+default-character-set = utf8
+#在[mysqld]后面添加
+character-set-server = utf8
+#用你刚刚设置的root密码登陆mysql,为mysql创建一个新的用户
+$TEMP_DIR_WEBSERVERS/mysql/bin/mysql -uroot -p
+GRANT ALL PRIVILEGES ON *.* TO 'leolovenet'@'%' IDENTIFIED BY '123';
+</code></pre>
 
 <h2>安装php的依赖软件</h2>
 
-<p>``` bash
-cd $TEMP_DIR_PACKAGES</p>
+<pre><code class="bash">cd $TEMP_DIR_PACKAGES
 
-<p>wget <a href="http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz">http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz</a>
+wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz
 tar zxf libiconv-1.14.tar.gz
 cd libiconv-1.14/
 ./configure
-make
+make 
 make install
-cd ../</p>
+cd ../
 
-<p>wget <a href="http://sourceforge.net/projects/mcrypt/files/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz/download">http://sourceforge.net/projects/mcrypt/files/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz/download</a>
-tar zxf libmcrypt-2.5.8.tar.gz
+wget http://sourceforge.net/projects/mcrypt/files/Libmcrypt/2.5.8/libmcrypt-2.5.8.tar.gz/download
+tar zxf libmcrypt-2.5.8.tar.gz 
 cd libmcrypt-2.5.8/
 ./configure
 make
 make install
-echo &ldquo;/usr/local/lib/&rdquo; >> /etc/ld.so.conf.d/webservers.conf
+echo "/usr/local/lib/" &gt;&gt; /etc/ld.so.conf.d/webservers.conf
 /sbin/ldconfig
 cd libltdl/
-./configure &mdash;enable-ltdl-install
+./configure --enable-ltdl-install
 make
 make install
-cd ../../</p>
+cd ../../
 
-<p>wget <a href="http://sourceforge.net/projects/mhash/files/latest/download">http://sourceforge.net/projects/mhash/files/latest/download</a>
-tar zxvf mhash-<em>.tar.gz
-cd mhash-</em>/
+wget http://sourceforge.net/projects/mhash/files/latest/download
+tar zxvf mhash-*.tar.gz
+cd mhash-*/
 ./configure
 make
 make install
-cd ../</p>
+cd ../
 
-<p>wget <a href="http://sourceforge.net/projects/mcrypt/files/latest/download">http://sourceforge.net/projects/mcrypt/files/latest/download</a>
-tar zxvf mcrypt-<em>.tar.gz
-cd mcrypt-</em>/
+
+wget http://sourceforge.net/projects/mcrypt/files/latest/download
+tar zxvf mcrypt-*.tar.gz
+cd mcrypt-*/
 /sbin/ldconfig
 ./configure
 make
 make install
 cd ../
-```</p>
+</code></pre>
 
 <h2>安装php</h2>
 
 <p>因为我的机器是x86_64位环境,所以在配置php的时候加入了<code>--with-libdir=lib64</code>选项.<br/>
 此时,php会检查mysql的<code>$TEMP_DIR_WEBSERVERS/mysql/lib64</code>目录,而不是<code>$TEMP_DIR_WEBSERVERS/mysql/lib</code>目录,所以我们加入了一个软链接</p>
 
-<p>``` bash
-ln -s $TEMP_DIR_WEBSERVERS/mysql/lib $TEMP_DIR_WEBSERVERS/mysql/lib64</p>
+<pre><code class="bash">ln -s $TEMP_DIR_WEBSERVERS/mysql/lib $TEMP_DIR_WEBSERVERS/mysql/lib64
 
-<p>cd $TEMP_DIR_PACKAGES
-wget <a href="http://cn2.php.net/get/php-5.3.20.tar.gz/from/this/mirror">http://cn2.php.net/get/php-5.3.20.tar.gz/from/this/mirror</a>
+cd $TEMP_DIR_PACKAGES
+wget http://cn2.php.net/get/php-5.3.20.tar.gz/from/this/mirror
 tar zxf php-5.3.20.tar.gz
 cd php-5.3.20
-./configure &mdash;prefix=$TEMP_DIR_WEBSERVERS/php &mdash;with-config-file-path=$TEMP_DIR_WEBSERVERS/php/etc &mdash;with-mysql=$TEMP_DIR_WEBSERVERS/mysql &mdash;with-mysqli=$TEMP_DIR_WEBSERVERS/mysql/bin/mysql_config &mdash;with-iconv-dir=/usr/local &mdash;with-freetype-dir &mdash;with-jpeg-dir &mdash;with-png-dir &mdash;with-zlib &mdash;with-libxml-dir=/usr &mdash;enable-xml &mdash;disable-rpath  &mdash;enable-safe-mode &mdash;enable-bcmath &mdash;enable-shmop &mdash;enable-sysvsem &mdash;enable-inline-optimization &mdash;with-curl &mdash;with-curlwrappers &mdash;enable-mbregex  &mdash;enable-fpm  &mdash;enable-mbstring &mdash;with-mcrypt &mdash;with-gd &mdash;enable-gd-native-ttf &mdash;with-openssl &mdash;with-mhash &mdash;enable-pcntl &mdash;enable-sockets &mdash;with-ldap &mdash;with-ldap-sasl &mdash;with-xmlrpc &mdash;enable-zip &mdash;enable-soap &mdash;enable-sqlite-utf8 &mdash;with-libdir=lib64
-make ZEND_EXTRA_LIBS=&lsquo;-liconv&rsquo;
+./configure --prefix=$TEMP_DIR_WEBSERVERS/php --with-config-file-path=$TEMP_DIR_WEBSERVERS/php/etc --with-mysql=$TEMP_DIR_WEBSERVERS/mysql --with-mysqli=$TEMP_DIR_WEBSERVERS/mysql/bin/mysql_config --with-iconv-dir=/usr/local --with-freetype-dir --with-jpeg-dir --with-png-dir --with-zlib --with-libxml-dir=/usr --enable-xml --disable-rpath  --enable-safe-mode --enable-bcmath --enable-shmop --enable-sysvsem --enable-inline-optimization --with-curl --with-curlwrappers --enable-mbregex  --enable-fpm  --enable-mbstring --with-mcrypt --with-gd --enable-gd-native-ttf --with-openssl --with-mhash --enable-pcntl --enable-sockets --with-ldap --with-ldap-sasl --with-xmlrpc --enable-zip --enable-soap --enable-sqlite-utf8 --with-libdir=lib64
+make ZEND_EXTRA_LIBS='-liconv'
 make install
 cp $TEMP_DIR_PACKAGES/php-5.3.20/sapi/fpm/init.d.php-fpm /etc/init.d/php-fpm
 chmod 755 /etc/init.d/php-fpm
-chkconfig &mdash;add php-fpm
+chkconfig --add php-fpm
 cp $TEMP_DIR_PACKAGES/php-5.3.20/php.ini-production $TEMP_DIR_WEBSERVERS/php/etc/php.ini
-cp $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.conf.default $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.conf</p>
+cp $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.conf.default $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.conf
 
-<h1>手工修改php.ini文件,vim $TEMP_DIR_WEBSERVERS/php/etc/php.ini</h1>
+#手工修改php.ini文件,vim $TEMP_DIR_WEBSERVERS/php/etc/php.ini
+#修改cgi.fix_pathinfo=0,防止Nginx文件类型错误解析漏洞.
+#手工修改vim $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.ini文件,根据自己机器的内存大小,修改php-fpm开启的运行进程数
+#pm.max_spare_servers = 5
 
-<h1>修改cgi.fix_pathinfo=0,防止Nginx文件类型错误解析漏洞.</h1>
-
-<h1>手工修改vim $TEMP_DIR_WEBSERVERS/php/etc/php-fpm.ini文件,根据自己机器的内存大小,修改php-fpm开启的运行进程数</h1>
-
-<h1>pm.max_spare_servers = 5</h1>
-
-<p>/etc/init.d/php-fpm start
-```</p>
+/etc/init.d/php-fpm start
+</code></pre>
 
 <h2>Nginx</h2>
 
-<p>``` bash
-wget <a href="http://sourceforge.net/projects/pcre/files/latest/download">http://sourceforge.net/projects/pcre/files/latest/download</a>
-tar zxf pcre-<em>
-cd pcre-</em>/
+<pre><code class="bash">wget http://sourceforge.net/projects/pcre/files/latest/download
+tar zxf pcre-*
+cd pcre-*/
 ./configure
 make &amp;&amp; make install
-cd ../</p>
+cd ../
 
-<p>wget <a href="http://nginx.org/download/nginx-1.2.6.tar.gz">http://nginx.org/download/nginx-1.2.6.tar.gz</a>
-./configure &mdash;user=www &mdash;group=www &mdash;prefix=$TEMP_DIR_WEBSERVERS/nginx &mdash;with-http_stub_status_module &mdash;with-http_ssl_module<br/>
+wget http://nginx.org/download/nginx-1.2.6.tar.gz
+./configure --user=www --group=www --prefix=$TEMP_DIR_WEBSERVERS/nginx --with-http_stub_status_module --with-http_ssl_module  
 make &amp;&amp; make install
 cd $TEMP_DIR_WEBSERVERS/nginx/conf
 mkdir global
 mkdir vhost
 mkdir -p $TEMP_DIR_WEBSERVERS/www/other/
 mv nginx.conf nginx.conf.org
-```</p>
+</code></pre>
 
 <p>手工编辑 <code>vim $TEMP_DIR_WEBSERVERS/nginx/conf/nginx.conf</code>,输入下面的内容.<br/>
 注意下面内容的路径<code>/data/webservers</code>,如果你的环境不同,请手工更换.</p>
@@ -352,204 +334,156 @@ location ~* /(?:uploads|files)/.*\.php$ {
 <code>vim /etc/init.d/nginx</code>,输入下面内容:<br/>
 注意下面内容的路径<code>/data/webservers</code>,如果你的环境不同,请手工更换.</p>
 
-<p>``` bash</p>
+<pre><code class="bash">#!/bin/sh
+# nginx - this script starts and stops the nginx daemon
+#
+# chkconfig:   - 85 15
+# Required-Start:    $remote_fs $network
+# Required-Stop:     $remote_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# description:  Nginx is an HTTP(S) server, HTTP(S) reverse \
+#               proxy and IMAP/POP3 proxy server
+# processname: nginx
+# config:      /data/webservers/nginx/conf/nginx.conf
+# pidfile:     /data/webservers/nginx/nginx.pid
 
-<h1>!/bin/sh</h1>
+# Source function library.
+. /etc/rc.d/init.d/functions
 
-<h1>nginx &ndash; this script starts and stops the nginx daemon</h1>
+# Source networking configuration.
+. /etc/sysconfig/network
 
-<p>#</p>
+# Check that networking is up.
+[ "$NETWORKING" = "no" ] &amp;&amp; exit 0
 
-<h1>chkconfig:   &ndash; 85 15</h1>
+nginx="/data/webservers/nginx/sbin/nginx"
+prog=$(basename $nginx)
 
-<h1>Required-Start:    $remote_fs $network</h1>
+NGINX_CONF_FILE="/data/webservers/nginx/conf/nginx.conf"
 
-<h1>Required-Stop:     $remote_fs $network</h1>
+[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx
 
-<h1>Default-Start:     2 3 4 5</h1>
+lockfile=/var/lock/subsys/nginx
 
-<h1>Default-Stop:      0 1 6</h1>
-
-<h1>description:  Nginx is an HTTP(S) server, HTTP(S) reverse \</h1>
-
-<h1>proxy and IMAP/POP3 proxy server</h1>
-
-<h1>processname: nginx</h1>
-
-<h1>config:      /data/webservers/nginx/conf/nginx.conf</h1>
-
-<h1>pidfile:     /data/webservers/nginx/nginx.pid</h1>
-
-<h1>Source function library.</h1>
-
-<p>. /etc/rc.d/init.d/functions</p>
-
-<h1>Source networking configuration.</h1>
-
-<p>. /etc/sysconfig/network</p>
-
-<h1>Check that networking is up.</h1>
-
-<p>[ &ldquo;$NETWORKING&rdquo; = &ldquo;no&rdquo; ] &amp;&amp; exit 0</p>
-
-<p>nginx=&ldquo;/data/webservers/nginx/sbin/nginx&rdquo;
-prog=$(basename $nginx)</p>
-
-<p>NGINX_CONF_FILE=&ldquo;/data/webservers/nginx/conf/nginx.conf&rdquo;</p>
-
-<p>[ -f /etc/sysconfig/nginx ] &amp;&amp; . /etc/sysconfig/nginx</p>
-
-<p>lockfile=/var/lock/subsys/nginx</p>
-
-<p>make_dirs() {
+make_dirs() {
    # make required directories
-   user=<code>$nginx -V 2&gt;&amp;1 | grep "configure arguments:" | sed 's/[^*]*--user=\([^ ]*\).*/\1/g' -</code>
-   if [ -z &ldquo;<code>grep $user /etc/passwd</code>&rdquo; ]; then</p>
-
-<pre><code>   useradd -M -s /bin/nologin $user
-</code></pre>
-
-<p>   fi
-   options=<code>$nginx -V 2&gt;&amp;1 | grep 'configure arguments:'</code>
-   for opt in $options; do</p>
-
-<pre><code>   if [ `echo $opt | grep '.*-temp-path'` ]; then
-       value=`echo $opt | cut -d "=" -f 2`
-       if [ ! -d "$value" ]; then
-           # echo "creating" $value
-           mkdir -p $value &amp;&amp; chown -R $user $value
-       fi
+   user=`$nginx -V 2&gt;&amp;1 | grep "configure arguments:" | sed 's/[^*]*--user=\([^ ]*\).*/\1/g' -`
+   if [ -z "`grep $user /etc/passwd`" ]; then
+       useradd -M -s /bin/nologin $user
    fi
-</code></pre>
+   options=`$nginx -V 2&gt;&amp;1 | grep 'configure arguments:'`
+   for opt in $options; do
+       if [ `echo $opt | grep '.*-temp-path'` ]; then
+           value=`echo $opt | cut -d "=" -f 2`
+           if [ ! -d "$value" ]; then
+               # echo "creating" $value
+               mkdir -p $value &amp;&amp; chown -R $user $value
+           fi
+       fi
+   done
+}
 
-<p>   done
-}</p>
+start() {
+    [ -x $nginx ] || exit 5
+    [ -f $NGINX_CONF_FILE ] || exit 6
+    make_dirs
+    echo -n $"Starting $prog: "
+    daemon $nginx -c $NGINX_CONF_FILE
+    retval=$?
+    echo
+    [ $retval -eq 0 ] &amp;&amp; touch $lockfile
+    return $retval
+}
 
-<p>start() {</p>
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc $prog -QUIT
+    retval=$?
+    echo
+    [ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
+    return $retval
+}
 
-<pre><code>[ -x $nginx ] || exit 5
-[ -f $NGINX_CONF_FILE ] || exit 6
-make_dirs
-echo -n $"Starting $prog: "
-daemon $nginx -c $NGINX_CONF_FILE
-retval=$?
-echo
-[ $retval -eq 0 ] &amp;&amp; touch $lockfile
-return $retval
-</code></pre>
+restart() {
+    configtest || return $?
+    stop
+    sleep 1
+    start
+}
 
-<p>}</p>
+reload() {
+    configtest || return $?
+    echo -n $"Reloading $prog: "
+    killproc $nginx -HUP
+    RETVAL=$?
+    echo
+}
 
-<p>stop() {</p>
+force_reload() {
+    restart
+}
 
-<pre><code>echo -n $"Stopping $prog: "
-killproc $prog -QUIT
-retval=$?
-echo
-[ $retval -eq 0 ] &amp;&amp; rm -f $lockfile
-return $retval
-</code></pre>
-
-<p>}</p>
-
-<p>restart() {</p>
-
-<pre><code>configtest || return $?
-stop
-sleep 1
-start
-</code></pre>
-
-<p>}</p>
-
-<p>reload() {</p>
-
-<pre><code>configtest || return $?
-echo -n $"Reloading $prog: "
-killproc $nginx -HUP
-RETVAL=$?
-echo
-</code></pre>
-
-<p>}</p>
-
-<p>force_reload() {</p>
-
-<pre><code>restart
-</code></pre>
-
-<p>}</p>
-
-<p>configtest() {
+configtest() {
   $nginx -t -c $NGINX_CONF_FILE
-}</p>
+}
 
-<p>rh_status() {</p>
 
-<pre><code>status $prog
-</code></pre>
+rh_status() {
+    status $prog
+}
 
-<p>}</p>
+rh_status_q() {
+    rh_status &gt;/dev/null 2&gt;&amp;1
+}
 
-<p>rh_status_q() {</p>
-
-<pre><code>rh_status &gt;/dev/null 2&gt;&amp;1
-</code></pre>
-
-<p>}</p>
-
-<p>case &ldquo;$1&rdquo; in</p>
-
-<pre><code>start)
-    rh_status_q &amp;&amp; exit 0
-    $1
-    ;;
-stop)
-    rh_status_q || exit 0
-    $1
-    ;;
-restart|configtest)
-    $1
-    ;;
-reload)
-    rh_status_q || exit 7
-    $1
-    ;;
-force-reload)
-    force_reload
-    ;;
-status)
-    rh_status
-    ;;
-condrestart|try-restart)
-    rh_status_q || exit 0
+case "$1" in
+    start)
+        rh_status_q &amp;&amp; exit 0
+        $1
         ;;
-*)
-    echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
-    exit 2
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart|configtest)
+        $1
+        ;;
+    reload)
+        rh_status_q || exit 7
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+            ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
+        exit 2
+esac
 </code></pre>
-
-<p>esac
-```</p>
 
 <p>然后,需要赋予脚本可执行权限:</p>
 
-<p><code>bash
-chmod 755 /etc/init.d/nginx
+<pre><code class="bash">chmod 755 /etc/init.d/nginx
 chkconfig --add nginx
 /etc/init.d/nginx start
-</code></p>
+</code></pre>
 
 <p>到此,nginx+php+mysql已经部署完毕.下面是配置wordpress了.</p>
 
 <h2>wordpress</h2>
 
-<p><code>bash
-cd $TEMP_DIR_PACKAGES
+<pre><code class="bash">cd $TEMP_DIR_PACKAGES
 wget http://wordpress.org/latest.zip
 unzip latest.zip
 mv wordpress $TEMP_DIR_WEBSERVERS/www/
-</code></p>
+</code></pre>
 
 <p>剩下的是添加wordpress的nginx配置文件:<code>vim $TEMP_DIR_WEBSERVERS/www/nginx/conf/global/wordpress.conf</code></p>
 
@@ -597,9 +531,8 @@ server {
 
 <p>接着重新加载一下nginx的配置文件</p>
 
-<p><code>bash
-/etc/init.d/nginx reload
-</code></p>
+<pre><code class="bash">/etc/init.d/nginx reload
+</code></pre>
 
 <p>你就可以访问自己上面配置的blog地址, <code>http://blog.bbkanba.com</code>, 进行著名的5分钟安装了.<br/>
 如果你需要在nginx上使用更高级的cache规则,对wordpress进行优化的话,建议查看这里:</p>
