@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Xdebug | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/xdebug/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-09-05T13:32:32+08:00</updated>
+  <updated>2015-09-05T15:31:52+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -21,14 +21,14 @@
     <content type="html"><![CDATA[<h2>主要用到的软件</h2>
 
 <ul>
-<li><a href="https://www.jetbrains.com/phpstorm/">PhpStorm</a> PHP 开发IDE</li>
+<li><a href="https://www.jetbrains.com/phpstorm/">PhpStorm</a> PHP 开发 IDE</li>
 <li><a href="http://xdebug.org/">Xdebug</a> PHP debug 插件</li>
 <li><a href="https://github.com/phacility/xhprof">Xhprof</a> Facebook 出品的 PHP 性能测量插件</li>
 <li><a href="https://github.com/leolovenet/LLDT-chrome-plugin">LLDT-chrome-plugin</a> 自己写的一个 Chrome 浏览器插件，集成了<a href="https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc?hl=en">xdebugHelper</a>，并添加了更多的选项。</li>
 <li><a href="https://www.vagrantup.com/">Vagrant</a> 一款可以管理 VirtualBox 虚拟机的软件。</li>
 <li><a href="https://www.virtualbox.org/">VirtualBox</a> 一款夸平台的虚拟机软件。</li>
 <li><a href="http://nginx.org/">Nginx</a> web 服务器软件(运行在虚拟机中)</li>
-<li><a href="http://php.net/">PHP-FPM</a> php运行管理(运行在虚拟机中)</li>
+<li><a href="http://php.net/">PHP-FPM</a> php 运行管理(运行在虚拟机中)</li>
 </ul>
 
 

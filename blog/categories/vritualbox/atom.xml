@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Vritualbox | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/vritualbox/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-09-05T13:32:32+08:00</updated>
+  <updated>2015-09-05T15:31:52+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -22,9 +22,7 @@
 
 <p>没有什么主要的技术文章,就发一些自己平时积累的Evernote的笔记.</p>
 
-<blockquote><p>★★★★ <a href="https://www.evernote.com/shard/s170/sh/901e7847-78f3-4560-ae64-72825f8f5c45/b43546d281d47bbbdc745184e83f1fad">一些常用的linux的命令</a></p>
-
-<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
+<blockquote><p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
 vagrant是一个创建和分发虚拟化开发环境的工具，使用ruby编写，基于Oracle的VirtualBox，它提供了一个可配置的、轻量级的、可重用的、便携的虚拟化开发环境.</p>
 
 <p>★★★ <a href="https://www.evernote.com/shard/s170/sh/5ee87faa-0c73-46a6-9cd1-7117ee8971ea/4bbf353bae719e4ef65e2b57530732a1">Git的学习笔记</a></p>

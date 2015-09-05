@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Bash | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/bash/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-09-05T13:32:32+08:00</updated>
+  <updated>2015-09-05T15:31:52+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -77,22 +77,22 @@ echo "|$NUM|$HOSTNAME|$PRODUCT|$U_NUM|$SERIAL|$MEM|$MEM_MAX_CAPACITY|$MEM_NUM_OF
     <link href="http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby/"/>
     <updated>2013-10-11T00:00:00+08:00</updated>
     <id>http://leolovenet.com/blog/2013/10/11/enhanced-ping-command-function-with-ruby</id>
-    <content type="html"><![CDATA[<p>故事的起因是,我在mac下一直用chrome,但是chrome有一个很不爽的地方,是在地址栏copy的域名,每次都自动的加上<code>http://</code>的字符串, 这样就没有办法直接粘贴到 Terminal, 用ping命令查看ping值. 这个事情真的弄的我很头疼.</p>
+    <content type="html"><![CDATA[<p>故事的起因是，我在mac下一直用chrome，但是chrome有一个很不爽的地方，是在地址栏copy的域名，每次都自动的加上<code>http://</code>的字符串，这样就没有办法直接粘贴到 Terminal， 用ping命令查看ping值。 这个事情真的弄的我很头疼。</p>
 
-<p>所以就想办法关掉这个chrome的特性,google了半天也也没有找到,就放弃了.如果有人知道告诉我,十分感谢 :)</p>
+<p>所以就想办法关掉这个chrome的特性，google了半天也也没有找到，就放弃了。如果有人知道告诉我，十分感谢 :)</p>
 
-<p>转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名.</p>
+<p>转而想可不可以增加 ping 的功能呢? 让ping可以支持有<code>http://</code>的域名。</p>
 
-<p>正好,最近再看ruby的一些东西,感觉蛮方便的.就写了一个ruby脚本,可以自动的去掉http之类的协议头,然后传给ping命令执行.不就ok了嘛.</p>
+<p>正好，最近再看 ruby 的一些东西，感觉蛮方便的。就写了一个ruby脚本，可以自动的去掉http之类的协议头，然后传给ping命令执行。不就ok了嘛。</p>
 
-<p>写出来之后,又不爽不能及时的知道ip的地理位置,所以呢,就又增加了调用纯真的ip数据库,顺便把ip的地理位置信息现实出来.</p>
+<p>写出来之后，又不爽不能及时的知道 ip 的地理位置，所以呢，就又增加了调用纯真的 ip 数据库，顺便把ip的地理位置信息现实出来。</p>
 
-<p>第一步,安装所需要的依赖库,qqwry.dat自己下载,然后改脚本里的路径信息.</p>
+<p>第一步，安装所需要的依赖库，qqwry.dat 自己下载，然后改脚本里的路径信息。</p>
 
-<pre><code class="">gem install escape qqwry
+<pre><code class="ru ">gem install escape qqwry
 </code></pre>
 
-<p>下面的代码我是另存为一个叫p的文件,放到了 <code>$home/bin/</code> 下面.</p>
+<p>下面的代码我是另存为一个叫 p 的文件，放到了 <code>$home/bin/</code> 下面。</p>
 
 <pre><code class="ru">#!/usr/bin/env ruby
 # encoding : utf-8
@@ -124,11 +124,12 @@ puts ""
 exec "ping #{host}"
 </code></pre>
 
-<p>使用方法:
-<code>
-p http://www.google.com
-</code>
-脚本虽然很简单,但是用起来感觉很好.</p>
+<p>使用方法:</p>
+
+<pre><code class="bash">p http://www.google.com 
+</code></pre>
+
+<p>脚本虽然很简单，但是用起来感觉很好。</p>
 ]]></content>
   </entry>
   

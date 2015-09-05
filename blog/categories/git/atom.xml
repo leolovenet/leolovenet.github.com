@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Git | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-09-05T13:32:32+08:00</updated>
+  <updated>2015-09-05T15:31:52+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -18,7 +18,7 @@
     <link href="http://leolovenet.com/blog/2014/05/28/git-and-proxy/"/>
     <updated>2014-05-28T09:50:17+08:00</updated>
     <id>http://leolovenet.com/blog/2014/05/28/git-and-proxy</id>
-    <content type="html"><![CDATA[<p>Git 目前支持的三种协议  <code>git://</code> <code>ssh://</code>  <code>http://</code> 和 <code>https://</code>.</p>
+    <content type="html"><![CDATA[<p>Git 目前支持的三种协议  <code>git://</code> <code>ssh://</code>  <code>http://</code> 和 <code>https://</code></p>
 
 <p>其代理配置各不相同.<br/>
   (1) core.gitproxy 用于 <code>git://</code> 协议<br/>
@@ -36,8 +36,7 @@
 
 <p>让 git 走 HTTP 代理需要创建 <code>gitproxy.sh</code> 脚本,然后赋予可执行权限: 参考的<a href="http://www.emilsit.net/blog/archives/how-to-use-the-git-protocol-through-a-http-connect-proxy/">这个文章</a></p>
 
-<pre><code class="bash">
-#!/bin/sh
+<pre><code class="bash">#!/bin/sh
 # Use socat to proxy git through an HTTP CONNECT firewall.
 # Useful if you are trying to clone git:// from inside a company.
 # Requires that the proxy allows CONNECT to port 9418.
@@ -51,11 +50,12 @@
 # Configuration. Common proxy ports are 3128, 8123, 8000.
 _proxy=proxy.yourcompany.com
 _proxyport=3128
+_proxyauth=username:password
 
-exec socat STDIO PROXY:$_proxy:$1:$2,proxyport=$_proxyport
+exec socat STDIO PROXY:${_proxy}:$1:$2,proxyport=${_proxyport},proxyauth=${_proxyauth}
 </code></pre>
 
-<p>然后,配置 git 使用这个代理, 在 <code>~/.gitconfig</code> 文件里写入:</p>
+<p>然后配置 git 使用这个代理, 在 <code>~/.gitconfig</code> 文件里写入:</p>
 
 <pre><code class="bash">[core]
     gitproxy=gitproxy.sh for github.com
@@ -66,34 +66,26 @@ exec socat STDIO PROXY:$_proxy:$1:$2,proxyport=$_proxyport
 
 <p><a href="http://www.aireadfun.com/blog/2013/08/27/using-git-through-a-socks-proxy-or-ssh-tunnel/">参考的这篇文章</a></p>
 
-<p>第一步: 使用 ssh开启一个socks 代理.<br/>
-``` bash
-ssh -nNT -D 8119 remote.host</p>
+<p>第一步: 使用 ssh开启一个socks 代理.</p>
 
-<h1>This command starts a SOCKS v4 proxy listening on localhost, port 8119.</h1>
-
-<pre><code>
-第二步: 创建一个新的 `gitproxysocks.sh` 脚本,并赋予可执行权限.
+<pre><code class="bash">ssh -nNT -D 8119 remote.host
+#This command starts a SOCKS v4 proxy listening on localhost, port 8119.
 </code></pre>
 
-<h1>!/bin/sh</h1>
+<p>第二步: 创建一个新的 <code>gitproxysocks.sh</code> 脚本,并赋予可执行权限.</p>
 
-<p>#</p>
+<pre><code class="bash">#!/bin/sh
+#
+# Use socat to proxy git through a SOCKS proxy.
+# Useful if you are trying to clone git:// from inside a company.
+#
+# See http://tinyurl.com/8xvpny for Emil Sit's original HTTP proxy script.
+# See http://tinyurl.com/45atuth for updated SOCKS version.## Configuration.
+_proxy=localhost_proxyport=8119
+execsocat STDIO SOCKS4:$_proxy:$1:$2,socksport=$_proxyport
+</code></pre>
 
-<h1>Use socat to proxy git through a SOCKS proxy.</h1>
-
-<h1>Useful if you are trying to clone git:// from inside a company.</h1>
-
-<p>#</p>
-
-<h1>See <a href="http://tinyurl.com/8xvpny">http://tinyurl.com/8xvpny</a> for Emil Sit&rsquo;s original HTTP proxy script.</h1>
-
-<h1>See <a href="http://tinyurl.com/45atuth">http://tinyurl.com/45atuth</a> for updated SOCKS version.## Configuration.</h1>
-
-<p><em>proxy=localhost_proxyport=8119
-execsocat STDIO SOCKS4:$</em>proxy:$1:$2,socksport=$_proxyport
-<code>``
-第三步: 配置 git 使用这个脚本,可以像上面那样写入到配置文件</code>~/.gitconfig<code>中,也可以配置</code>GIT_PROXY_COMMAND` 环境变量, git 获取数据时会检查这个环境变量.</p>
+<p>第三步: 配置 git 使用这个脚本,可以像上面那样写入到配置文件 <code>~/.gitconfig</code> 中,也可以配置 <code>GIT_PROXY_COMMAND</code> 环境变量, git 获取数据时会检查这个环境变量.</p>
 
 <pre><code class="bash">export GIT_PROXY_COMMAND=gitproxysocks.sh
 </code></pre>
@@ -106,12 +98,12 @@ execsocat STDIO SOCKS4:$</em>proxy:$1:$2,socksport=$_proxyport
     proxy = http://proxy.yourcompany.com:8080
 </code></pre>
 
-<p>或者,可以通过下面的脚本直接设置 <code>http_proxy</code>, <code>https_proxy</code> 与 <code>all_proxy</code> 环境变量.<br/>
-把下面的脚本保存为 <code>http_proxy.sh</code> , 并在  <code>~/.bashrc</code> 或者 <code>~/.zshrc</code> 里加入 <code>source /path/to/http_proxy.sh</code>,这样在想使用 proxy 时,运行 <code>http_proxy_enable</code> 命令就可以了,取消时运行 <code>http_proxy_disable</code></p>
+<p>或者,可以通过下面的脚本直接设置 <code>http_proxy</code>， <code>https_proxy</code> 与 <code>all_proxy</code> 环境变量。
+把下面的脚本保存为 <code>http_proxy.sh</code> ，并在  <code>~/.bashrc</code> 或者 <code>~/.zshrc</code> 里加入 <code>source /path/to/http_proxy.sh</code>， 这样在想使用 proxy 时，运行 <code>http_proxy_enable</code> 命令就可以了，取消时运行 <code>http_proxy_disable</code></p>
 
 <pre><code class="bash">#!/bin/sh
 http_proxy_enable() {
-    IP="proxy.yourcompany.com:8080"
+    IP="http://username:password@proxy.yourcompany.com:8080"
     export http_proxy=$IP
     export https_proxy=$IP
     export all_proxy=$IP
@@ -149,9 +141,7 @@ http_proxy_disable() {
 
 <p>没有什么主要的技术文章,就发一些自己平时积累的Evernote的笔记.</p>
 
-<blockquote><p>★★★★ <a href="https://www.evernote.com/shard/s170/sh/901e7847-78f3-4560-ae64-72825f8f5c45/b43546d281d47bbbdc745184e83f1fad">一些常用的linux的命令</a></p>
-
-<p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
+<blockquote><p>★★★ <a href="https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2">虚拟机开发环境的搭建利器vagrant</a>
 vagrant是一个创建和分发虚拟化开发环境的工具，使用ruby编写，基于Oracle的VirtualBox，它提供了一个可配置的、轻量级的、可重用的、便携的虚拟化开发环境.</p>
 
 <p>★★★ <a href="https://www.evernote.com/shard/s170/sh/5ee87faa-0c73-46a6-9cd1-7117ee8971ea/4bbf353bae719e4ef65e2b57530732a1">Git的学习笔记</a></p>

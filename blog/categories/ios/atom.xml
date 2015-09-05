@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ios | 末日前几天]]></title>
   <link href="http://leolovenet.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://leolovenet.com/"/>
-  <updated>2015-09-05T13:32:32+08:00</updated>
+  <updated>2015-09-05T15:31:52+08:00</updated>
   <id>http://leolovenet.com/</id>
   <author>
     <name><![CDATA[leolovenet]]></name>
@@ -18,7 +18,7 @@
     <link href="http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa/"/>
     <updated>2013-02-22T00:00:00+08:00</updated>
     <id>http://leolovenet.com/blog/2013/02/22/xcode-package-application-to-ipa</id>
-    <content type="html"><![CDATA[<p>正确的方法是利用Xcode,The right way is –>”Xcode menu” –> Project –> Archive –> “Xcode menu Window” –> “Organizer” –> ” Organizer – Archives” –> Distribute –>”Save for Enterpirs of Ad-Hoc Deployment” –> next –> ***.ipa –> done.</p>
+    <content type="html"><![CDATA[<p>正确的方法是利用Xcode,The right way is –>&ldquo;Xcode menu&rdquo; –> Project –> Archive –> &ldquo;Xcode menu Window&rdquo; –> &ldquo;Organizer&rdquo; –> &ldquo;Organizer – Archives&rdquo; –> Distribute –> &ldquo;Save for Enterpirs of Ad-Hoc Deployment&rdquo; –> next –> ***.ipa –> done.</p>
 
 <!-- more -->
 
