@@ -27,8 +27,6 @@ sidebar: collapse
 
 没有什么主要的技术文章,就发一些自己平时积累的Evernote的笔记.
 
->★★★★ [一些常用的linux的命令](https://www.evernote.com/shard/s170/sh/901e7847-78f3-4560-ae64-72825f8f5c45/b43546d281d47bbbdc745184e83f1fad)
-
 >★★★ [虚拟机开发环境的搭建利器vagrant](https://www.evernote.com/shard/s170/sh/d59d27d3-2341-4982-a78f-fe3d61b2d081/628d18b1f6c66b14a33cb89dc39266b2)
 vagrant是一个创建和分发虚拟化开发环境的工具，使用ruby编写，基于Oracle的VirtualBox，它提供了一个可配置的、轻量级的、可重用的、便携的虚拟化开发环境.
 

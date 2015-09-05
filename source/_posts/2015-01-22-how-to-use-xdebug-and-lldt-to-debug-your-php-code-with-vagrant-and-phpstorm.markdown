@@ -19,14 +19,14 @@ description: "How to use Xdebug and LLDT to debug your PHP code with Vagrant and
 
 主要用到的软件
 ---------------
-- [PhpStorm](https://www.jetbrains.com/phpstorm/) PHP 开发IDE
+- [PhpStorm](https://www.jetbrains.com/phpstorm/) PHP 开发 IDE
 - [Xdebug](http://xdebug.org/) PHP debug 插件
 - [Xhprof](https://github.com/phacility/xhprof) Facebook 出品的 PHP 性能测量插件
 - [LLDT-chrome-plugin](https://github.com/leolovenet/LLDT-chrome-plugin) 自己写的一个 Chrome 浏览器插件，集成了[xdebugHelper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc?hl=en)，并添加了更多的选项。
 - [Vagrant](https://www.vagrantup.com/) 一款可以管理 VirtualBox 虚拟机的软件。
 - [VirtualBox](https://www.virtualbox.org/) 一款夸平台的虚拟机软件。
 - [Nginx](http://nginx.org/) web 服务器软件(运行在虚拟机中)
-- [PHP-FPM](http://php.net/) php运行管理(运行在虚拟机中)
+- [PHP-FPM](http://php.net/) php 运行管理(运行在虚拟机中)
 
 <!--more-->
 

@@ -14,7 +14,8 @@ tags:
 description: "将xcode编译的app程序打包ipa文件"
 ---
 
-正确的方法是利用Xcode,The right way is –>”Xcode menu” –> Project –> Archive –> “Xcode menu Window” –> “Organizer” –> ” Organizer – Archives” –> Distribute –>”Save for Enterpirs of Ad-Hoc Deployment” –> next –> ***.ipa –> done.
+正确的方法是利用Xcode,The right way is –>"Xcode menu" –> Project –> Archive –> "Xcode menu Window" –> "Organizer" –> "Organizer – Archives" –> Distribute –> "Save for Enterpirs of Ad-Hoc Deployment" –> next –> ***.ipa –> done.
+
 <!-- more -->
 
 <del datetime="2013-03-09T14:05:58+00:00">新年回来以后的第一篇文章。</del>
@@ -38,3 +39,4 @@ description: "将xcode编译的app程序打包ipa文件"
 <del datetime="2013-03-09T14:14:19+00:00">因为这个ipa已经是用最新的签名编译好了的，所以，它可以直接在客户的机器上安装。</del>
 
 <del datetime="2013-03-09T14:14:19+00:00">传输给客户后，让客户双击ipa文件，默认自动导入到客户的iTunes的app标签下，让客户使用数据线链接自己的iphone，然后在itunes里选中iphone，切换到iphone的app标签下，找到XXX,此时在右边会有一个安装的按钮，点击，然后点击下面的应用，之后点击同步就可以了。</del>
+
