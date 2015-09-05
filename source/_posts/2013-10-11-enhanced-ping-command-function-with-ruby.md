@@ -38,7 +38,8 @@ sidebar: collapse
 gem install escape qqwry
 ```
 下面的代码我是另存为一个叫p的文件,放到了 `$home/bin/` 下面.
-``` ruby
+
+```ru
 #!/usr/bin/env ruby
 # encoding : utf-8
 require "escape"

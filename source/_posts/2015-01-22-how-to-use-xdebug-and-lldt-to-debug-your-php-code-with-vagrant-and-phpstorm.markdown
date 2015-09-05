@@ -46,7 +46,7 @@ Vbox & Vagrant 虚拟环境介绍
 在 Mac 平台下：`Vbox`的虚拟机默认保存路径为`~/VirtualBox VMs`，`Vagrant`用户的数据文件保存在`~/.vagrant.d`目录下面，删除这个目录将删除`vagrant`的所有`box`与`plugins`。
 
 ###什么是Box？
-box就相当于是一个环境，它一般是一个Vbox虚拟机的镜像，官方提供了一个基于Ubuntu的box。
+box 就相当于是一个环境，它一般是一个 Vbox 虚拟机的镜像，官方提供了一个基于 Ubuntu 的box。
 给vagrant添加一个 Box 的命令, 打开 `Terminal`
 
 ```bash
@@ -64,44 +64,50 @@ vagrant box list
 ###怎样使用 Vagrant 管理 Vbox 虚拟机
 
 - **初始化 Vagrant 环境**，下面这个命令会在当前目录下面创建一个 Vagrant 使用的配置文件 Vagrantfile ，里面包含了 Vagrant 启动需要的配置。
-```
+
+```bash
 vagrant init YOUR_BOX_NAME
 ```
 
 - **开启 VirtualBox 虚拟机**，下面这个命令，会创建一个新的 VirtualBox 的虚拟机。
-```
+
+```bash
 vagrant up
 ```
 
 - **关闭 VirtualBox 虚拟机**
-```
+
+```bash
 vagrant halt
 ```
 
 - **挂起 VirtualBox 虚拟机**，下次开机时间很短，非常快，但是占用更多的内存和硬盘空间。
-```
+
+```bash
 vagrant suspend
 ```
 
 - **恢复 VirtualBox 虚拟机**， 将虚拟机恢复到初始状态.
-```
+
+```bash
 vagrant destroy
 ```
 - **登陆 VirtualBox 虚拟机**
-```
+
+```bash
 vagrant ssh
 ```
 
 
 自己从官网下载一个 box，安装上后，我们开始讲正题。
 
-启动软件环境
------------
+###启动软件环境
 
 进入到你 Web 项目的根目录，手工创建`Vagrantfile`配置文件，或者也可以使用`vagrant ini`创建后再手工修改，添加了一个用来跟虚拟机通信的独立的 IP。
 
 下面是 Vagrantfile 的内容：
-```ruby
+
+```ru
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
@@ -118,6 +124,7 @@ end
 ```
 
 然后运行下面的命令，开启，并登陆进虚拟机里
+
 ```bash
 vagrant up
 vagrant ssh
@@ -135,6 +142,7 @@ sudo  echo "me.dev 192.168.168.168"  >> /etc/hosts
 在虚拟机中安装好`Nginx`，`PHP-FPM`，`Xdebug`，`Xhprof`，这个过程就不过多的介绍了。
 
 下面是我的 Xdebug 配置文件样例：
+
 ```ini
 ;;;;;;;;;;;;;;;;;;;;;;
 ; xdebug             ;
@@ -221,7 +229,8 @@ xdebug.remote_mode=req
 
 下面是我的 Xhprof 的配置样例：
 
-首先，将`Xhprof`自带的`xhprof_html`,`xhprof_lib`目录放入到`/var/log/php/xhprof/` 下。
+首先，将 `Xhprof` 自带的 `xhprof_html`, `xhprof_lib` 目录放入到 `/var/log/php/xhprof/` 下。
+
 ```ini
 ;;;;;;;;;;; add the following configuration to php.ini ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 auto_prepend_file = "/etc/php/include/auto_prepend.php"
@@ -239,6 +248,7 @@ env[XHPROF_SAMPLING_PERCENTAGE] = 3000
 ```
 
 下面是 `/etc/php/include/auto_prepend.php` 的内容：
+
 ```php
 if(isset($_SERVER['XHPROF_ROOT_PATH'])){
     // start profiling
@@ -254,6 +264,7 @@ if(isset($_SERVER['XHPROF_ROOT_PATH'])){
 ```
 
 下面是 `/etc/php/include/auto_append.php` 的内容：
+
 ```php
 if ($xhprof_on){
     $xhprof_data = xhprof_disable();
@@ -265,32 +276,31 @@ if ($xhprof_on){
 }
 ```
 
-设置 PhpStorm
--------------
+###设置 PhpStorm
 
 我使用的 IDE 软件为  [PhpStorm](https://www.jetbrains.com/phpstorm/)，要配合使用 Vagrant 的话，还需要特殊配置一下。
 
-### 1.Create New Project
+#### 1.Create New Project
 ![phpstorm-1](/downloads/images/phpstorm-1.jpg)
 
-### 2. Edit Configrations...
+#### 2. Edit Configrations...
 Run > Edit Configrations... > Defaults > PHP Remote Debug > Servers
 ![phpstorm-4](/downloads/images/phpstorm-4.jpg)
 
 因为使用 Vagrant 的缘故，所以调试 PHP 代码的时候，需要配置目录映射。
+
 ```
 # your/sites/path            -->  /vagrant
 ```
 ![phpstorm-5](/downloads/images/phpstorm-5.jpg)
 
-### 3.Debug
+#### 3.Debug
 勾选， Run > "Break at first line in PHP scripts" 后，点击 “Debug 'xxxxx'
 ![phpstorm-6](/downloads/images/phpstorm-6.jpg)
 ![phpstorm-7](/downloads/images/phpstorm-7.jpg)
 
 
-Chrome 浏览器的插件 LLDT
-----------------------
+###Chrome 浏览器的插件 LLDT
 
 chrome 安装 LLDT 后，打开你开发的网址http://me.dev, 刷新一下。会看到地址栏的LLDT图标，点击一下，或者按快捷键`Ctrl+Shift+X`，mac用户为`command+Shift+x`，调出菜单弹窗。
 ![phpstorm-8](/downloads/images/phpstorm-8.png)
@@ -332,3 +342,7 @@ Xhprof 为 Facebook 出品的分层PHP性能分析工具。 可以对 PHP脚本�
 
 保存的数据文件存储在了，`/var/log/php/xhprof/xhprof_data` 目录中。
 xhprof 的分析结果怎么查看, 自己查看官网的介绍吧。
+
+
+
+
